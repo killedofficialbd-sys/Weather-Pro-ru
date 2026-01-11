@@ -105,7 +105,7 @@
                 transparent);
         }
 
-        .nav-left {
+        .nav-left, .nav-right {
             display: flex;
             align-items: center;
             gap: 40px;
@@ -134,6 +134,8 @@
             gap: 10px;
             position: relative;
             overflow: hidden;
+            cursor: pointer;
+            white-space: nowrap;
         }
 
         .nav-link::before {
@@ -164,6 +166,89 @@
             color: white;
             background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.1));
             box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        }
+
+        /* ПРОФИЛЬ В НАВИГАЦИИ */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 15px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .user-profile:hover {
+            background: rgba(59, 130, 246, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .user-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--accent-light);
+            font-size: 15px;
+            max-width: 120px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 10px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 10px;
+            min-width: 180px;
+            display: none;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .user-menu.show {
+            display: block;
+            animation: diamondFadeIn 0.3s ease;
+        }
+
+        .menu-item {
+            padding: 12px 16px;
+            border-radius: 10px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .menu-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--accent-light);
+            transform: translateX(5px);
         }
 
         /* ЛОГОТИП С ЭФФЕКТОМ */
@@ -253,7 +338,7 @@
         }
 
         /* АЛМАЗНЫЕ КАРТОЧКИ */
-        .search-card, .current-weather-card, .forecast-card {
+        .search-card, .current-weather-card, .forecast-card, .auth-card, .profile-card, .settings-card {
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
             border-radius: var(--radius);
@@ -263,14 +348,18 @@
             position: relative;
             overflow: hidden;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
-        .search-card:hover, .current-weather-card:hover, .forecast-card:hover {
+        .search-card:hover, .current-weather-card:hover, .forecast-card:hover, 
+        .auth-card:hover, .profile-card:hover, .settings-card:hover {
             transform: translateY(-5px);
             box-shadow: var(--shadow), var(--neon-glow);
         }
 
-        .search-card::before, .current-weather-card::before, .forecast-card::before {
+        .search-card::before, .current-weather-card::before, .forecast-card::before,
+        .auth-card::before, .profile-card::before, .settings-card::before {
             content: '';
             position: absolute;
             top: 0;
@@ -317,6 +406,186 @@
             align-items: center;
             justify-content: center;
             backdrop-filter: blur(10px);
+        }
+
+        /* ФОРМЫ */
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 18px 24px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            color: var(--text);
+            font-size: 16px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 18px 24px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            color: var(--text);
+            font-size: 16px;
+            transition: all 0.3s;
+            font-weight: 500;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2360a5fa' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 20px center;
+            background-size: 16px;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        /* КНОПКИ */
+        .btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.2), 
+                transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: var(--accent);
+        }
+
+        /* НОВЫЕ СТИЛИ ДЛЯ КНОПОК НАСТРОЕК */
+        .settings-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .settings-btn {
+            padding: 16px 32px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .settings-btn-save {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .settings-btn-reset {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .settings-btn-save::before,
+        .settings-btn-reset::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.2), 
+                transparent);
+            transition: left 0.5s ease;
+        }
+
+        .settings-btn-save:hover::before,
+        .settings-btn-reset:hover::before {
+            left: 100%;
+        }
+
+        .settings-btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+        }
+
+        .settings-btn-reset:hover {
+            transform: translateY(-2px);
+            background: rgba(239, 68, 68, 0.2);
+            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3);
         }
 
         /* ПОИСК С АВТОСОХРАНЕНИЕМ */
@@ -583,6 +852,53 @@
             border: 1px solid rgba(59, 130, 246, 0.2);
         }
 
+        /* КНОПКА ПОДЕЛИТЬСЯ */
+        .share-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .share-btn {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            padding: 12px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .share-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--diamond-bg);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .share-btn:hover::before {
+            opacity: 1;
+        }
+
+        .share-btn:hover {
+            background: rgba(59, 130, 246, 0.15);
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
         /* ТЕМПЕРАТУРА */
         .current-temp {
             display: flex;
@@ -702,7 +1018,7 @@
             font-weight: 600;
         }
 
-        /* ПРОГНОЗ */
+        /* ПРОГНОЗ - ИСПРАВЛЕННЫЕ СТИЛИ */
         .forecast-card {
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
@@ -739,12 +1055,17 @@
         .forecast-day {
             background: rgba(15, 23, 42, 0.4);
             border-radius: 15px;
-            padding: 24px;
+            padding: 20px 12px;
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.05);
             transition: all 0.3s;
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 200px;
+            gap: 8px;
         }
 
         .forecast-day::before {
@@ -772,18 +1093,20 @@
         .forecast-date {
             font-size: 14px;
             color: var(--text-secondary);
-            margin-bottom: 8px;
+            margin-bottom: 4px;
+            font-weight: 500;
         }
 
         .forecast-day-name {
             font-weight: 600;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             font-size: 16px;
+            color: var(--text);
         }
 
         .forecast-icon {
             font-size: 36px;
-            margin: 15px 0;
+            margin: 10px 0;
             height: 45px;
             filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.2));
             animation: float 4s ease-in-out infinite;
@@ -793,13 +1116,162 @@
         .forecast-temp {
             font-size: 26px;
             font-weight: 600;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
+            color: var(--text);
         }
 
         .forecast-desc {
             font-size: 13px;
             color: var(--text-secondary);
             text-transform: capitalize;
+            line-height: 1.4;
+            min-height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ПРОФИЛЬ */
+        .avatar-upload {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .avatar-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 20px;
+            object-fit: cover;
+            border: 3px solid var(--accent);
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+            margin: 0 auto 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .avatar-preview:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+        }
+
+        .avatar-preview::before {
+            content: 'Сменить';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .avatar-preview:hover::before {
+            opacity: 1;
+        }
+
+        .profile-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        /* НАСТРОЙКИ */
+        .settings-group {
+            margin-bottom: 35px;
+        }
+
+        .settings-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--accent-light);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .settings-options {
+            background: rgba(15, 23, 42, 0.4);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-label {
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .setting-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        /* ПЕРЕКЛЮЧАТЕЛЬ */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(15, 23, 42, 0.6);
+            transition: .4s;
+            border-radius: 34px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 3px;
+            background-color: var(--text-secondary);
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--accent);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(28px);
+            background-color: white;
         }
 
         /* СТРАНИЦА О НАС */
@@ -1109,6 +1581,55 @@
             font-size: 22px;
         }
 
+        /* МОДАЛЬНОЕ ОКНО */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius);
+            padding: 40px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--glass-border);
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            animation: diamondFadeIn 0.4s ease;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 20px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: var(--danger);
+        }
+
         /* ЗАГРУЗКА */
         .loading {
             display: none;
@@ -1191,6 +1712,56 @@
             50% { transform: scale(1.2); }
         }
 
+        /* ПЕРЕКЛЮЧАТЕЛЬ СТРАНИЦ */
+        .page-switcher {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 10px;
+        }
+
+        .page-switch {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .page-switch.active {
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--accent-light);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        }
+
+        /* ССЫЛКИ В ФОРМАХ */
+        .form-links {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .form-link {
+            color: var(--accent-light);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .form-link:hover {
+            text-decoration: underline;
+            color: var(--accent);
+        }
+
         /* АДАПТИВНОСТЬ */
         @media (max-width: 1200px) {
             .container {
@@ -1206,6 +1777,10 @@
             .weather-container {
                 grid-template-columns: 1fr;
             }
+            
+            .profile-info {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 768px) {
@@ -1215,13 +1790,18 @@
                 padding: 15px 0;
             }
             
-            .nav-left {
+            .nav-left, .nav-right {
                 flex-direction: column;
                 gap: 20px;
                 width: 100%;
             }
             
             .nav-links {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .user-profile {
                 width: 100%;
                 justify-content: center;
             }
@@ -1248,7 +1828,8 @@
                 font-size: 60px;
             }
             
-            .search-card, .current-weather-card, .forecast-card {
+            .search-card, .current-weather-card, .forecast-card,
+            .auth-card, .profile-card, .settings-card {
                 padding: 25px;
             }
             
@@ -1270,6 +1851,23 @@
             
             .tech-stack {
                 grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .share-buttons {
+                flex-wrap: wrap;
+            }
+            
+            /* Исправление для навигации на мобильных */
+            .nav-link {
+                justify-content: center;
+                text-align: center;
+            }
+            
+            .nav-link span {
+                display: inline-block;
+                max-width: 100px;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
         }
 
@@ -1327,6 +1925,22 @@
                 min-width: auto;
                 width: calc(100% - 50px);
             }
+            
+            .modal-content {
+                padding: 25px;
+            }
+            
+            .page-switcher {
+                flex-direction: column;
+            }
+            
+            .settings-buttons {
+                flex-direction: column;
+            }
+            
+            .settings-btn {
+                width: 100%;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1357,7 +1971,27 @@
             }
             
             .forecast-day {
-                padding: 20px;
+                padding: 15px 10px;
+                min-height: 180px;
+            }
+            
+            .forecast-icon {
+                font-size: 32px;
+                margin: 8px 0;
+            }
+            
+            .forecast-temp {
+                font-size: 22px;
+            }
+            
+            .forecast-desc {
+                font-size: 12px;
+                min-height: 32px;
+            }
+            
+            .avatar-preview {
+                width: 100px;
+                height: 100px;
             }
         }
     </style>
@@ -1383,6 +2017,32 @@
                     <a href="#" class="nav-link" onclick="showFavorites()">
                         <i class="fas fa-star"></i><span>Избранное</span>
                     </a>
+                    <a href="#" class="nav-link" onclick="showPage('profile')">
+                        <i class="fas fa-user"></i><span>Профиль</span>
+                    </a>
+                    <a href="#" class="nav-link" onclick="showPage('settings')">
+                        <i class="fas fa-cog"></i><span>Настройки</span>
+                    </a>
+                </div>
+            </div>
+            <div class="nav-right">
+                <div class="user-profile" id="userProfile" onclick="toggleUserMenu()">
+                    <div class="user-avatar" id="userAvatar">Г</div>
+                    <div class="user-name" id="userName">Гость</div>
+                    <div class="user-menu" id="userMenu">
+                        <a href="#" class="menu-item" onclick="showPage('profile')">
+                            <i class="fas fa-user"></i> Мой профиль
+                        </a>
+                        <a href="#" class="menu-item" onclick="showPage('settings')">
+                            <i class="fas fa-cog"></i> Настройки
+                        </a>
+                        <a href="#" class="menu-item" onclick="showFavorites()">
+                            <i class="fas fa-star"></i> Избранное
+                        </a>
+                        <div class="menu-item" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i> Выйти
+                        </div>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -1431,6 +2091,16 @@
                             <button class="city-btn" data-city="Казань">Казань</button>
                             <button class="city-btn" data-city="Сочи">Сочи</button>
                         </div>
+                    </div>
+
+                    <!-- Кнопка Поделиться -->
+                    <div class="share-buttons">
+                        <button class="share-btn" onclick="shareWeather()">
+                            <i class="fas fa-share-alt"></i> Поделиться
+                        </button>
+                        <button class="share-btn" onclick="getLocation()">
+                            <i class="fas fa-location-arrow"></i> Мое местоположение
+                        </button>
                     </div>
                 </div>
 
@@ -1508,6 +2178,13 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Кнопки поделиться под погодой -->
+                        <div class="share-buttons">
+                            <button class="share-btn" onclick="shareWeather()">
+                                <i class="fas fa-share-alt"></i> Поделиться погодой
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -1517,7 +2194,273 @@
                         <i class="fas fa-calendar-alt"></i> Прогноз на 5 дней
                     </h2>
                     
-                    <div class="forecast-grid" id="forecast"></div>
+                    <div class="forecast-grid" id="forecast">
+                        <!-- Прогноз будет загружен через JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Страница авторизации/регистрации -->
+        <div id="auth-page" class="page">
+            <div class="page-switcher" id="authSwitcher">
+                <button class="page-switch active" onclick="switchAuthForm('login')">Вход</button>
+                <button class="page-switch" onclick="switchAuthForm('register')">Регистрация</button>
+            </div>
+
+            <!-- Форма входа -->
+            <div class="auth-card" id="loginForm">
+                <h2 class="card-title">
+                    <i class="fas fa-sign-in-alt"></i> Вход в аккаунт
+                </h2>
+                
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="loginEmail" placeholder="Ваш email">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Пароль</label>
+                    <input type="password" class="form-input" id="loginPassword" placeholder="Ваш пароль">
+                </div>
+
+                <button class="btn" onclick="login()">
+                    <i class="fas fa-sign-in-alt"></i> Войти
+                </button>
+
+                <div class="form-links">
+                    <a href="#" class="form-link" onclick="switchAuthForm('register')">
+                        Нет аккаунта? Зарегистрируйтесь
+                    </a>
+                </div>
+            </div>
+
+            <!-- Форма регистрации -->
+            <div class="auth-card" id="registerForm" style="display: none;">
+                <h2 class="card-title">
+                    <i class="fas fa-user-plus"></i> Регистрация
+                </h2>
+                
+                <div class="form-group">
+                    <label class="form-label">Имя</label>
+                    <input type="text" class="form-input" id="registerName" placeholder="Ваше имя">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="registerEmail" placeholder="Ваш email">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Пароль</label>
+                    <input type="password" class="form-input" id="registerPassword" placeholder="Придумайте пароль">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Подтвердите пароль</label>
+                    <input type="password" class="form-input" id="registerConfirmPassword" placeholder="Повторите пароль">
+                </div>
+
+                <button class="btn" onclick="register()">
+                    <i class="fas fa-user-plus"></i> Зарегистрироваться
+                </button>
+
+                <div class="form-links">
+                    <a href="#" class="form-link" onclick="switchAuthForm('login')">
+                        Уже есть аккаунт? Войдите
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Страница профиля -->
+        <div id="profile-page" class="page">
+            <div class="profile-card">
+                <h2 class="card-title">
+                    <i class="fas fa-user"></i> Мой профиль
+                </h2>
+
+                <div class="avatar-upload">
+                    <img src="" class="avatar-preview" id="avatarPreview" onclick="changeAvatar()">
+                    <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                </div>
+
+                <div class="profile-info">
+                    <div class="form-group">
+                        <label class="form-label">Имя</label>
+                        <input type="text" class="form-input" id="profileName" placeholder="Ваше имя">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" id="profileEmail" placeholder="Ваш email">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Город по умолчанию</label>
+                        <input type="text" class="form-input" id="profileCity" placeholder="Ваш город">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Дата регистрации</label>
+                        <input type="text" class="form-input" id="profileDate" placeholder="Дата регистрации" disabled>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">О себе</label>
+                    <textarea class="form-input" id="profileBio" placeholder="Расскажите о себе" rows="3"></textarea>
+                </div>
+
+                <button class="btn" onclick="saveProfile()">
+                    <i class="fas fa-save"></i> Сохранить изменения
+                </button>
+
+                <div class="share-buttons" style="margin-top: 20px;">
+                    <button class="share-btn" onclick="shareProfile()">
+                        <i class="fas fa-share-alt"></i> Поделиться профилем
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Страница настроек -->
+        <div id="settings-page" class="page">
+            <div class="settings-card">
+                <h2 class="card-title">
+                    <i class="fas fa-cog"></i> Настройки
+                </h2>
+
+                <div class="settings-group">
+                    <h3 class="settings-title">
+                        <i class="fas fa-palette"></i> Внешний вид
+                    </h3>
+                    <div class="settings-options">
+                        <div class="setting-item">
+                            <div>
+                                <div class="setting-label">Темная тема</div>
+                                <div class="setting-description">Использовать темный режим оформления</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="darkTheme" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <div>
+                                <div class="setting-label">Анимации</div>
+                                <div class="setting-description">Включить плавные анимации интерфейса</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="animations" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <h3 class="settings-title">
+                        <i class="fas fa-cloud"></i> Погода
+                    </h3>
+                    <div class="settings-options">
+                        <div class="setting-item">
+                            <div>
+                                <div class="setting-label">Единицы измерения</div>
+                                <div class="setting-description">Выберите систему измерения</div>
+                            </div>
+                            <select class="form-select" id="unitsSelect" style="width: auto; padding: 8px 16px;">
+                                <option value="metric">Метрическая (°C, м/с)</option>
+                                <option value="imperial">Имперская (°F, mph)</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <div>
+                                <div class="setting-label">Автоопределение местоположения</div>
+                                <div class="setting-description">Автоматически определять ваше местоположение</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="autoLocation" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <div>
+                                <div class="setting-label">Уведомления о погоде</div>
+                                <div class="setting-description">Получать уведомления об изменении погоды</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="weatherNotifications">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <h3 class="settings-title">
+                        <i class="fas fa-bell"></i> Уведомления
+                    </h3>
+                    <div class="settings-options">
+                        <div class="setting-item">
+                            <div>
+                                <div class="setting-label">Уведомления в браузере</div>
+                                <div class="setting-description">Показывать уведомления в браузере</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="browserNotifications">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <div>
+                                <div class="setting-label">Звуковые уведомления</div>
+                                <div class="setting-description">Воспроизводить звук при уведомлениях</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="soundNotifications">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <h3 class="settings-title">
+                        <i class="fas fa-database"></i> Данные
+                    </h3>
+                    <div class="settings-options">
+                        <div class="setting-item">
+                            <div>
+                                <div class="setting-label">Сохранять историю поиска</div>
+                                <div class="setting-description">Автоматически сохранять историю поиска городов</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="saveHistory" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <div>
+                                <div class="setting-label">Автосохранение</div>
+                                <div class="setting-description">Автоматически сохранять изменения настроек</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="autoSave" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ИСПРАВЛЕННЫЕ КНОПКИ НАСТРОЕК -->
+                <div class="settings-buttons">
+                    <button class="settings-btn settings-btn-save" onclick="saveSettings()">
+                        <i class="fas fa-save"></i> Сохранить настройки
+                    </button>
+                    <button class="settings-btn settings-btn-reset" onclick="resetSettings()">
+                        <i class="fas fa-undo"></i> Сбросить настройки
+                    </button>
                 </div>
             </div>
         </div>
@@ -1559,7 +2502,9 @@
                             • Адаптивный дизайн для всех устройств<br>
                             • История поиска и избранные города<br>
                             • Автоматическое сохранение настроек<br>
-                            • Подробные метеорологические данные
+                            • Подробные метеорологические данные<br>
+                            • Регистрация и профиль пользователя<br>
+                            • Гибкие настройки приложения
                         </p>
                     </div>
 
@@ -1646,6 +2591,26 @@
         </footer>
     </div>
 
+    <!-- Модальное окно для выбора аватарки -->
+    <div class="modal-overlay" id="avatarModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeAvatarModal()">&times;</button>
+            <h2 class="card-title">
+                <i class="fas fa-user-circle"></i> Выберите аватар
+            </h2>
+            <div class="avatar-options" id="avatarOptions" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 25px 0;">
+                <!-- Аватары будут добавлены через JS -->
+            </div>
+            <div class="form-group">
+                <label class="form-label">Или загрузите свою фотографию</label>
+                <input type="file" class="form-input" id="customAvatarInput" accept="image/*">
+            </div>
+            <button class="btn" onclick="saveAvatar()">
+                <i class="fas fa-save"></i> Сохранить аватар
+            </button>
+        </div>
+    </div>
+
     <!-- Уведомление -->
     <div class="notification" id="notification">
         <i class="fas fa-check-circle"></i>
@@ -1657,6 +2622,19 @@
         // API ключ для погоды
         const weatherApiKey = '7ee647c81d8746d1db6d76d4156539e8';
         
+        // Система хранения
+        const STORAGE_KEYS = {
+            USER: 'weatherPro_user',
+            SETTINGS: 'weatherPro_settings',
+            LAST_CITY: 'weatherPro_lastCity',
+            SEARCH_HISTORY: 'weatherPro_searchHistory',
+            FAVORITES: 'weatherPro_favorites'
+        };
+        
+        // Текущий пользователь и настройки
+        let currentUser = null;
+        let settings = {};
+        
         // Элементы DOM
         const cityInput = document.getElementById('cityInput');
         const searchBtn = document.getElementById('searchBtn');
@@ -1666,19 +2644,21 @@
         const notificationText = document.getElementById('notificationText');
         const saveIndicator = document.getElementById('saveIndicator');
         const favoriteBtn = document.getElementById('favoriteBtn');
+        const userProfile = document.getElementById('userProfile');
+        const userMenu = document.getElementById('userMenu');
+        const userAvatar = document.getElementById('userAvatar');
+        const userName = document.getElementById('userName');
         
-        // Система сохранения
-        const STORAGE_KEYS = {
-            LAST_CITY: 'weatherPro_lastCity',
-            SEARCH_HISTORY: 'weatherPro_searchHistory',
-            FAVORITES: 'weatherPro_favorites',
-            SETTINGS: 'weatherPro_settings'
-        };
-        
-        // Инициализация
+        // Инициализация приложения
         document.addEventListener('DOMContentLoaded', function() {
-            // Загружаем сохраненные данные
-            loadSavedData();
+            // Загружаем настройки
+            loadSettings();
+            
+            // Загружаем пользователя
+            loadUser();
+            
+            // Обновляем интерфейс
+            updateUI();
             
             // Инициализируем время
             updateCurrentTime();
@@ -1708,39 +2688,402 @@
                 }, 1000);
             });
             
-            // Загружаем погоду для сохраненного города
-            const lastCity = getLastCity();
-            if (lastCity) {
-                cityInput.value = lastCity;
-                getWeather(lastCity);
-            } else {
-                getWeather('Москва');
-            }
+            // Загружаем погоду
+            loadWeather();
+            
+            // Инициализируем переключатель форм авторизации
+            initAuthSwitcher();
+            
+            // Загружаем тестовый прогноз для демонстрации исправлений
+            loadTestForecast();
         });
         
-        // Переключение между страницами
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
+        // Загрузка тестового прогноза для демонстрации
+        function loadTestForecast() {
+            const testForecastData = [
+                { date: '11.01', day: 'Вс', temp: '-8°C', desc: 'Небольшой снег', icon: '❄️' },
+                { date: '12.01', day: 'Пн', temp: '-7°C', desc: 'Небольшой снег', icon: '❄️' },
+                { date: '13.01', day: 'Вт', temp: '-17°C', desc: 'Пасмурно', icon: '☁️' },
+                { date: '14.01', day: 'Ср', temp: '-11°C', desc: 'Небольшой снег', icon: '❄️' },
+                { date: '15.01', day: 'Чт', temp: '-9°C', desc: 'Небольшой снег', icon: '❄️' }
+            ];
+            
+            const forecastContainer = document.getElementById('forecast');
+            forecastContainer.innerHTML = '';
+            
+            testForecastData.forEach((forecast, index) => {
+                const forecastDay = document.createElement('div');
+                forecastDay.className = 'forecast-day';
+                forecastDay.style.setProperty('--day-index', index);
+                forecastDay.innerHTML = `
+                    <div class="forecast-date">${forecast.date}</div>
+                    <div class="forecast-day-name">${forecast.day}</div>
+                    <div class="forecast-icon">${forecast.icon}</div>
+                    <div class="forecast-temp">${forecast.temp}</div>
+                    <div class="forecast-desc">${forecast.desc}</div>
+                `;
+                forecastContainer.appendChild(forecastDay);
             });
-            
-            document.getElementById(pageId + '-page').classList.add('active');
-            
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-            });
-            
-            document.querySelector(`.nav-link[onclick="showPage('${pageId}')"]`).classList.add('active');
-            
-            if (pageId === 'home') {
-                const lastCity = getLastCity() || 'Москва';
-                getWeather(lastCity);
-            }
-            
-            return false;
         }
         
-        // Система сохранения данных
+        // === СИСТЕМА ПОЛЬЗОВАТЕЛЕЙ ===
+        
+        function loadUser() {
+            const userData = localStorage.getItem(STORAGE_KEYS.USER);
+            if (userData) {
+                currentUser = JSON.parse(userData);
+            } else {
+                // Создаем гостевого пользователя
+                currentUser = {
+                    id: 'guest',
+                    name: 'Гость',
+                    email: '',
+                    avatar: null,
+                    defaultCity: 'Москва',
+                    registrationDate: new Date().toISOString(),
+                    bio: ''
+                };
+            }
+        }
+        
+        function saveUser() {
+            localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(currentUser));
+        }
+        
+        function updateUI() {
+            // Обновляем профиль в навигации
+            if (currentUser.avatar) {
+                userAvatar.innerHTML = '';
+                userAvatar.style.backgroundImage = `url(${currentUser.avatar})`;
+                userAvatar.style.backgroundSize = 'cover';
+            } else {
+                userAvatar.innerHTML = currentUser.name.charAt(0);
+                userAvatar.style.backgroundImage = 'none';
+            }
+            userName.textContent = currentUser.name;
+            
+            // Обновляем профиль на странице профиля
+            document.getElementById('profileName').value = currentUser.name;
+            document.getElementById('profileEmail').value = currentUser.email;
+            document.getElementById('profileCity').value = currentUser.defaultCity;
+            document.getElementById('profileDate').value = new Date(currentUser.registrationDate).toLocaleDateString('ru-RU');
+            document.getElementById('profileBio').value = currentUser.bio || '';
+            
+            // Обновляем аватар на странице профиля
+            const avatarPreview = document.getElementById('avatarPreview');
+            if (currentUser.avatar) {
+                avatarPreview.src = currentUser.avatar;
+            } else {
+                avatarPreview.src = '';
+                avatarPreview.style.background = 'linear-gradient(135deg, #3b82f6, #1e40af)';
+                avatarPreview.style.display = 'flex';
+                avatarPreview.style.alignItems = 'center';
+                avatarPreview.style.justifyContent = 'center';
+                avatarPreview.style.fontSize = '48px';
+                avatarPreview.style.color = 'white';
+                avatarPreview.style.fontWeight = 'bold';
+                avatarPreview.textContent = currentUser.name.charAt(0);
+            }
+        }
+        
+        // === АВТОРИЗАЦИЯ И РЕГИСТРАЦИЯ ===
+        
+        function switchAuthForm(form) {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const switches = document.querySelectorAll('#authSwitcher .page-switch');
+            
+            if (form === 'login') {
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
+                switches[0].classList.add('active');
+                switches[1].classList.remove('active');
+            } else {
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'block';
+                switches[0].classList.remove('active');
+                switches[1].classList.add('active');
+            }
+        }
+        
+        function initAuthSwitcher() {
+            // Если пользователь не авторизован и пытаемся открыть защищенные страницы
+            if ((pageId === 'profile' || pageId === 'settings') && currentUser.id === 'guest') {
+                showPage('auth');
+                showNotification('Для доступа к этой странице войдите в аккаунт', true);
+                return;
+            }
+        }
+        
+        function login() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            
+            if (!email || !password) {
+                showNotification('Заполните все поля', true);
+                return;
+            }
+            
+            // В реальном приложении здесь была бы проверка с сервером
+            // Для демо просто создаем пользователя
+            currentUser = {
+                id: 'user_' + Date.now(),
+                name: email.split('@')[0],
+                email: email,
+                avatar: null,
+                defaultCity: 'Москва',
+                registrationDate: new Date().toISOString(),
+                bio: 'Новый пользователь Weather Pro'
+            };
+            
+            saveUser();
+            updateUI();
+            showPage('home');
+            showNotification('Вход выполнен успешно!');
+            loadWeather();
+        }
+        
+        function register() {
+            const name = document.getElementById('registerName').value.trim();
+            const email = document.getElementById('registerEmail').value.trim();
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+            
+            if (!name || !email || !password) {
+                showNotification('Заполните все поля', true);
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showNotification('Пароли не совпадают', true);
+                return;
+            }
+            
+            if (password.length < 6) {
+                showNotification('Пароль должен быть не менее 6 символов', true);
+                return;
+            }
+            
+            // В реальном приложении здесь была бы регистрация на сервере
+            currentUser = {
+                id: 'user_' + Date.now(),
+                name: name,
+                email: email,
+                avatar: null,
+                defaultCity: 'Москва',
+                registrationDate: new Date().toISOString(),
+                bio: 'Новый пользователь Weather Pro'
+            };
+            
+            saveUser();
+            updateUI();
+            showPage('home');
+            showNotification('Регистрация успешна! Добро пожаловать в Weather Pro!');
+            loadWeather();
+        }
+        
+        function logout() {
+            if (confirm('Вы уверены, что хотите выйти?')) {
+                currentUser = {
+                    id: 'guest',
+                    name: 'Гость',
+                    email: '',
+                    avatar: null,
+                    defaultCity: 'Москва',
+                    registrationDate: new Date().toISOString(),
+                    bio: ''
+                };
+                
+                saveUser();
+                updateUI();
+                showPage('auth');
+                showNotification('Вы вышли из аккаунта');
+                toggleUserMenu();
+            }
+        }
+        
+        // === УПРАВЛЕНИЕ ПРОФИЛЕМ ===
+        
+        function saveProfile() {
+            const name = document.getElementById('profileName').value.trim();
+            const email = document.getElementById('profileEmail').value.trim();
+            const city = document.getElementById('profileCity').value.trim();
+            const bio = document.getElementById('profileBio').value.trim();
+            
+            if (!name) {
+                showNotification('Введите имя', true);
+                return;
+            }
+            
+            if (!email || !email.includes('@')) {
+                showNotification('Введите корректный email', true);
+                return;
+            }
+            
+            currentUser.name = name;
+            currentUser.email = email;
+            currentUser.defaultCity = city;
+            currentUser.bio = bio;
+            
+            saveUser();
+            updateUI();
+            showNotification('Профиль успешно сохранен!');
+        }
+        
+        function changeAvatar() {
+            const modal = document.getElementById('avatarModal');
+            const optionsContainer = document.getElementById('avatarOptions');
+            
+            // Генерируем варианты аватаров
+            const avatars = [
+                '👤', '👨', '👩', '🧑', '👨‍💼', '👩‍💼', '👨‍🔬', '👩‍🔬',
+                '😊', '😎', '🤓', '🥳', '😍', '🤩', '😇', '🤠'
+            ];
+            
+            optionsContainer.innerHTML = '';
+            avatars.forEach(avatar => {
+                const option = document.createElement('div');
+                option.className = 'avatar-option';
+                option.innerHTML = `
+                    <div style="width: 80px; height: 80px; border-radius: 15px; background: linear-gradient(135deg, #3b82f6, #1e40af); 
+                         display: flex; align-items: center; justify-content: center; font-size: 40px; cursor: pointer;
+                         transition: transform 0.3s; border: 3px solid transparent;">
+                        ${avatar}
+                    </div>
+                `;
+                option.onclick = (e) => {
+                    const options = document.querySelectorAll('.avatar-option div');
+                    options.forEach(opt => {
+                        opt.style.borderColor = 'transparent';
+                    });
+                    e.currentTarget.style.borderColor = 'var(--accent)';
+                    
+                    // Сохраняем выбранный аватар
+                    currentUser.avatar = null; // Сбрасываем загруженную аватарку
+                    currentUser.avatarEmoji = avatar;
+                };
+                optionsContainer.appendChild(option);
+            });
+            
+            modal.classList.add('show');
+        }
+        
+        function saveAvatar() {
+            const customInput = document.getElementById('customAvatarInput');
+            
+            if (customInput.files && customInput.files[0]) {
+                const file = customInput.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    currentUser.avatar = e.target.result;
+                    currentUser.avatarEmoji = null;
+                    saveUser();
+                    updateUI();
+                    closeAvatarModal();
+                    showNotification('Аватар успешно загружен!');
+                };
+                
+                reader.readAsDataURL(file);
+            } else {
+                if (currentUser.avatarEmoji) {
+                    saveUser();
+                    updateUI();
+                    closeAvatarModal();
+                    showNotification('Аватар успешно изменен!');
+                } else {
+                    showNotification('Выберите аватар', true);
+                }
+            }
+        }
+        
+        function closeAvatarModal() {
+            document.getElementById('avatarModal').classList.remove('show');
+        }
+        
+        // === НАСТРОЙКИ ===
+        
+        function loadSettings() {
+            const savedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+            if (savedSettings) {
+                settings = JSON.parse(savedSettings);
+            } else {
+                // Настройки по умолчанию
+                settings = {
+                    darkTheme: true,
+                    animations: true,
+                    units: 'metric',
+                    autoLocation: true,
+                    weatherNotifications: false,
+                    browserNotifications: false,
+                    soundNotifications: false,
+                    saveHistory: true,
+                    autoSave: true
+                };
+            }
+            
+            // Применяем настройки к элементам
+            document.getElementById('darkTheme').checked = settings.darkTheme;
+            document.getElementById('animations').checked = settings.animations;
+            document.getElementById('unitsSelect').value = settings.units;
+            document.getElementById('autoLocation').checked = settings.autoLocation;
+            document.getElementById('weatherNotifications').checked = settings.weatherNotifications;
+            document.getElementById('browserNotifications').checked = settings.browserNotifications;
+            document.getElementById('soundNotifications').checked = settings.soundNotifications;
+            document.getElementById('saveHistory').checked = settings.saveHistory;
+            document.getElementById('autoSave').checked = settings.autoSave;
+            
+            // Применяем тему
+            if (settings.darkTheme) {
+                document.body.style.setProperty('--primary', '#0a0e17');
+                document.body.style.setProperty('--secondary', '#1a2332');
+            } else {
+                document.body.style.setProperty('--primary', '#f8fafc');
+                document.body.style.setProperty('--secondary', '#e2e8f0');
+            }
+        }
+        
+        function saveSettings() {
+            settings = {
+                darkTheme: document.getElementById('darkTheme').checked,
+                animations: document.getElementById('animations').checked,
+                units: document.getElementById('unitsSelect').value,
+                autoLocation: document.getElementById('autoLocation').checked,
+                weatherNotifications: document.getElementById('weatherNotifications').checked,
+                browserNotifications: document.getElementById('browserNotifications').checked,
+                soundNotifications: document.getElementById('soundNotifications').checked,
+                saveHistory: document.getElementById('saveHistory').checked,
+                autoSave: document.getElementById('autoSave').checked
+            };
+            
+            localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
+            
+            // Применяем изменения
+            if (settings.darkTheme) {
+                document.body.style.setProperty('--primary', '#0a0e17');
+                document.body.style.setProperty('--secondary', '#1a2332');
+            } else {
+                document.body.style.setProperty('--primary', '#f8fafc');
+                document.body.style.setProperty('--secondary', '#e2e8f0');
+            }
+            
+            // Перезагружаем погоду с новыми единицами измерения
+            const currentCity = document.getElementById('locationName').textContent.split(',')[0];
+            getWeather(currentCity);
+            
+            showNotification('Настройки успешно сохранены!');
+        }
+        
+        function resetSettings() {
+            if (confirm('Вы уверены, что хотите сбросить все настройки к значениям по умолчанию?')) {
+                localStorage.removeItem(STORAGE_KEYS.SETTINGS);
+                loadSettings();
+                showNotification('Настройки сброшены к значениям по умолчанию');
+            }
+        }
+        
+        // === СИСТЕМА ПОИСКА И СОХРАНЕНИЯ ===
+        
         function saveLastCity(city) {
             if (city && city.trim()) {
                 localStorage.setItem(STORAGE_KEYS.LAST_CITY, city.trim());
@@ -1752,6 +3095,7 @@
         }
         
         function addToSearchHistory(city) {
+            if (!settings.saveHistory) return;
             if (!city || city.trim() === '') return;
             
             const cityName = city.trim();
@@ -1780,7 +3124,7 @@
             const historyGrid = document.getElementById('historyGrid');
             const searchHistory = document.getElementById('searchHistory');
             
-            if (history.length > 0) {
+            if (history.length > 0 && settings.saveHistory) {
                 searchHistory.classList.add('visible');
                 historyGrid.innerHTML = '';
                 
@@ -1806,7 +3150,8 @@
             showNotification('История поиска очищена');
         }
         
-        // Избранные города
+        // === ИЗБРАННЫЕ ГОРОДА ===
+        
         function getFavorites() {
             const favorites = localStorage.getItem(STORAGE_KEYS.FAVORITES);
             return favorites ? JSON.parse(favorites) : [];
@@ -1861,38 +3206,33 @@
             }
         }
         
-        // Индикатор сохранения
-        function showSaveIndicator() {
-            saveIndicator.classList.add('show');
-            setTimeout(() => {
-                saveIndicator.classList.remove('show');
-            }, 2000);
+        // === ПОГОДА ===
+        
+        function loadWeather() {
+            let cityToLoad = 'Москва';
+            
+            if (currentUser && currentUser.defaultCity) {
+                cityToLoad = currentUser.defaultCity;
+            }
+            
+            const lastCity = getLastCity();
+            if (lastCity) {
+                cityToLoad = lastCity;
+            }
+            
+            cityInput.value = cityToLoad;
+            getWeather(cityToLoad);
         }
         
-        // Поиск погоды
-        searchBtn.addEventListener('click', function() {
-            const city = cityInput.value.trim();
-            if (city) {
-                getWeather(city);
-                addToSearchHistory(city);
-                saveLastCity(city);
-                showNotification(`Поиск погоды для: ${city}`);
-            }
-        });
-        
-        cityInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                searchBtn.click();
-            }
-        });
-        
-        // Получение данных о погоде
         async function getWeather(city) {
+            if (!city || city.trim() === '') return;
+            
             showLoading(true);
             
             try {
+                const units = settings.units || 'metric';
                 const weatherResponse = await fetch(
-                    `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${weatherApiKey}&units=metric&lang=ru`
+                    `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${weatherApiKey}&units=${units}&lang=ru`
                 );
                 const weatherData = await weatherResponse.json();
                 
@@ -1900,35 +3240,43 @@
                     updateCurrentWeather(weatherData);
                     
                     const forecastResponse = await fetch(
-                        `https://api.openweathermap.org/data/2.5/forecast?lat=${weatherData.coord.lat}&lon=${weatherData.coord.lon}&appid=${weatherApiKey}&units=metric&lang=ru`
+                        `https://api.openweathermap.org/data/2.5/forecast?lat=${weatherData.coord.lat}&lon=${weatherData.coord.lon}&appid=${weatherApiKey}&units=${units}&lang=ru`
                     );
                     const forecastData = await forecastResponse.json();
                     
                     if (forecastData.cod === "200") {
                         updateForecast(forecastData);
+                    } else {
+                        // Если API не работает, показываем тестовые данные
+                        loadTestForecast();
                     }
                     
                     updateFavoriteButton();
                     showNotification(`Погода для ${weatherData.name} загружена!`);
+                    
+                    // Сохраняем город
+                    saveLastCity(city);
+                    addToSearchHistory(city);
                 } else {
                     throw new Error('Город не найден');
                 }
             } catch (error) {
                 console.error('Ошибка:', error);
                 showNotification('Ошибка: город не найден или проблемы с соединением', true);
+                // Показываем тестовые данные при ошибке
+                loadTestForecast();
             } finally {
                 showLoading(false);
             }
         }
         
-        // Обновление текущей погоды
         function updateCurrentWeather(data) {
             document.getElementById('locationName').textContent = `${data.name}, ${data.sys.country}`;
             document.getElementById('temperature').textContent = Math.round(data.main.temp);
             document.getElementById('weatherDescription').textContent = data.weather[0].description;
             document.getElementById('weatherIcon').textContent = getWeatherEmoji(data.weather[0].main, data.weather[0].description);
-            document.getElementById('feelsLike').textContent = `${Math.round(data.main.feels_like)}°C`;
-            document.getElementById('windSpeed').textContent = `${data.wind.speed} м/с`;
+            document.getElementById('feelsLike').textContent = `${Math.round(data.main.feels_like)}°${settings.units === 'metric' ? 'C' : 'F'}`;
+            document.getElementById('windSpeed').textContent = `${data.wind.speed} ${settings.units === 'metric' ? 'м/с' : 'mph'}`;
             document.getElementById('humidity').textContent = `${data.main.humidity}%`;
             document.getElementById('pressure').textContent = `${data.main.pressure} гПа`;
             
@@ -1936,7 +3284,6 @@
             document.getElementById('lastUpdate').textContent = `Обновлено: ${formatTime(now)}`;
         }
         
-        // Обновление прогноза
         function updateForecast(data) {
             const forecastContainer = document.getElementById('forecast');
             forecastContainer.innerHTML = '';
@@ -1961,12 +3308,182 @@
                     <div class="forecast-date">${dateStr}</div>
                     <div class="forecast-day-name">${dayName}</div>
                     <div class="forecast-icon">${icon}</div>
-                    <div class="forecast-temp">${temp}°C</div>
+                    <div class="forecast-temp">${temp}°${settings.units === 'metric' ? 'C' : 'F'}</div>
                     <div class="forecast-desc">${description}</div>
                 `;
                 
                 forecastContainer.appendChild(forecastDay);
             });
+        }
+        
+        // === ГЕОЛОКАЦИЯ ===
+        
+        function getLocation() {
+            if (!navigator.geolocation) {
+                showNotification('Геолокация не поддерживается вашим браузером', true);
+                return;
+            }
+            
+            showNotification('Определяем ваше местоположение...');
+            
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    try {
+                        const { latitude, longitude } = position.coords;
+                        
+                        // Получаем город по координатам
+                        const response = await fetch(
+                            `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=${weatherApiKey}`
+                        );
+                        const data = await response.json();
+                        
+                        if (data && data.length > 0) {
+                            const city = data[0].name;
+                            cityInput.value = city;
+                            getWeather(city);
+                            showNotification(`Определено местоположение: ${city}`);
+                        } else {
+                            throw new Error('Город не найден по координатам');
+                        }
+                    } catch (error) {
+                        showNotification('Не удалось определить город по координатам', true);
+                    }
+                },
+                (error) => {
+                    showNotification('Не удалось получить местоположение. Проверьте разрешения.', true);
+                }
+            );
+        }
+        
+        // === ПОДЕЛИТЬСЯ ===
+        
+        function shareWeather() {
+            const city = document.getElementById('locationName').textContent;
+            const temp = document.getElementById('temperature').textContent;
+            const desc = document.getElementById('weatherDescription').textContent;
+            
+            const text = `🌤️ Погода в ${city}: ${temp}°C, ${desc}. Узнай погоду на Weather Pro!`;
+            const url = window.location.href;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Погода в ' + city,
+                    text: text,
+                    url: url
+                });
+            } else {
+                // Копируем в буфер обмена
+                navigator.clipboard.writeText(text + '\n' + url)
+                    .then(() => showNotification('Скопировано в буфер обмена! Поделитесь с друзьями!'))
+                    .catch(() => {
+                        // Fallback для старых браузеров
+                        const textArea = document.createElement('textarea');
+                        textArea.value = text + '\n' + url;
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                        showNotification('Скопировано в буфер обмена! Поделитесь с друзьями!');
+                    });
+            }
+        }
+        
+        function shareProfile() {
+            const name = currentUser.name;
+            const city = currentUser.defaultCity || 'не указан';
+            const bio = currentUser.bio || 'Пользователь Weather Pro';
+            
+            const text = `👤 ${name} - профиль в Weather Pro\n🌍 Город: ${city}\n📝 О себе: ${bio}\nПрисоединяйся к Weather Pro!`;
+            const url = window.location.href;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Профиль ' + name,
+                    text: text,
+                    url: url
+                });
+            } else {
+                navigator.clipboard.writeText(text + '\n' + url)
+                    .then(() => showNotification('Профиль скопирован в буфер обмена!'))
+                    .catch(() => {
+                        const textArea = document.createElement('textarea');
+                        textArea.value = text + '\n' + url;
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                        showNotification('Профиль скопирован в буфер обмена!');
+                    });
+            }
+        }
+        
+        // === ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ===
+        
+        function showPage(pageId) {
+            // Если не авторизован и пытаемся открыть защищенные страницы
+            if ((pageId === 'profile' || pageId === 'settings') && currentUser.id === 'guest') {
+                showPage('auth');
+                showNotification('Для доступа к этой странице войдите в аккаунт', true);
+                return;
+            }
+            
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            document.getElementById(pageId + '-page').classList.add('active');
+            
+            // Обновляем активную ссылку в навигации
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            const navLink = document.querySelector(`.nav-link[onclick="showPage('${pageId}')"]`);
+            if (navLink) {
+                navLink.classList.add('active');
+            }
+            
+            // Если открываем главную, загружаем погоду
+            if (pageId === 'home') {
+                loadWeather();
+            }
+            
+            // Закрываем меню пользователя
+            userMenu.classList.remove('show');
+        }
+        
+        function toggleUserMenu() {
+            userMenu.classList.toggle('show');
+        }
+        
+        // Закрытие меню при клике вне его
+        document.addEventListener('click', function(event) {
+            if (!userProfile.contains(event.target) && !userMenu.contains(event.target)) {
+                userMenu.classList.remove('show');
+            }
+        });
+        
+        // Поиск погоды
+        searchBtn.addEventListener('click', function() {
+            const city = cityInput.value.trim();
+            if (city) {
+                getWeather(city);
+                showNotification(`Поиск погоды для: ${city}`);
+            }
+        });
+        
+        cityInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchBtn.click();
+            }
+        });
+        
+        // Индикатор сохранения
+        function showSaveIndicator() {
+            saveIndicator.classList.add('show');
+            setTimeout(() => {
+                saveIndicator.classList.remove('show');
+            }, 2000);
         }
         
         // Обновление времени
@@ -2053,16 +3570,6 @@
             const hours = date.getHours().toString().padStart(2, '0');
             const minutes = date.getMinutes().toString().padStart(2, '0');
             return `${hours}:${minutes}`;
-        }
-        
-        // Загрузка сохраненных данных
-        function loadSavedData() {
-            const lastCity = getLastCity();
-            if (lastCity) {
-                cityInput.value = lastCity;
-            }
-            
-            loadSearchHistory();
         }
     </script>
 </body>
