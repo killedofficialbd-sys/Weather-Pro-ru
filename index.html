@@ -251,7 +251,7 @@
             transform: translateX(5px);
         }
 
-        /* ЛОГОТИП С ЭФФЕКТОМ */
+        /* ЛОГОТИП С ЭФФЕКТОМ - ИСПРАВЛЕННЫЙ */
         .logo {
             display: inline-flex;
             align-items: center;
@@ -259,6 +259,7 @@
             text-decoration: none;
             position: relative;
             padding: 10px;
+            flex-shrink: 0;
         }
 
         .logo-icon {
@@ -274,6 +275,7 @@
             position: relative;
             overflow: hidden;
             transition: transform 0.3s ease;
+            flex-shrink: 0;
         }
 
         .logo-icon::before {
@@ -309,6 +311,9 @@
             color: transparent;
             background-size: 200% auto;
             animation: gradient 3s ease infinite;
+            white-space: nowrap;
+            line-height: 1.2;
+            display: block;
         }
 
         @keyframes gradient {
@@ -828,11 +833,16 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
         }
 
         .location i {
             color: var(--accent);
             font-size: 22px;
+            flex-shrink: 0;
         }
 
         .location-time {
@@ -841,6 +851,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            flex-wrap: wrap;
         }
 
         .last-update {
@@ -850,6 +861,7 @@
             font-size: 14px;
             color: var(--accent-light);
             border: 1px solid rgba(59, 130, 246, 0.2);
+            white-space: nowrap;
         }
 
         /* КНОПКА ПОДЕЛИТЬСЯ */
@@ -858,6 +870,7 @@
             gap: 10px;
             margin-top: 20px;
             justify-content: center;
+            flex-wrap: wrap;
         }
 
         .share-btn {
@@ -875,6 +888,7 @@
             font-weight: 500;
             position: relative;
             overflow: hidden;
+            white-space: nowrap;
         }
 
         .share-btn::before {
@@ -905,6 +919,7 @@
             align-items: center;
             gap: 25px;
             margin-bottom: 35px;
+            flex-wrap: wrap;
         }
 
         .temp-icon {
@@ -916,6 +931,7 @@
             justify-content: center;
             filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
             animation: float 3s ease-in-out infinite;
+            flex-shrink: 0;
         }
 
         @keyframes float {
@@ -1005,17 +1021,24 @@
 
         .detail-content {
             flex: 1;
+            min-width: 0;
         }
 
         .detail-label {
             font-size: 14px;
             color: var(--text-secondary);
             margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .detail-value {
             font-size: 22px;
             font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         /* ПРОГНОЗ - ИСПРАВЛЕННЫЕ СТИЛИ */
@@ -1129,6 +1152,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            word-break: break-word;
         }
 
         /* ПРОФИЛЬ */
@@ -1309,6 +1333,7 @@
             color: transparent;
             background-size: 200% auto;
             animation: gradient 3s ease infinite;
+            line-height: 1.2;
         }
 
         .about-subtitle {
@@ -1792,13 +1817,14 @@
             
             .nav-left, .nav-right {
                 flex-direction: column;
-                gap: 20px;
+                gap: 15px;
                 width: 100%;
             }
             
             .nav-links {
                 width: 100%;
                 justify-content: center;
+                flex-wrap: wrap;
             }
             
             .user-profile {
@@ -1861,6 +1887,7 @@
             .nav-link {
                 justify-content: center;
                 text-align: center;
+                padding: 12px 15px;
             }
             
             .nav-link span {
@@ -1894,6 +1921,7 @@
             .search-btn {
                 width: 100%;
                 justify-content: center;
+                padding: 18px 24px;
             }
             
             .cities-grid {
@@ -1915,6 +1943,7 @@
             
             .about-title {
                 font-size: 26px;
+                padding: 0 10px;
             }
             
             .tech-stack {
@@ -1924,6 +1953,7 @@
             .notification {
                 min-width: auto;
                 width: calc(100% - 50px);
+                padding: 15px 20px;
             }
             
             .modal-content {
@@ -1941,6 +1971,24 @@
             .settings-btn {
                 width: 100%;
             }
+            
+            .weather-description {
+                font-size: 18px;
+            }
+            
+            .logo {
+                gap: 10px;
+            }
+            
+            .logo-text {
+                font-size: 24px;
+            }
+            
+            .logo-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1954,6 +2002,8 @@
             
             .temp-icon {
                 font-size: 50px;
+                width: 70px;
+                height: 70px;
             }
             
             .detail-item {
@@ -1992,6 +2042,186 @@
             .avatar-preview {
                 width: 100px;
                 height: 100px;
+            }
+            
+            .card-title {
+                font-size: 22px;
+                gap: 10px;
+            }
+            
+            .card-title i {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+            
+            .current-temp {
+                gap: 15px;
+            }
+            
+            .weather-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .location {
+                flex-wrap: wrap;
+            }
+            
+            .location-name {
+                font-size: 22px;
+            }
+            
+            .location-time {
+                font-size: 14px;
+            }
+            
+            .last-update {
+                font-size: 12px;
+                padding: 6px 12px;
+                align-self: flex-start;
+            }
+            
+            .about-subtitle {
+                font-size: 16px;
+                padding: 0 10px;
+            }
+            
+            .about-content {
+                padding: 20px;
+            }
+            
+            .section-title {
+                font-size: 20px;
+                padding-left: 15px;
+            }
+            
+            .section-title i {
+                width: 35px;
+                height: 35px;
+                font-size: 18px;
+            }
+            
+            .about-text {
+                font-size: 14px;
+            }
+            
+            .about-text.highlight {
+                font-size: 16px;
+                padding: 15px;
+            }
+            
+            .contact-info {
+                padding: 20px;
+            }
+            
+            .contact-title {
+                font-size: 18px;
+            }
+            
+            .logo-text {
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .logo-text {
+                font-size: 18px;
+            }
+            
+            .logo-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 18px;
+            }
+            
+            .location-name {
+                font-size: 20px;
+            }
+            
+            .temp-value {
+                font-size: 50px;
+            }
+            
+            .temp-icon {
+                font-size: 40px;
+                width: 60px;
+                height: 60px;
+            }
+            
+            .cities-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .forecast-day {
+                min-height: 160px;
+            }
+            
+            .forecast-temp {
+                font-size: 20px;
+            }
+            
+            .nav-link {
+                padding: 12px;
+            }
+            
+            .nav-link i {
+                font-size: 18px;
+            }
+        }
+
+        /* Специальные исправления для очень маленьких экранов */
+        @media (max-width: 320px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .logo-text {
+                font-size: 16px;
+            }
+            
+            .logo {
+                gap: 8px;
+            }
+            
+            .logo-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
+            
+            .card-title {
+                font-size: 20px;
+            }
+            
+            .temp-value {
+                font-size: 45px;
+            }
+            
+            .detail-item {
+                padding: 15px;
+                gap: 12px;
+            }
+            
+            .detail-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+            
+            .detail-value {
+                font-size: 18px;
+            }
+            
+            .search-input, .form-input {
+                padding: 15px 18px;
+                font-size: 14px;
+            }
+            
+            .btn, .search-btn, .settings-btn {
+                padding: 14px 24px;
+                font-size: 14px;
             }
         }
     </style>
