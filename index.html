@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Weather Pro — Diamond SVG Edition</title>
+<title>Weather Pro 4.3 — Social Edition + Firebase</title>
 <meta name="theme-color" content="#3b82f6">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<meta name="description" content="Точный прогноз погоды, графики, карта осадков, архив, Weather AI">
+<meta name="description" content="Точный прогноз погоды, графики, карта осадков, архив, Weather AI, облачная синхронизация">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%231e40af'/%3E%3Cstop offset='1' stop-color='%2360a5fa'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='116' fill='%230a0e17'/%3E%3Crect x='26' y='26' width='460' height='460' rx='94' fill='url(%23g)'/%3E%3Cg fill='none' stroke='%23fff' stroke-width='17' stroke-linecap='round'%3E%3Ccircle cx='196' cy='186' r='52'/%3E%3Cpath d='M196 92v26M196 254v26M102 186h26M264 186h26'/%3E%3C/g%3E%3Cpath d='M356 396H236a58 58 0 0 1-9-115 78 78 0 0 1 150 17 52 52 0 0 1-21 98z' fill='%23fff'/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -15,6 +15,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<!-- Firebase SDK (app, auth, firestore) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <style>
 :root{
   --primary:#0a0e17;--secondary:#1a2332;--accent:#3b82f6;--accent-light:#60a5fa;
@@ -35,7 +39,7 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--pri
   background-image:var(--theme-gradient),radial-gradient(circle at 10% 20%,rgba(30,64,175,.25) 0,transparent 30%),radial-gradient(circle at 90% 80%,rgba(59,130,246,.18) 0,transparent 30%);
   position:relative;overflow-x:hidden;transition:background .8s ease;overscroll-behavior-y:none}
 body::before{content:'';position:fixed;inset:0;background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.008) 0,rgba(255,255,255,.008) 1px,transparent 1px,transparent 30px),repeating-linear-gradient(-45deg,rgba(255,255,255,.008) 0,rgba(255,255,255,.008) 1px,transparent 1px,transparent 30px);pointer-events:none;z-index:0}
-body.compact .search-card,body.compact .current-weather-card,body.compact .forecast-card,body.compact .auth-card,body.compact .profile-card,body.compact .settings-card,body.compact .chart-card,body.compact .map-card,body.compact .favorites-card,body.compact .stats-card,body.compact .widget-card,body.compact .ai-card,body.compact .compare-card,body.compact .history-card,body.compact .alerts-card{padding:18px 22px;margin-bottom:14px}
+body.compact .search-card,body.compact .current-weather-card,body.compact .forecast-card,body.compact .auth-card,body.compact .profile-card,body.compact .settings-card,body.compact .chart-card,body.compact .map-card,body.compact .favorites-card,body.compact .stats-card,body.compact .widget-card,body.compact .ai-card,body.compact .compare-card,body.compact .history-card,body.compact .alerts-card,body.compact .people-card{padding:18px 22px;margin-bottom:14px}
 body.compact .card-title{margin-bottom:16px;font-size:19px}
 body.compact .weather-details{gap:10px}
 body.compact .detail-item{padding:12px 16px}
@@ -75,7 +79,7 @@ svg.icon.fill{fill:currentColor;stroke:none}
 
 .user-profile{display:flex;align-items:center;gap:10px;cursor:pointer;padding:6px 14px 6px 10px;border-radius:16px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.12);transition:.3s;position:relative}
 .user-profile:hover{background:rgba(59,130,246,.16);transform:translateY(-2px);box-shadow:0 8px 25px rgba(59,130,246,.15)}
-.user-avatar{width:34px;height:34px;border-radius:12px;object-fit:cover;border:2px solid var(--accent);background:linear-gradient(135deg,#3b82f6,#1e40af);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;flex-shrink:0;font-size:16px;background-size:cover;background-position:center}
+.user-avatar{width:34px;height:34px;border-radius:12px;object-fit:cover;border:2px solid var(--accent);background:linear-gradient(135deg,#3b82f6,#1e40af);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;flex-shrink:0;font-size:16px;background-size:cover;background-position:center;overflow:hidden}
 .user-name{font-weight:600;color:var(--accent-light);font-size:14px;max-width:110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .user-menu{position:absolute;top:calc(100% + 10px);right:0;background:rgba(15,23,42,.98);backdrop-filter:blur(24px);border:1px solid var(--glass-border);border-radius:16px;padding:8px;min-width:210px;display:none;z-index:1001;box-shadow:0 20px 60px rgba(0,0,0,.85)}
 .user-menu.show{display:block;animation:fadeIn .25s}
@@ -92,7 +96,7 @@ svg.icon.fill{fill:currentColor;stroke:none}
 .page.active{display:block;animation:fadeIn .3s ease-out}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
-.search-card,.current-weather-card,.forecast-card,.auth-card,.profile-card,.settings-card,.chart-card,.map-card,.favorites-card,.stats-card,.widget-card,.ai-card,.compare-card,.history-card,.alerts-card{background:var(--glass-bg);backdrop-filter:blur(24px);border-radius:var(--radius);padding:28px 32px;box-shadow:var(--shadow);border:1px solid var(--glass-border);position:relative;overflow:hidden;transition:transform .35s cubic-bezier(.34,1.56,.64,1),box-shadow .35s;max-width:100%;margin:0 auto 24px}
+.search-card,.current-weather-card,.forecast-card,.auth-card,.profile-card,.settings-card,.chart-card,.map-card,.favorites-card,.stats-card,.widget-card,.ai-card,.compare-card,.history-card,.alerts-card,.people-card{background:var(--glass-bg);backdrop-filter:blur(24px);border-radius:var(--radius);padding:28px 32px;box-shadow:var(--shadow);border:1px solid var(--glass-border);position:relative;overflow:hidden;transition:transform .35s cubic-bezier(.34,1.56,.64,1),box-shadow .35s;max-width:100%;margin:0 auto 24px}
 .search-card::after,.current-weather-card::after,.forecast-card::after,.chart-card::after,.map-card::after,.favorites-card::after,.stats-card::after,.widget-card::after,.ai-card::after,.compare-card::after,.history-card::after{content:'';position:absolute;inset:0;background:var(--diamond);pointer-events:none;opacity:.6;clip-path:polygon(0 6px,6px 0,calc(100% - 6px) 0,100% 6px,100% calc(100% - 6px),calc(100% - 6px) 100%,6px 100%,0 calc(100% - 6px))}
 .card-title{display:flex;align-items:center;gap:14px;margin-bottom:24px;font-size:22px;font-weight:700;position:relative;padding-bottom:12px;letter-spacing:-.3px;z-index:1}
 .card-title::after{content:'';position:absolute;bottom:0;left:0;width:50px;height:3px;background:var(--gradient);border-radius:4px}
@@ -165,6 +169,8 @@ input[type=file].form-input::file-selector-button{background:rgba(59,130,246,.15
 .day-night-badge{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:10px;font-size:12px;font-weight:600;background:rgba(245,158,11,.12);color:var(--warning);border:1px solid rgba(245,158,11,.2)}
 .day-night-badge.night{background:rgba(96,165,250,.12);color:var(--accent-light);border-color:rgba(96,165,250,.2)}
 .last-update{background:rgba(59,130,246,.08);padding:4px 14px;border-radius:10px;font-size:13px;color:var(--accent-light);border:1px solid rgba(59,130,246,.1);white-space:nowrap;font-weight:500}
+
+
 .current-temp{display:flex;align-items:center;gap:24px;margin-bottom:24px;flex-wrap:wrap;position:relative;z-index:1}
 .temp-icon-wrap{width:84px;height:84px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(59,130,246,.06);border-radius:24px;border:1px solid rgba(59,130,246,.08);font-size:44px;color:var(--accent-light);animation:float 4s ease-in-out infinite}
 .temp-icon-wrap svg{width:44px;height:44px}
@@ -212,9 +218,7 @@ input[type=file].form-input::file-selector-button{background:rgba(59,130,246,.15
 .aqi-item.alert-aqi .aqi-icon{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.3);animation:aqiPulse 1.6s ease-in-out infinite}
 .aqi-item.alert-aqi .aqi-icon svg{color:#ef4444}
 .aqi-item.alert-aqi .aqi-value{color:#ef4444}
-.aqi-item.alert-aqi .aqi-badge.unhealthy,.aqi-item.alert-aqi .aqi-badge.hazardous{background:rgba(239,68,68,.25);animation:badgePulse 1.6s ease-in-out infinite}
 @keyframes aqiPulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.4)}50%{box-shadow:0 0 0 10px rgba(239,68,68,0)}}
-@keyframes badgePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 
 .astro-item{grid-column:span 2;background:rgba(15,23,42,.3);border-radius:14px;padding:16px 20px;display:flex;align-items:center;gap:14px;border:1px solid rgba(255,255,255,.04);transition:.3s}
 .astro-item:hover{transform:translateY(-3px);border-color:rgba(59,130,246,.2);background:rgba(15,23,42,.45)}
@@ -233,8 +237,6 @@ input[type=file].form-input::file-selector-button{background:rgba(59,130,246,.15
 .favorite-btn{position:absolute;top:20px;right:20px;background:rgba(15,23,42,.4);border:1px solid rgba(255,255,255,.06);color:var(--text-secondary);width:38px;height:38px;border-radius:12px;cursor:pointer;transition:.3s;z-index:3;display:flex;align-items:center;justify-content:center;font-size:16px;backdrop-filter:blur(8px)}
 .favorite-btn:hover{color:var(--warning);border-color:var(--warning);background:rgba(245,158,11,.08);transform:scale(1.05)}
 .favorite-btn.active{color:var(--warning);border-color:var(--warning);background:rgba(245,158,11,.1)}
-.favorite-btn.active svg{animation:pulse .5s ease}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
 
 .gauges-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;position:relative;z-index:1}
 .gauge-card{background:rgba(15,23,42,.3);border-radius:16px;padding:18px;border:1px solid rgba(255,255,255,.04);display:flex;flex-direction:column;align-items:center;transition:.3s}
@@ -332,6 +334,7 @@ input[type=file].form-input::file-selector-button{background:rgba(59,130,246,.15
 .fav-city-icon svg{width:32px !important;height:32px !important}
 .fav-remove{background:none;border:none;color:var(--text-secondary);cursor:pointer;font-size:14px;transition:.3s;margin-top:8px;display:inline-flex;align-items:center;gap:6px;font-family:inherit}
 .fav-remove:hover{color:var(--danger)}
+
 
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:12px;position:relative;z-index:1}
 .stat-item{background:rgba(15,23,42,.3);border-radius:14px;padding:16px;text-align:center;border:1px solid rgba(255,255,255,.04);transition:.3s}
@@ -613,6 +616,16 @@ footer::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;b
 .image-gen-btn:hover{background:rgba(59,130,246,.1);border-color:var(--accent);transform:translateY(-2px)}
 .image-gen-btn svg{width:18px;height:18px;color:var(--accent-light)}
 
+/* ============ PEOPLE (Firebase) ============ */
+.people-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;position:relative;z-index:1}
+.person-card{background:rgba(15,23,42,.35);border:1px solid rgba(255,255,255,.04);border-radius:14px;padding:18px;text-align:center;transition:.3s}
+.person-card:hover{transform:translateY(-3px);border-color:var(--accent);background:rgba(15,23,42,.55)}
+.person-avatar{width:64px;height:64px;border-radius:18px;margin:0 auto 10px;background:linear-gradient(135deg,#3b82f6,#1e40af);display:flex;align-items:center;justify-content:center;color:#fff;background-size:cover;background-position:center;overflow:hidden;font-weight:700;font-size:22px}
+.person-name{font-weight:600;font-size:16px;margin-bottom:4px}
+.person-email{font-size:12px;color:var(--text-secondary);word-break:break-all}
+.person-empty{color:var(--text-secondary);text-align:center;padding:20px;grid-column:1/-1}
+
+/* ============ MEDIA QUERIES ============ */
 @media (max-width:992px){
   .stats-grid{grid-template-columns:repeat(2,1fr)}
   .chart-wrapper,.compare-grid{grid-template-columns:1fr}
@@ -625,16 +638,7 @@ footer::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;b
   .bottom-nav{display:block;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;background:rgba(10,14,23,.98)}
   body{padding-bottom:76px}
   .nav-left{flex-direction:column;gap:12px;width:100%}
-  .nav-links{
-    width:100%;
-    justify-content:flex-start;
-    flex-wrap:nowrap;
-    overflow-x:auto;
-    overflow-y:hidden;
-    -webkit-overflow-scrolling:touch;
-    scrollbar-width:none;
-    padding:4px;
-  }
+  .nav-links{width:100%;justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:4px}
   .nav-links::-webkit-scrollbar{display:none}
   .nav-link{padding:6px 12px;font-size:13px;flex-shrink:0}
   .user-profile{width:100%;justify-content:center}
@@ -644,7 +648,7 @@ footer::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;b
   .temp-value{font-size:54px}
   .temp-icon-wrap{width:72px;height:72px;font-size:36px}
   .temp-icon-wrap svg{width:36px;height:36px}
-  .search-card,.current-weather-card,.forecast-card,.auth-card,.profile-card,.settings-card,.chart-card,.map-card,.favorites-card,.stats-card,.widget-card,.ai-card,.compare-card,.history-card,.alerts-card{padding:20px 18px}
+  .search-card,.current-weather-card,.forecast-card,.auth-card,.profile-card,.settings-card,.chart-card,.map-card,.favorites-card,.stats-card,.widget-card,.ai-card,.compare-card,.history-card,.alerts-card,.people-card{padding:20px 18px}
   .cities-grid{grid-template-columns:repeat(2,1fr)}
   .modal-content{padding:24px 20px}
   .avatar-options{grid-template-columns:repeat(3,1fr)}
@@ -726,6 +730,113 @@ footer::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;b
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   .aqi-item.alert-aqi .aqi-icon,.aqi-item.alert-aqi .aqi-badge{animation:none}
 }
+
+
+/* ============ WEATHERPRO 4.0 — INTELLIGENCE & MOTION ============ */
+:root{--motion-fast:180ms;--motion-mid:360ms;--motion-slow:700ms}
+html{scroll-behavior:smooth}
+.page.active{animation:pageLift .42s cubic-bezier(.2,.75,.25,1)}
+@keyframes pageLift{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
+.search-card,.current-weather-card,.forecast-card,.chart-card,.map-card,.favorites-card,.stats-card,.widget-card,.ai-card,.compare-card,.history-card,.alerts-card,.people-card,.wp-intel-card{will-change:transform;transition:transform .32s ease,border-color .32s ease,box-shadow .32s ease}
+@media(hover:hover){.search-card:hover,.current-weather-card:hover,.forecast-card:hover,.chart-card:hover,.map-card:hover,.favorites-card:hover,.stats-card:hover,.widget-card:hover,.ai-card:hover,.compare-card:hover,.history-card:hover,.alerts-card:hover,.people-card:hover,.wp-intel-card:hover{border-color:rgba(96,165,250,.22);box-shadow:0 24px 70px rgba(0,0,0,.42),0 0 34px rgba(59,130,246,.08)}}
+.current-weather-card{isolation:isolate}
+.current-weather-card::before{content:'';position:absolute;inset:-30%;z-index:-1;pointer-events:none;opacity:0;transition:opacity .8s;background:radial-gradient(circle at 15% 15%,rgba(250,204,21,.13),transparent 34%),radial-gradient(circle at 90% 80%,rgba(56,189,248,.12),transparent 38%)}
+body.wp-clear .current-weather-card::before,body.wp-clouds .current-weather-card::before,body.wp-rain .current-weather-card::before,body.wp-snow .current-weather-card::before{opacity:1}
+body.wp-rain::after,body.wp-snow::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.22;background-image:repeating-linear-gradient(112deg,transparent 0 17px,rgba(147,197,253,.18) 18px,transparent 19px 34px);animation:wpWeatherDrift 1.1s linear infinite}
+body.wp-snow::after{opacity:.5;background-image:radial-gradient(circle,rgba(255,255,255,.7) 1px,transparent 2px),radial-gradient(circle,rgba(255,255,255,.55) 1px,transparent 2px);background-size:74px 74px,113px 113px;animation:wpSnowFall 13s linear infinite}
+body.wp-clear::after{content:'';position:fixed;width:42vw;height:42vw;max-width:560px;max-height:560px;right:-15vw;top:10vh;border-radius:50%;pointer-events:none;z-index:0;background:radial-gradient(circle,rgba(250,204,21,.07),transparent 68%);animation:wpSunPulse 7s ease-in-out infinite}
+@keyframes wpWeatherDrift{to{background-position:0 42px}}
+@keyframes wpSnowFall{to{background-position:0 220px,45px 300px}}
+@keyframes wpSunPulse{50%{transform:scale(1.12);opacity:.55}}
+.wp-intel-card{background:linear-gradient(135deg,rgba(30,64,175,.18),rgba(30,41,59,.48) 55%,rgba(14,116,144,.12));backdrop-filter:blur(24px);border:1px solid rgba(96,165,250,.16);border-radius:var(--radius);padding:26px 30px;margin:0 auto 24px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.wp-intel-card::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 15%,rgba(255,255,255,.035) 48%,transparent 75%);transform:translateX(-100%);animation:wpSheen 8s ease-in-out infinite}
+@keyframes wpSheen{0%,65%,100%{transform:translateX(-100%)}85%{transform:translateX(100%)}}
+.wp-intel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px;position:relative;z-index:1}
+.wp-intel-kicker{font-size:11px;letter-spacing:1.7px;text-transform:uppercase;color:var(--accent-light);font-weight:800;display:flex;align-items:center;gap:8px}
+.wp-intel-title{font-size:23px;font-weight:800;letter-spacing:-.6px;margin-top:5px}
+.wp-live-pill{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border:1px solid rgba(16,185,129,.2);border-radius:99px;background:rgba(16,185,129,.08);font-size:11px;color:#6ee7b7;font-weight:700}
+.wp-live-dot{width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 0 0 rgba(52,211,153,.55);animation:wpPulse 1.8s infinite}
+@keyframes wpPulse{70%{box-shadow:0 0 0 7px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
+.wp-brief-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(220px,.8fr);gap:14px;position:relative;z-index:1}
+.wp-brief-main,.wp-brief-side{background:rgba(8,15,29,.35);border:1px solid rgba(255,255,255,.055);border-radius:17px;padding:18px}
+.wp-brief-main{display:flex;flex-direction:column;justify-content:space-between;min-height:155px}
+.wp-brief-summary{font-size:16px;line-height:1.65;color:#e2e8f0}
+.wp-brief-tip{font-size:13px;color:var(--text-secondary);margin-top:13px;display:flex;gap:9px;align-items:flex-start;line-height:1.5}
+.wp-brief-tip svg{color:var(--accent-light);margin-top:2px}
+.wp-brief-side{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.wp-brief-stat{padding:10px;border-radius:12px;background:rgba(255,255,255,.035)}
+.wp-brief-stat small{display:block;color:var(--text-secondary);font-size:11px;margin-bottom:5px}
+.wp-brief-stat strong{font-size:18px;font-weight:800}
+.wp-timeline{margin-top:18px;position:relative;z-index:1}
+.wp-timeline-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:13px;font-weight:700}
+.wp-timeline-head span:last-child{color:var(--text-secondary);font-size:11px;font-weight:500}
+.wp-hour-grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:7px}
+.wp-hour{background:rgba(8,15,29,.35);border:1px solid rgba(255,255,255,.045);border-radius:12px;padding:10px 5px;text-align:center;min-width:0;transition:transform .2s,border-color .2s}
+.wp-hour:hover{transform:translateY(-3px);border-color:rgba(96,165,250,.3)}
+.wp-hour-time{font-size:10px;color:var(--text-secondary)}
+.wp-hour-icon{font-size:18px;margin:8px 0;color:var(--accent-light)}
+.wp-hour-temp{font-size:14px;font-weight:800}
+.wp-hour-rain{font-size:10px;color:#7dd3fc;margin-top:5px}
+.wp-intel-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px;position:relative;z-index:1}
+.wp-intel-action{border:1px solid rgba(96,165,250,.18);background:rgba(59,130,246,.09);color:#dbeafe;padding:9px 13px;border-radius:11px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;display:flex;align-items:center;gap:7px;transition:.2s}
+.wp-intel-action:hover{background:rgba(59,130,246,.2);transform:translateY(-2px)}
+.wp-alert-settings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;position:relative;z-index:1}
+.wp-alert-option{display:flex;align-items:center;gap:10px;padding:12px;background:rgba(8,15,29,.34);border:1px solid rgba(255,255,255,.055);border-radius:13px;color:#e2e8f0;font-size:12px;line-height:1.4}
+.wp-alert-option input{accent-color:var(--accent);width:16px;height:16px;flex-shrink:0}
+.wp-alert-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;position:relative;z-index:1}
+.wp-alert-foot small{color:var(--text-secondary);font-size:11px;line-height:1.5}
+.wp-alert-save{border:0;border-radius:10px;padding:10px 15px;background:var(--gradient);color:#fff;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:.2s}
+.wp-alert-save:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(59,130,246,.25)}
+.wp-alert-feed{display:grid;gap:8px;margin-top:13px;position:relative;z-index:1}
+.wp-alert-item{display:flex;align-items:flex-start;gap:10px;padding:11px 13px;border-radius:12px;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.15);font-size:12px;line-height:1.5}
+.wp-alert-item svg{color:#fbbf24;margin-top:2px;flex-shrink:0}
+.wp-alert-item.good{background:rgba(16,185,129,.06);border-color:rgba(16,185,129,.14)}
+.wp-alert-item.good svg{color:#34d399}
+.wp-intel-empty{color:var(--text-secondary);font-size:13px;padding:12px 0;position:relative;z-index:1}
+@media(max-width:760px){.wp-intel-card{padding:21px 17px}.wp-brief-grid{grid-template-columns:1fr}.wp-hour-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.wp-alert-settings{grid-template-columns:1fr}.wp-intel-title{font-size:20px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+
+.social-hub{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:22px}
+.social-section{background:var(--card-bg,rgba(255,255,255,.04));border:1px solid var(--border-color,rgba(255,255,255,.1));border-radius:18px;padding:18px}
+.social-section h3{font-size:17px;margin:0 0 14px;display:flex;align-items:center;gap:9px}
+.social-count{font-size:12px;border-radius:20px;padding:3px 8px;background:var(--accent,#3b82f6);color:#fff}
+.social-list{display:grid;gap:10px}.social-person{display:flex;align-items:center;gap:10px;padding:10px;border-radius:13px;background:rgba(127,127,127,.07);min-width:0}
+.social-person .person-avatar{flex:0 0 42px;width:42px;height:42px;background-size:cover;background-position:center;display:grid;place-items:center;border-radius:50%}
+.social-person-info{min-width:0;flex:1}.social-person-info strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.social-person-info small{display:block;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis}
+.social-actions{display:flex;gap:6px;flex-wrap:wrap}.social-actions button{border:0;border-radius:10px;padding:8px 10px;cursor:pointer;background:var(--accent,#3b82f6);color:white;font-weight:600}.social-actions .muted{background:rgba(127,127,127,.18);color:var(--text-primary)}
+.chat-shell{max-width:900px;margin:auto}.chat-top{display:flex;gap:14px;align-items:center;margin-bottom:15px}.chat-top .card-title{margin:0}.chat-messages{height:min(58vh,600px);overflow:auto;padding:14px;border-radius:16px;background:rgba(127,127,127,.07);display:flex;flex-direction:column;gap:10px}
+.chat-bubble{max-width:78%;padding:10px 13px;border-radius:15px;background:rgba(127,127,127,.15);overflow-wrap:anywhere;align-self:flex-start}.chat-bubble.mine{align-self:flex-end;background:var(--accent,#3b82f6);color:white}.chat-bubble small{display:block;opacity:.7;font-size:10px;margin-top:4px}
+.chat-compose{display:flex;gap:10px;margin-top:12px}.chat-compose input{flex:1;min-width:0}
+.chat-bubble{position:relative}.chat-bubble .chat-delete{display:block;margin:5px 0 0 auto;padding:2px 7px;border:0;border-radius:7px;background:rgba(0,0,0,.16);color:inherit;font-size:10px;cursor:pointer}
+.chat-list-meta{font-size:12px;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:560px){.social-person{flex-wrap:wrap}.social-actions{width:100%;justify-content:flex-end}.chat-shell{padding:16px!important}.chat-messages{height:55vh;min-height:280px}.chat-top{flex-wrap:wrap}.chat-compose{flex-direction:row}.chat-compose .btn{width:auto;padding:12px 16px}}
+
+@media(max-width:560px){.chat-compose{flex-direction:column}.chat-bubble{max-width:90%}.chat-top{align-items:flex-start}}
+
+/* WeatherPro 4.3 social layout safeguards */
+.social-person,.person-card,.chat-shell,.chat-top,.chat-compose{min-width:0;max-width:100%}
+.social-person-info{min-width:0;overflow-wrap:anywhere}
+.chat-shell{overflow:hidden}
+.chat-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.chat-top>div{min-width:0;flex:1}
+.chat-top .card-title{margin-bottom:4px}
+.chat-messages{min-width:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain}
+.chat-bubble{max-width:min(82%,680px);overflow-wrap:anywhere;word-break:break-word}
+.chat-compose{display:flex;gap:10px;align-items:center}
+.chat-compose .form-input{min-width:0;flex:1}
+@media(max-width:640px){
+  .people-card,.chat-shell{padding:18px 14px}
+  .social-person{flex-wrap:wrap;gap:10px}
+  .social-person-info{flex:1 1 calc(100% - 64px)}
+  .social-actions{width:100%;display:flex;flex-wrap:wrap}
+  .social-actions button{flex:1 1 auto;min-width:0}
+  .chat-top{align-items:flex-start}
+  .chat-top>.btn{width:auto;flex:0 0 auto;padding:10px 14px}
+  .chat-compose{align-items:stretch}
+  .chat-compose .btn{width:auto;flex:0 0 auto;padding:12px 14px}
+  .chat-bubble{max-width:92%}
+}
 </style>
 </head>
 <body>
@@ -788,7 +899,6 @@ footer::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;b
 <symbol id="i-robot" viewBox="0 0 24 24"><rect x="4" y="9" width="16" height="11" rx="3"/><path d="M12 5v4"/><circle cx="12" cy="3.5" r="1.5"/><circle cx="9" cy="14.5" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="14.5" r="1" fill="currentColor" stroke="none"/><path d="M9.5 18h5"/></symbol>
 <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
 <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></symbol>
-
 <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></symbol>
 <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.7-9h1.8a4.5 4.5 0 1 1 0 9Z"/></symbol>
 <symbol id="i-cloud-sun" viewBox="0 0 24 24"><path d="M12 2v2"/><path d="m4.9 4.9 1.4 1.4"/><path d="M20 12h2"/><path d="m19.1 4.9-1.4 1.4"/><path d="M15.9 12.6A4 4 0 0 0 10 8.5"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/></symbol>
@@ -805,11 +915,9 @@ footer::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;b
 <symbol id="i-radar" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4"/><path d="M12 3v6M12 12l5-3"/></symbol>
 <symbol id="i-layout" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></symbol>
 <symbol id="i-type" viewBox="0 0 24 24"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></symbol>
-
 <symbol id="i-vk" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M13.1 17.3c-5.1 0-8.4-3.6-8.5-9.6h2.7c.1 4.4 2.1 6.2 3.6 6.6V7.7h2.5v3.8c1.5-.2 3-1.8 3.6-3.8h2.5c-.4 2.3-2.1 3.9-3.3 4.6 1.2.5 3.1 2 3.8 5h-2.8c-.6-1.8-2-3.2-3.8-3.4v3.4z"/></symbol>
 <symbol id="i-telegram" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M21.9 4.4 19 19.2c-.2 1-.8 1.2-1.6.8l-4.4-3.2-2.1 2c-.2.3-.4.4-.9.4l.3-4.5 8.2-7.4c.4-.3-.1-.5-.6-.2L7.8 12.5l-4.3-1.3c-.9-.3-1-.9.2-1.4l16.8-6.5c.8-.3 1.5.2 1.4 1.1z"/></symbol>
 <symbol id="i-x-twitter" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M18.9 2.2h3.3l-7.2 8.3 8.5 11.3h-6.7l-5.2-6.9-6 6.9H2.3l7.8-8.9L1.9 2.2h6.9l4.7 6.3zm-1.2 17.7h1.8L7.4 4H5.5z"/></symbol>
-
 <symbol id="i-av-1" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
 <symbol id="i-av-2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M7 10.5h10a1.5 1.5 0 0 1 1.5 1.5v2A1.5 1.5 0 0 1 17 15.5H7A1.5 1.5 0 0 1 5.5 14v-2A1.5 1.5 0 0 1 7 10.5z"/><path d="M12 3.5V1.5"/></symbol>
 <symbol id="i-av-3" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 13.5h17"/><circle cx="9" cy="10" r=".9" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r=".9" fill="currentColor" stroke="none"/></symbol>
@@ -820,7 +928,6 @@ footer::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;b
 <symbol id="i-av-8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><circle cx="9" cy="10" r=".9" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r=".9" fill="currentColor" stroke="none"/></symbol>
 <symbol id="i-av-9" viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="3.5"/><path d="M6 21v-1.5A5.5 5.5 0 0 1 11.5 14h1A5.5 5.5 0 0 1 18 19.5V21"/><path d="m12 13.5 1.6 2-1.6 5-1.6-5z"/></symbol>
 <symbol id="i-av-10" viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="3.5"/><path d="M5.5 21v-1.5A5.5 5.5 0 0 1 11 14h2a5.5 5.5 0 0 1 5.5 5.5V21"/><path d="M12 16v4.5M9.75 18.25h4.5"/></symbol>
-
 <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></symbol>
 <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></symbol>
 <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
@@ -851,6 +958,7 @@ footer::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;b
       <button class="nav-link" data-page="widget" onclick="showPage('widget')"><svg class="icon"><use href="#i-window"/></svg><span data-i18n="nav_widget">Виджет</span></button>
       <button class="nav-link" data-page="ai" onclick="showPage('ai')"><svg class="icon"><use href="#i-brain"/></svg><span data-i18n="nav_ai">Weather AI</span></button>
       <button class="nav-link" data-page="compare" onclick="showPage('compare')"><svg class="icon"><use href="#i-scale"/></svg><span data-i18n="nav_compare">Сравнение</span></button>
+      <button class="nav-link" data-page="people" onclick="showPage('people')"><svg class="icon"><use href="#i-globe"/></svg><span data-i18n="nav_people">Люди</span></button>
       <button class="nav-link" data-page="profile" onclick="showPage('profile')"><svg class="icon"><use href="#i-user"/></svg><span data-i18n="nav_profile">Профиль</span></button>
       <button class="nav-link" data-page="settings" onclick="showPage('settings')"><svg class="icon"><use href="#i-cog"/></svg><span data-i18n="nav_settings">Настройки</span></button>
       <button class="nav-link" data-page="about" onclick="showPage('about')"><svg class="icon"><use href="#i-info"/></svg><span data-i18n="nav_about">О нас</span></button>
@@ -869,6 +977,7 @@ footer::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;b
         <button class="menu-item" onclick="showPage('profile')"><svg class="icon"><use href="#i-user"/></svg> Мой профиль</button>
         <button class="menu-item" onclick="showPage('settings')"><svg class="icon"><use href="#i-cog"/></svg> Настройки</button>
         <button class="menu-item" onclick="showFavorites()"><svg class="icon"><use href="#i-star"/></svg> Избранное</button>
+        <button class="menu-item" onclick="loginWithGoogle()"><svg class="icon"><use href="#i-globe"/></svg> Войти через Google</button>
         <button class="menu-item" onclick="logout()"><svg class="icon"><use href="#i-log-out"/></svg> Выйти</button>
       </div>
     </div>
@@ -917,6 +1026,41 @@ footer::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;b
   </div>
 
   <div class="multi-city-home" id="multiCityHome"></div>
+
+  <section class="wp-intel-card" id="wpIntelligence" aria-live="polite">
+    <div class="wp-intel-head">
+      <div><div class="wp-intel-kicker"><span class="wp-live-dot"></span> WEATHER INTELLIGENCE</div><div class="wp-intel-title">Погода с умными подсказками</div></div>
+      <span class="wp-live-pill">АНАЛИЗ ПРОГНОЗА</span>
+    </div>
+    <div class="wp-brief-grid">
+      <div class="wp-brief-main"><div class="wp-brief-summary" id="wpBriefSummary">Загрузите прогноз — WeatherPro подготовит персональную сводку на ближайшие часы.</div><div class="wp-brief-tip" id="wpBriefTip"><svg class="icon"><use href="#i-sparkles"/></svg><span>Подсказки обновляются вместе с погодными данными.</span></div></div>
+      <div class="wp-brief-side">
+        <div class="wp-brief-stat"><small>Ощущается</small><strong id="wpFeels">—</strong></div>
+        <div class="wp-brief-stat"><small>Вероятность дождя</small><strong id="wpRain">—</strong></div>
+        <div class="wp-brief-stat"><small>Ветер</small><strong id="wpWind">—</strong></div>
+        <div class="wp-brief-stat"><small>Влажность</small><strong id="wpHumidity">—</strong></div>
+      </div>
+    </div>
+    <div class="wp-timeline"><div class="wp-timeline-head"><span>Ближайшие 24 часа</span><span>Почасовой прогноз</span></div><div class="wp-hour-grid" id="wpHourGrid"><div class="wp-intel-empty">Почасовой прогноз появится после загрузки данных.</div></div></div>
+    <div class="wp-intel-actions">
+      <button class="wp-intel-action" onclick="showPage('map')"><svg class="icon"><use href="#i-radar"/></svg> Открыть радар</button>
+      <button class="wp-intel-action" onclick="showPage('compare')"><svg class="icon"><use href="#i-scale"/></svg> Сравнить города</button>
+      <button class="wp-intel-action" onclick="showPage('history')"><svg class="icon"><use href="#i-chart-line"/></svg> История и графики</button>
+      <button class="wp-intel-action" onclick="speakWeather()"><svg class="icon"><use href="#i-volume"/></svg> Озвучить сводку</button>
+    </div>
+  </section>
+
+  <section class="wp-intel-card" id="wpSmartAlerts">
+    <div class="wp-intel-head"><div><div class="wp-intel-kicker">ПЕРСОНАЛЬНЫЕ СОБЫТИЯ</div><div class="wp-intel-title">Умные погодные уведомления</div></div><span class="wp-live-pill">НАСТРАИВАЕМЫЕ</span></div>
+    <p style="color:var(--text-secondary);font-size:12px;line-height:1.6;margin:-7px 0 14px;position:relative;z-index:1">Выберите события, о которых WeatherPro будет предупреждать при обновлении прогноза. Для системных уведомлений разрешите их в браузере.</p>
+    <div class="wp-alert-settings">
+      <label class="wp-alert-option"><input type="checkbox" id="wpAlertRain" checked> <span>Вероятность дождя от 55%</span></label>
+      <label class="wp-alert-option"><input type="checkbox" id="wpAlertWind" checked> <span>Сильный ветер от 12 м/с</span></label>
+      <label class="wp-alert-option"><input type="checkbox" id="wpAlertCold" checked> <span>Резкое похолодание от 5°</span></label>
+    </div>
+    <div class="wp-alert-foot"><small>Проверка выполняется при загрузке прогноза.<br>Повтор одного события ограничен по времени.</small><button class="wp-alert-save" onclick="saveSmartAlertSettings()">Сохранить настройки</button></div>
+    <div class="wp-alert-feed" id="wpAlertFeed"><div class="wp-intel-empty">Пока нет новых погодных событий.</div></div>
+  </section>
 
   <div class="alerts-card" id="alertsCard">
     <h2 class="card-title"><svg class="icon"><use href="#i-alert-tri"/></svg> <span data-i18n="alerts_title">Предупреждения</span></h2>
@@ -1017,14 +1161,7 @@ footer::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;b
           <div class="gauge-label">УФ-индекс</div>
           <div class="gauge-value" id="uvLabel">Низкий</div>
           <svg class="gauge-svg" viewBox="0 0 120 80">
-            <defs>
-              <linearGradient id="uvGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="#10b981"/>
-                <stop offset="35%" stop-color="#f59e0b"/>
-                <stop offset="70%" stop-color="#ef4444"/>
-                <stop offset="100%" stop-color="#8b5cf6"/>
-              </linearGradient>
-            </defs>
+            <defs><linearGradient id="uvGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#10b981"/><stop offset="35%" stop-color="#f59e0b"/><stop offset="70%" stop-color="#ef4444"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
             <path d="M 15 70 A 45 45 0 0 1 105 70" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="8" stroke-linecap="round"/>
             <path id="uvArc" d="M 15 70 A 45 45 0 0 1 105 70" fill="none" stroke="url(#uvGrad)" stroke-width="8" stroke-linecap="round" stroke-dasharray="141.4" stroke-dashoffset="141.4"/>
             <circle id="uvMarker" cx="15" cy="70" r="5" fill="#fff" stroke="#10b981" stroke-width="2"/>
@@ -1035,12 +1172,7 @@ footer::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;b
           <div class="gauge-label">Влажность</div>
           <div class="gauge-value" id="humLabel">92%</div>
           <svg class="gauge-svg" viewBox="0 0 120 80">
-            <defs>
-              <linearGradient id="humGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="#0ea5e9"/>
-                <stop offset="100%" stop-color="#38bdf8"/>
-              </linearGradient>
-            </defs>
+            <defs><linearGradient id="humGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#0ea5e9"/><stop offset="100%" stop-color="#38bdf8"/></linearGradient></defs>
             <path d="M 15 70 A 45 45 0 0 1 105 70" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="8" stroke-linecap="round"/>
             <path id="humArc" d="M 15 70 A 45 45 0 0 1 105 70" fill="none" stroke="url(#humGrad)" stroke-width="8" stroke-linecap="round" stroke-dasharray="141.4" stroke-dashoffset="141.4"/>
             <circle id="humMarker" cx="15" cy="70" r="5" fill="#fff" stroke="#0ea5e9" stroke-width="2"/>
@@ -1083,27 +1215,16 @@ footer::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;b
     </div>
     <div id="weatherMap"></div>
     <div class="map-attribution">© OpenStreetMap · Слои: OpenWeatherMap · Радар: RainViewer</div>
-
     <div class="radar-controls" id="radarControls">
       <div class="radar-row">
         <button class="radar-play" id="radarPlayBtn" onclick="toggleRadarPlay()" title="Воспроизвести"><svg class="icon"><use href="#i-play"/></svg></button>
         <div class="radar-time-display">
-          <div>
-            <div class="radar-time-label">Кадр</div>
-            <div class="radar-time-main" id="radarTime">--:--</div>
-          </div>
-          <div style="text-align:right">
-            <div class="radar-time-label">Прогноз</div>
-            <div class="radar-time-main" id="radarForecast">--:--</div>
-          </div>
+          <div><div class="radar-time-label">Кадр</div><div class="radar-time-main" id="radarTime">--:--</div></div>
+          <div style="text-align:right"><div class="radar-time-label">Прогноз</div><div class="radar-time-main" id="radarForecast">--:--</div></div>
         </div>
       </div>
       <input type="range" class="radar-timeline" id="radarSlider" min="0" max="0" value="0" step="1" oninput="updateRadarFrame(parseInt(this.value))">
-      <div class="radar-legend">
-        <span>2 часа назад</span>
-        <span class="radar-legend-now">Сейчас</span>
-        <span>+30 мин</span>
-      </div>
+      <div class="radar-legend"><span>2 часа назад</span><span class="radar-legend-now">Сейчас</span><span>+30 мин</span></div>
     </div>
   </div>
 </div>
@@ -1204,9 +1325,34 @@ footer::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;b
         </div>
       </div>
     </div>
-    <div class="compare-chart-container" id="compareChartContainer">
-      <canvas id="compareChart"></canvas>
+    <div class="compare-chart-container" id="compareChartContainer"><canvas id="compareChart"></canvas></div>
+  </div>
+</div>
+
+<div id="people-page" class="page">
+  <div class="people-card">
+    <h2 class="card-title"><svg class="icon"><use href="#i-globe"/></svg> Поиск пользователей</h2>
+    <p style="color:var(--text-secondary);margin-bottom:16px;position:relative;z-index:1">Найдите пользователей Weather Pro по имени или email. Войдите через Google, чтобы вас тоже можно было найти.</p>
+    <div class="search-box" style="margin-bottom:20px">
+      <div class="search-input-container">
+        <input type="text" class="search-input" id="peopleSearchInput" placeholder="Имя или email…" autocomplete="off" onkeypress="if(event.key==='Enter')searchUsers()">
+      </div>
+      <button class="search-btn" onclick="searchUsers()"><svg class="icon"><use href="#i-search"/></svg> Найти</button>
     </div>
+    <div id="peopleResults" class="people-grid"></div>
+    <div class="social-hub">
+      <div class="social-section"><h3>Заявки в друзья <span id="friendRequestCount" class="social-count">0</span></h3><div id="friendRequests" class="social-list"><div class="person-empty">Здесь появятся входящие заявки</div></div></div>
+      <div class="social-section"><h3>Мои друзья</h3><div id="friendsList" class="social-list"><div class="person-empty">Пока нет друзей — найдите пользователей выше</div></div></div>
+      <div class="social-section"><h3>Мои диалоги</h3><div id="chatList" class="social-list"><div class="person-empty">Диалоги появятся после первого сообщения</div></div></div>
+    </div>
+  </div>
+</div>
+<div id="chat-page" class="page">
+  <div class="people-card chat-shell">
+    <div class="chat-top"><button class="btn btn-secondary" onclick="showPage('people')">← Люди</button><div><h2 id="chatTitle" class="card-title">Сообщения</h2><div id="chatSubtitle" class="person-email">Личные сообщения Weather Pro</div></div></div>
+    <input id="chatSearchInput" class="form-input" type="search" placeholder="Поиск по сообщениям…" oninput="filterChatMessages()" style="margin-bottom:10px">
+    <div id="chatMessages" class="chat-messages"><div class="person-empty">Выберите друга, чтобы начать общение</div></div>
+    <form class="chat-compose" onsubmit="sendChatMessage(event)"><input id="chatMessageInput" class="form-input" maxlength="2000" placeholder="Напишите сообщение…" autocomplete="off"><button class="btn" type="submit">Отправить</button></form>
   </div>
 </div>
 
@@ -1217,18 +1363,14 @@ footer::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;b
   </div>
   <div class="auth-card" id="loginForm">
     <h2 class="card-title"><svg class="icon"><use href="#i-log-in"/></svg> <span data-i18n="login_title">Вход в аккаунт</span></h2>
-    <div class="form-group"><label class="form-label" data-i18n="email">Email</label><input type="email" class="form-input" id="loginEmail" placeholder="Ваш email"></div>
-    <div class="form-group"><label class="form-label" data-i18n="password">Пароль</label><input type="password" class="form-input" id="loginPassword" placeholder="Ваш пароль"></div>
-    <button class="btn" onclick="login()"><svg class="icon"><use href="#i-log-in"/></svg><span data-i18n="login_btn">Войти</span></button>
+    <p style="color:var(--text-secondary);margin-bottom:16px">Войдите через Google, чтобы синхронизировать настройки и избранное между устройствами.</p>
+    <button class="btn" onclick="loginWithGoogle()" style="margin-bottom:16px"><svg class="icon"><use href="#i-globe"/></svg> Войти через Google</button>
     <div class="form-links"><a class="form-link" onclick="switchAuthForm('register')" data-i18n="login_register_link">Нет аккаунта? Зарегистрируйтесь</a></div>
   </div>
   <div class="auth-card" id="registerForm" style="display:none">
     <h2 class="card-title"><svg class="icon"><use href="#i-user-plus"/></svg> <span data-i18n="register_title">Регистрация</span></h2>
-    <div class="form-group"><label class="form-label" data-i18n="name">Имя</label><input type="text" class="form-input" id="registerName" placeholder="Ваше имя"></div>
-    <div class="form-group"><label class="form-label" data-i18n="email">Email</label><input type="email" class="form-input" id="registerEmail" placeholder="Ваш email"></div>
-    <div class="form-group"><label class="form-label" data-i18n="password">Пароль</label><input type="password" class="form-input" id="registerPassword" placeholder="Придумайте пароль"></div>
-    <div class="form-group"><label class="form-label" data-i18n="confirm_password">Подтвердите пароль</label><input type="password" class="form-input" id="registerConfirmPassword" placeholder="Повторите пароль"></div>
-    <button class="btn" onclick="register()"><svg class="icon"><use href="#i-user-plus"/></svg><span data-i18n="register_btn">Зарегистрироваться</span></button>
+    <p style="color:var(--text-secondary);margin-bottom:16px">Создайте аккаунт через Google за один клик.</p>
+    <button class="btn" onclick="loginWithGoogle()" style="margin-bottom:16px"><svg class="icon"><use href="#i-globe"/></svg> Регистрация через Google</button>
     <div class="form-links"><a class="form-link" onclick="switchAuthForm('login')" data-i18n="register_login_link">Уже есть аккаунт? Войдите</a></div>
   </div>
 </div>
@@ -1250,49 +1392,26 @@ footer::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;b
 <div id="settings-page" class="page">
   <div class="settings-card">
     <h2 class="card-title"><svg class="icon"><use href="#i-cog"/></svg> <span data-i18n="settings_title">Настройки</span></h2>
-
     <div class="settings-group">
       <h3 class="settings-title"><svg class="icon"><use href="#i-layout"/></svg> Интерфейс</h3>
       <div class="settings-options">
-        <div class="setting-item">
-          <div>
-            <div class="setting-label">Формат времени</div>
-            <div class="setting-description">12-часовой или 24-часовой формат</div>
-          </div>
-          <select class="form-input" id="timeFormatSelect" style="width:auto;padding:8px 16px">
-            <option value="24h">24 часа (18:30)</option>
-            <option value="12h">12 часов (6:30 PM)</option>
-          </select>
+        <div class="setting-item"><div><div class="setting-label">Формат времени</div><div class="setting-description">12-часовой или 24-часовой формат</div></div>
+          <select class="form-input" id="timeFormatSelect" style="width:auto;padding:8px 16px"><option value="24h">24 часа (18:30)</option><option value="12h">12 часов (6:30 PM)</option></select>
         </div>
-        <div class="setting-item">
-          <div>
-            <div class="setting-label">Компактный режим</div>
-            <div class="setting-description">Уменьшенные отступы в карточках — больше информации на экране</div>
-          </div>
-          <label class="switch"><input type="checkbox" id="compactMode"><span class="slider"></span></label>
-        </div>
-        <div class="setting-item">
-          <div>
-            <div class="setting-label">Скорость ветра</div>
-            <div class="setting-description">Единицы измерения скорости ветра</div>
-          </div>
-          <select class="form-input" id="windUnitSelect" style="width:auto;padding:8px 16px">
-            <option value="ms">м/с</option>
-            <option value="kmh">км/ч</option>
-            <option value="mph">mph</option>
-          </select>
+        <div class="setting-item"><div><div class="setting-label">Компактный режим</div><div class="setting-description">Уменьшенные отступы в карточках</div></div><label class="switch"><input type="checkbox" id="compactMode"><span class="slider"></span></label></div>
+        <div class="setting-item"><div><div class="setting-label">Скорость ветра</div><div class="setting-description">Единицы измерения скорости ветра</div></div>
+          <select class="form-input" id="windUnitSelect" style="width:auto;padding:8px 16px"><option value="ms">м/с</option><option value="kmh">км/ч</option><option value="mph">mph</option></select>
         </div>
       </div>
     </div>
-
     <div class="settings-group">
       <h3 class="settings-title"><svg class="icon"><use href="#i-palette"/></svg> <span data-i18n="settings_appearance">Внешний вид</span></h3>
       <div class="settings-options">
         <div class="setting-item"><div><div class="setting-label" data-i18n="dark_theme">Темная тема</div><div class="setting-description" data-i18n="dark_theme_desc">Использовать темный режим</div></div><label class="switch"><input type="checkbox" id="darkTheme" checked><span class="slider"></span></label></div>
         <div class="setting-item"><div><div class="setting-label" data-i18n="animations">Анимации</div><div class="setting-description" data-i18n="animations_desc">Плавные анимации интерфейса</div></div><label class="switch"><input type="checkbox" id="animations" checked><span class="slider"></span></label></div>
-        <div class="setting-item"><div><div class="setting-label">Авто-тема по погоде</div><div class="setting-description">Менять тему в зависимости от погоды и времени суток</div></div><label class="switch"><input type="checkbox" id="autoThemeToggle" checked><span class="slider"></span></label></div>
+        <div class="setting-item"><div><div class="setting-label">Авто-тема по погоде</div><div class="setting-description">Менять тему в зависимости от погоды</div></div><label class="switch"><input type="checkbox" id="autoThemeToggle" checked><span class="slider"></span></label></div>
         <div class="setting-item"><div><div class="setting-label" data-i18n="accent_color">Акцентный цвет</div><div class="setting-description" data-i18n="accent_color_desc">Основной цвет оформления</div></div><div class="color-options" id="colorOptions"></div></div>
-        <div class="setting-item"><div><div class="setting-label" data-i18n="theme">Тема оформления</div><div class="setting-description" data-i18n="theme_desc">Готовая тема (отключается при авто-теме)</div></div><div class="theme-options" id="themeOptions"></div></div>
+        <div class="setting-item"><div><div class="setting-label" data-i18n="theme">Тема оформления</div><div class="setting-description" data-i18n="theme_desc">Готовая тема</div></div><div class="theme-options" id="themeOptions"></div></div>
       </div>
     </div>
     <div class="settings-group">
@@ -1300,7 +1419,7 @@ footer::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;b
       <div class="settings-options">
         <div class="setting-item"><div><div class="setting-label" data-i18n="units">Единицы измерения</div><div class="setting-description" data-i18n="units_desc">Система измерения</div></div><select class="form-input" id="unitsSelect" style="width:auto;padding:8px 16px"><option value="metric">Метрическая (°C, м/с)</option><option value="imperial">Имперская (°F, mph)</option></select></div>
         <div class="setting-item"><div><div class="setting-label" data-i18n="auto_location">Автоопределение местоположения</div><div class="setting-description" data-i18n="auto_location_desc">Определять ваше местоположение</div></div><label class="switch"><input type="checkbox" id="autoLocation" checked><span class="slider"></span></label></div>
-        <div class="setting-item"><div><div class="setting-label" data-i18n="weather_notifications">Уведомления о погоде</div><div class="setting-description" data-i18n="weather_notifications_desc">Получать уведомления об изменении погоды</div></div><label class="switch"><input type="checkbox" id="weatherNotifications"><span class="slider"></span></label></div>
+        <div class="setting-item"><div><div class="setting-label" data-i18n="weather_notifications">Уведомления о погоде</div><div class="setting-description" data-i18n="weather_notifications_desc">Получать уведомления</div></div><label class="switch"><input type="checkbox" id="weatherNotifications"><span class="slider"></span></label></div>
       </div>
     </div>
     <div class="settings-group">
@@ -1326,39 +1445,33 @@ footer::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;b
 
 <div id="about-page" class="page">
   <div class="about-page">
-    <div class="about-header"><h1 class="about-title">О проекте Weather Pro</h1><p class="about-subtitle">Diamond SVG Edition — векторные иконки, реальный AI, офлайн-режим</p></div>
+    <div class="about-header"><h1 class="about-title">О проекте Weather Pro</h1><p class="about-subtitle">Diamond SVG Edition — векторные иконки, Firebase, облачная синхронизация</p></div>
     <div class="about-content">
       <div class="about-section">
         <h2 class="section-title"><svg class="icon"><use href="#i-target"/></svg> Цель проекта</h2>
         <p class="about-text">Weather Pro — современный веб-сервис прогноза погоды. Точные данные, продуманный UX и полностью векторная графика.</p>
-        <p class="about-text highlight">Версия 2.7.2 — 7-градационная цветовая температура, стрелка тренда, nowcast 12ч, AQI-прогноз, пыльца, «год назад», TTS-озвучка, PNG-карточки, PWA-установка, bottom-nav, мульти-город, координатный поиск. Все функции доступны на мобильном. Исправлен PDF и плавность скролла.</p>
+        <p class="about-text highlight">Версия 3.0 — интеграция Firebase: вход через Google, облачная синхронизация настроек и избранного, поиск пользователей. Все локальные данные остаются доступны офлайн.</p>
       </div>
       <div class="about-section">
         <h2 class="section-title"><svg class="icon"><use href="#i-star"/></svg> Ключевые особенности</h2>
-        <p class="about-text">— Температура меняет цвет от синего к красному<br>— Стрелка тренда: теплеет или холодает<br>— Nowcast осадков на 12 часов<br>— AQI на 5 дней + пыльца + погода год назад<br>— Озвучка погоды (TTS) и PNG-карточки<br>— PWA-установка одним кликом<br>— Bottom-nav и мульти-город на главной<br>— Поиск по координатам (55.75, 37.61)<br>— График сравнения двух городов<br>— Детальная модалка дня с почасовым графиком<br>— Все 12 пунктов меню доступны на телефоне (свайп)<br>— PDF-отчет с поддержкой кириллицы<br>— Полностью SVG/FA-иконки без эмодзи</p>
+        <p class="about-text">— Вход через Google и синхронизация между устройствами<br>— Поиск пользователей по имени или email<br>— Температура меняет цвет от синего к красному<br>— Nowcast осадков на 12 часов<br>— AQI на 5 дней + пыльца + погода год назад<br>— Озвучка погоды (TTS) и PNG-карточки<br>— PWA-установка одним кликом<br>— Поиск по координатам (55.75, 37.61)<br>— График сравнения двух городов<br>— PDF-отчет с поддержкой кириллицы</p>
       </div>
       <div class="about-section">
         <h2 class="section-title"><svg class="icon"><use href="#i-code"/></svg> Технологии разработки</h2>
         <div class="tech-stack">
-          <div class="tech-item"><span class="tech-icon"><i class="fab fa-html5"></i></span><div class="tech-name">HTML5</div><div class="tech-desc">Семантическая разметка с алмазными элементами</div></div>
-          <div class="tech-item"><span class="tech-icon"><i class="fab fa-css3-alt"></i></span><div class="tech-name">CSS3</div><div class="tech-desc">Diamond Glass эффекты и анимации</div></div>
-          <div class="tech-item"><span class="tech-icon"><i class="fab fa-js"></i></span><div class="tech-name">JavaScript</div><div class="tech-desc">Продвинутая логика и LocalStorage</div></div>
-          <div class="tech-item"><span class="tech-icon"><i class="fas fa-cloud"></i></span><div class="tech-name">OpenWeather API</div><div class="tech-desc">Точные метеорологические данные</div></div>
+          <div class="tech-item"><span class="tech-icon"><i class="fab fa-html5"></i></span><div class="tech-name">HTML5</div><div class="tech-desc">Семантическая разметка</div></div>
+          <div class="tech-item"><span class="tech-icon"><i class="fab fa-css3-alt"></i></span><div class="tech-name">CSS3</div><div class="tech-desc">Diamond Glass эффекты</div></div>
+          <div class="tech-item"><span class="tech-icon"><i class="fab fa-js"></i></span><div class="tech-name">JavaScript</div><div class="tech-desc">Логика и LocalStorage</div></div>
+          <div class="tech-item"><span class="tech-icon"><i class="fas fa-fire"></i></span><div class="tech-name">Firebase</div><div class="tech-desc">Auth + Firestore</div></div>
         </div>
-      </div>
-      <div class="contact-info"><h3 class="contact-title"><svg class="icon"><use href="#i-phone"/></svg> Контакты</h3>
-        <div class="contact-detail"><svg class="icon"><use href="#i-phone"/></svg><span>+7 (906) 448-28-98</span></div>
-        <div class="contact-detail"><svg class="icon"><use href="#i-clock"/></svg><span>Время разработки: 7 дней</span></div>
-        <div class="contact-detail"><svg class="icon"><use href="#i-calendar"/></svg><span>Год: 2025</span></div>
-        <div class="contact-detail"><svg class="icon"><use href="#i-gem"/></svg><span>Технология: Diamond SVG UI</span></div>
       </div>
     </div>
   </div>
 </div>
 
 <footer>
-  <p>Weather Pro 2025 · Diamond SVG Edition v2.7.2</p>
-  <p class="api-info">Данные: OpenWeatherMap, RainViewer, Open-Meteo · Иконки: собственный SVG-спрайт</p>
+  <p>Weather Pro · Diamond SVG Edition v4.0</p>
+  <p class="api-info">Данные: OpenWeatherMap, RainViewer, Open-Meteo · Бэкенд: Firebase</p>
 </footer>
 </div>
 
@@ -1370,6 +1483,7 @@ footer::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;b
     <button class="btn btn-secondary mt-20" onclick="closeQRModal()">Закрыть</button>
   </div>
 </div>
+
 <div class="modal-overlay" id="avatarModal" role="dialog" aria-modal="true">
   <div class="modal-content">
     <button class="modal-close" onclick="closeAvatarModal()" aria-label="Закрыть"><svg class="icon"><use href="#i-x"/></svg></button>
@@ -1380,6 +1494,7 @@ footer::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;b
     <button class="btn btn-secondary mt-10" onclick="closeAvatarModal()"><svg class="icon"><use href="#i-x"/></svg><span data-i18n="cancel">Отмена</span></button>
   </div>
 </div>
+
 <div class="modal-overlay" id="dayDetailModal" role="dialog" aria-modal="true">
   <div class="modal-content">
     <button class="modal-close" onclick="closeDayDetail()" aria-label="Закрыть"><svg class="icon"><use href="#i-x"/></svg></button>
@@ -1388,6 +1503,7 @@ footer::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;b
     <div class="day-detail-list" id="dayDetailList"></div>
   </div>
 </div>
+
 <div class="notification" id="notification" role="status" aria-live="polite"><svg class="icon"><use href="#i-check-circle"/></svg><span class="text" id="notificationText">Готово</span></div>
 
 <div class="notif-banner" id="notifBanner">
@@ -1407,7 +1523,7 @@ footer::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;b
     <button class="bottom-nav-item active" data-page="home" onclick="showPage('home')"><svg class="icon"><use href="#i-home"/></svg><span>Главная</span></button>
     <button class="bottom-nav-item" data-page="map" onclick="showPage('map')"><svg class="icon"><use href="#i-map"/></svg><span>Карта</span></button>
     <button class="bottom-nav-item" data-page="ai" onclick="showPage('ai')"><svg class="icon"><use href="#i-brain"/></svg><span>AI</span></button>
-    <button class="bottom-nav-item" data-page="favorites" onclick="showPage('favorites')"><svg class="icon"><use href="#i-star"/></svg><span>Избранное</span></button>
+    <button class="bottom-nav-item" data-page="people" onclick="showPage('people')"><svg class="icon"><use href="#i-globe"/></svg><span>Люди</span></button>
     <button class="bottom-nav-item" data-page="profile" onclick="showPage('profile')"><svg class="icon"><use href="#i-user"/></svg><span>Профиль</span></button>
   </div>
 </nav>
@@ -1419,7 +1535,13 @@ footer::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;b
   <button class="install-banner-close" onclick="dismissInstall()" aria-label="Закрыть"><svg class="icon"><use href="#i-x"/></svg></button>
 </div>
 
+
 <script>
+
+/* ============================================================
+   CONFIG
+   ============================================================ */
+
 const OWM_KEY = '7ee647c81d8746d1db6d76d4156539e8';
 const CHAT_API = 'https://text.pollinations.ai/';
 const FETCH_TTL = 5*60*1000;
@@ -1432,19 +1554,628 @@ const ALLOWED_MODELS = [
 ];
 const KEYS = {USER:'wp_user',SETTINGS:'wp_settings',LAST:'wp_last',SEARCH:'wp_search',FAV:'wp_fav',CACHE:'wp_cache',HIST:'wp_hist',NOTIF:'wp_notif_dismissed'};
 
+/* === Firebase config — замени на свой из console.firebase.google.com === */
+const firebaseConfig = {
+  apiKey: "AIzaSyBoF8t0tokHsrBWxDC24DF2pOU7JEYRN2A",
+  authDomain: "weatherpro-ad9aa.firebaseapp.com",
+  projectId: "weatherpro-ad9aa",
+  storageBucket: "weatherpro-ad9aa.firebasestorage.app",
+  messagingSenderId: "304307183563",
+  appId: "1:304307183563:web:5abbbfa06e90e0219d204e",
+  measurementId: "G-4PBFCVDRPX"
+};
+
+let fbApp=null, fbAuth=null, fbDb=null, fbUser=null, fbReady=false;
+let fbAuthReady = false;
+let fbSyncInProgress = false;
+let fbAuthGeneration = 0;
+
+try {
+  if (!window.firebase || !firebaseConfig.apiKey || firebaseConfig.apiKey.startsWith('ВСТАВЬ')) {
+    console.error('[WeatherPro/Firebase] SDK или конфигурация Firebase не найдены.');
+  } else {
+    // Поддерживаем повторную инициализацию при горячей перезагрузке/повторном запуске.
+    fbApp = firebase.apps && firebase.apps.length
+      ? firebase.app()
+      : firebase.initializeApp(firebaseConfig);
+    fbAuth = firebase.auth();
+    fbDb = firebase.firestore();
+    fbReady = true;
+
+    fbAuth.onAuthStateChanged(async user => {
+      const generation = ++fbAuthGeneration;
+      if(typeof stopSocialListeners==='function') stopSocialListeners();
+      fbUser = user || null;
+      fbAuthReady = true;
+      console.info('[WeatherPro/Auth] Состояние авторизации:', user
+        ? { uid: user.uid, email: user.email, provider: user.providerData?.[0]?.providerId }
+        : 'гость');
+
+      if (!user) {
+        currentUser = {
+          id: 'guest', name: 'Гость', email: '', avatar: null, avatarIcon: null,
+          defaultCity: 'Москва', registrationDate: new Date().toISOString(), bio: ''
+        };
+        saveUser();
+        updateUI();
+        return;
+      }
+
+      // Не показываем локальные данные предыдущего аккаунта даже на время загрузки.
+      currentUser = {
+        id: user.uid,
+        name: user.displayName || (user.email ? user.email.split('@')[0] : 'Пользователь'),
+        email: user.email || '',
+        avatar: user.photoURL || null,
+        avatarIcon: null,
+        defaultCity: 'Москва',
+        registrationDate: new Date().toISOString(),
+        bio: ''
+      };
+      // Сбрасываем данные предыдущего аккаунта и поднимаем штатные настройки по умолчанию.
+      settings = {
+        darkTheme:true, animations:true, units:'metric', autoLocation:true,
+        weatherNotifications:false, browserNotifications:false, soundNotifications:false,
+        saveHistory:true, autoSave:true, accentColor:'#3b82f6', theme:'default', autoTheme:true,
+        timeFormat:'24h', compactMode:false, windUnit:'ms'
+      };
+      localStorage.removeItem(KEYS.FAV);
+      localStorage.removeItem(KEYS.SEARCH);
+      localStorage.setItem(KEYS.SETTINGS, JSON.stringify(settings));
+      saveUser();
+      loadSettings();
+      updateUI();
+
+      try {
+        await loadFromCloud();
+        if (generation !== fbAuthGeneration || !fbUser || fbUser.uid !== user.uid) return;
+        console.info('[WeatherPro/Firebase] Профиль аккаунта загружен и синхронизирован.');
+        if(document.getElementById('people-page')?.classList.contains('active')) loadSocialHub();
+      } catch (error) {
+        console.error('[WeatherPro/Firebase] Ошибка инициализации профиля:', error);
+        showNotification('Не удалось загрузить профиль из Firestore: ' + (error.code || error.message), true);
+      }
+    });
+  }
+} catch (e) {
+  fbReady = false;
+  console.error('[WeatherPro/Firebase] Ошибка инициализации:', e);
+}
+
+/* ============================================================
+   STATE
+   ============================================================ */
+
 let currentUser=null, settings={}, selectedAvatar=null, currentCity='Москва', lang='ru';
 let tempChart=null, humidityChart=null, historyChart=null, mapInst=null, mapLayerObj=null, mapLayerName='precipitation_new';
 let lastTemp=null, lastDesc=null, lastWeatherData=null, lastForecastData=null;
 let historyData={}, lastFetchAt={}, recognition=null, listening=false, qrInst=null;
-let currentRadarMode = false;
-let radarFrames = [], radarHost = '', radarCurrentIdx = 0, radarLayer = null;
-let radarAnimTimer = null, radarPlaying = false;
-let compareChartInst = null, dayDetailChartInst = null;
-let _pwaPrompt = null;
+let currentRadarMode=false;
+let radarFrames=[], radarHost='', radarCurrentIdx=0, radarLayer=null;
+let radarAnimTimer=null, radarPlaying=false;
+let compareChartInst=null, dayDetailChartInst=null;
+let _pwaPrompt=null;
 
 const $ = id=>document.getElementById(id);
 const esc = s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const svg = (id,cls='')=>`<svg class="icon ${cls}"><use href="#${id}"/></svg>`;
+
+/* ============================================================
+   FIREBASE FUNCTIONS
+   ============================================================ */
+
+function loginWithGoogle(){
+  if(!fbReady || !fbAuth){
+    showNotification('Firebase не подключён. Проверьте firebaseConfig и SDK.', true);
+    console.error('[WeatherPro/Auth] Вход невозможен: Firebase Auth не инициализирован.');
+    return;
+  }
+  const provider = new firebase.auth.GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+  fbAuth.signInWithPopup(provider).catch(err => {
+    console.error('[WeatherPro/Auth] Google sign-in failed:', err);
+    const messages = {
+      'auth/unauthorized-domain': 'Добавьте 127.0.0.1 в Authorized domains Firebase Authentication.',
+      'auth/popup-blocked': 'Браузер заблокировал окно входа. Разрешите всплывающие окна.',
+      'auth/popup-closed-by-user': 'Окно входа закрыто.',
+      'auth/operation-not-allowed': 'Включите Google provider в Firebase Authentication.',
+      'auth/invalid-api-key': 'Проверьте apiKey в firebaseConfig.'
+    };
+    showNotification(messages[err.code] || ('Ошибка Google-входа: ' + (err.code || err.message)), true);
+  });
+}
+window.loginWithGoogle = loginWithGoogle;
+
+function normalizeSearchValue(value){
+  return String(value || '').trim().toLocaleLowerCase('ru').normalize('NFKC');
+}
+
+async function syncToCloud(){
+  if(!fbReady || !fbUser || !fbDb || !currentUser || currentUser.id !== fbUser.uid) {
+    console.warn('[WeatherPro/Firestore] syncToCloud пропущен: нет активного совпадающего аккаунта.');
+    return false;
+  }
+  if (fbSyncInProgress) {
+    console.info('[WeatherPro/Firestore] Синхронизация уже выполняется; повторный вызов пропущен.');
+    return false;
+  }
+
+  fbSyncInProgress = true;
+  const uid = fbUser.uid;
+  try{
+    const displayName = String(currentUser.name || fbUser.displayName || '').trim();
+    // Email для поиска берётся из Firebase Auth, а не из редактируемого поля формы.
+    const email = String(fbUser.email || currentUser.email || '').trim();
+    const searchableName = normalizeSearchValue(displayName);
+    const searchableEmail = normalizeSearchValue(email);
+
+    const userDoc = {
+      profile: {
+        displayName,
+        email,
+        avatar: currentUser.avatar || null,
+        avatarIcon: currentUser.avatarIcon || null,
+        bio: currentUser.bio || '',
+        defaultCity: currentUser.defaultCity || 'Москва'
+      },
+      settings: settings || {},
+      favorites: getFavs(),
+      searchHistory: getHistoryList(),
+      searchableName,
+      searchableEmail,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    // Приватный документ: настройки и история доступны только владельцу.
+    await fbDb.collection('users').doc(uid).set(userDoc, { merge: true });
+    console.info('[WeatherPro/Firestore] users/' + uid + ' записан.');
+
+    // Отдельный документ с минимальным набором публичных полей для поиска.
+    // Email публикуется намеренно, поскольку пользовательский сценарий включает поиск по email.
+    await fbDb.collection('publicProfiles').doc(uid).set({
+      uid,
+      displayName,
+      searchableName,
+      email,
+      searchableEmail,
+      avatar: currentUser.avatar || null,
+      avatarIcon: currentUser.avatarIcon || null,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+    console.info('[WeatherPro/Firestore] publicProfiles/' + uid + ' записан.');
+    return true;
+  } catch(e){
+    console.error('[WeatherPro/Firestore] Ошибка записи users/publicProfiles:', {
+      code: e.code || 'unknown', message: e.message || String(e), uid
+    });
+    showNotification('Ошибка сохранения Firebase: ' + (e.code || e.message), true);
+    return false;
+  } finally {
+    fbSyncInProgress = false;
+  }
+}
+window.syncToCloud = syncToCloud;
+
+async function loadFromCloud(){
+  if(!fbReady || !fbUser || !fbDb) return;
+  const uid = fbUser.uid;
+  try{
+    const snap = await fbDb.collection('users').doc(uid).get();
+    if (fbUser?.uid !== uid) return; // аккаунт успел смениться
+    if(snap.exists){
+      const d = snap.data() || {};
+      const p = d.profile || {};
+      currentUser.name = p.displayName || currentUser.name || fbUser.displayName || 'Пользователь';
+      currentUser.email = fbUser.email || p.email || currentUser.email || '';
+      // null в Firestore означает явное удаление фото и не должен заменяться Google photoURL.
+      currentUser.avatar = Object.prototype.hasOwnProperty.call(p, 'avatar')
+        ? (p.avatar || null) : (fbUser.photoURL || null);
+      currentUser.avatarIcon = Object.prototype.hasOwnProperty.call(p, 'avatarIcon')
+        ? (p.avatarIcon || null) : null;
+      currentUser.bio = p.bio || '';
+      currentUser.defaultCity = p.defaultCity || 'Москва';
+      if (d.settings && typeof d.settings === 'object') Object.assign(settings, d.settings);
+      if(Array.isArray(d.favorites)) localStorage.setItem(KEYS.FAV, JSON.stringify(d.favorites));
+      if(Array.isArray(d.searchHistory)) localStorage.setItem(KEYS.SEARCH, JSON.stringify(d.searchHistory));
+      if(d.createdAt && d.createdAt.toDate) currentUser.registrationDate = d.createdAt.toDate().toISOString();
+    } else {
+      console.info('[WeatherPro/Firestore] users/' + uid + ' отсутствует — создаём профиль.');
+    }
+
+    saveUser();
+    localStorage.setItem(KEYS.SETTINGS, JSON.stringify(settings));
+    loadSettings(); // обновляет также элементы управления в разделе «Настройки»
+    updateUI();
+    applyTheme();
+    applyCompactMode(settings.compactMode);
+    loadSearchHistory();
+    renderFavorites();
+    renderMultiCityHome();
+
+    // Важно: публикуем publicProfiles и при существующем users-документе.
+    // Это чинит аккаунты, у которых приватный документ есть, а публичного ещё нет.
+    await syncToCloud();
+  } catch(e){
+    console.error('[WeatherPro/Firestore] Ошибка чтения users/' + uid + ':', {
+      code: e.code || 'unknown', message: e.message || String(e)
+    });
+    throw e;
+  }
+}
+
+async function searchUsers(){
+  const box = $('peopleResults');
+  const raw = ($('peopleSearchInput')?.value || '').trim();
+  const q = normalizeSearchValue(raw.replace(/^@/, ''));
+
+  if(!fbReady || !fbDb){
+    box.innerHTML = '<div class="person-empty">Firebase не инициализирован. Проверьте конфигурацию и консоль браузера.</div>';
+    console.error('[WeatherPro/Search] Firebase не готов.');
+    return;
+  }
+  if(!fbUser){
+    box.innerHTML = '<div class="person-empty">Войдите через Google, чтобы искать пользователей.</div>';
+    console.warn('[WeatherPro/Search] Поиск вызван без авторизации.');
+    return;
+  }
+  if(!q){
+    box.innerHTML = '<div class="person-empty">Введите начало имени или email.</div>';
+    return;
+  }
+
+  box.innerHTML = '<div class="person-empty">Ищем…</div>';
+  try{
+    const col = fbDb.collection('publicProfiles');
+    const fields = ['searchableName', 'searchableEmail'];
+    const snapshots = await Promise.all(fields.map(field =>
+      col.orderBy(field).startAt(q).endAt(q + '\uf8ff').limit(30).get()
+    ));
+
+    const matches = new Map();
+    snapshots.forEach(snapshot => snapshot.docs.forEach(doc => {
+      if(doc.id === fbUser.uid) return;
+      const data = doc.data() || {};
+      const name = String(data.displayName || '').trim();
+      const email = String(data.email || '').trim();
+      if(!name && !email) return;
+      matches.set(doc.id, {
+        displayName: name || 'Без имени',
+        email,
+        avatar: data.avatar || null,
+        avatarIcon: data.avatarIcon || null
+      });
+    }));
+
+    if(!matches.size){
+      box.innerHTML = '<div class="person-empty">Никого не найдено. Поиск выполняется по началу имени или email; у других пользователей должен быть опубликован документ publicProfiles.</div>';
+      console.info('[WeatherPro/Search] Совпадений нет для префикса:', q);
+      return;
+    }
+
+    const [friendSnap,outSnap,inSnap] = await Promise.all([
+      fbDb.collection('friendships').where('members','array-contains',fbUser.uid).get(),
+      fbDb.collection('friendRequests').where('from','==',fbUser.uid).get(),
+      fbDb.collection('friendRequests').where('to','==',fbUser.uid).get()
+    ]);
+    if(!fbUser)return;
+    const friendIds=new Set();
+    friendSnap.docs.forEach(d=>(d.data().members||[]).forEach(id=>{if(id!==fbUser.uid)friendIds.add(id);}));
+    const outgoing=new Map();
+    outSnap.docs.forEach(d=>{const v=d.data();if(!outgoing.has(v.to)||v.status==='pending')outgoing.set(v.to,v);});
+    const incoming=new Map();
+    inSnap.docs.forEach(d=>{const v=d.data();if(!incoming.has(v.from)||v.status==='pending')incoming.set(v.from,v);});
+    box.innerHTML = '';
+    matches.forEach((p, uid) => {
+      const card = document.createElement('div');
+      card.className = 'person-card';
+      const initial = (p.displayName || '?').trim().charAt(0).toUpperCase();
+      const avatarHTML = p.avatar
+        ? `<div class="person-avatar" style="background-image:url('${esc(p.avatar)}')"></div>`
+        : p.avatarIcon
+          ? `<div class="person-avatar">${svg(p.avatarIcon)}</div>`
+          : `<div class="person-avatar">${esc(initial)}</div>`;
+      let actionText='Добавить в друзья', action='add', disabled=false;
+      if(friendIds.has(uid)){actionText='Уже в друзьях';disabled=true;}
+      else if(outgoing.get(uid)?.status==='pending'){actionText='Заявка отправлена';disabled=true;}
+      else if(incoming.get(uid)?.status==='pending'){actionText='Принять заявку';action='accept';}
+      else if(['declined','accepted'].includes(outgoing.get(uid)?.status)){actionText='Отправить снова';}
+      card.innerHTML = `${avatarHTML}
+        <div class="person-name">${esc(p.displayName)}</div>
+        <div class="person-email">${esc(p.email)}</div>
+        <div class="social-actions" style="margin-top:10px"><button type="button" ${disabled?'disabled':''}>${actionText}</button></div>`;
+      card.querySelector('button').addEventListener('click',()=>{
+        if(action==='accept')respondFriendRequest(requestIdFor(uid,fbUser.uid),true);
+        else if(action==='add')sendFriendRequest(uid,p.displayName);
+        else if(actionText==='Отправить снова')sendFriendRequest(uid,p.displayName);
+      });
+      box.appendChild(card);
+    });
+    console.info('[WeatherPro/Search] Найдено профилей:', matches.size);
+  } catch(e){
+    console.error('[WeatherPro/Search] Ошибка поиска:', {
+      code: e.code || 'unknown', message: e.message || String(e)
+    });
+    const code = String(e.code || 'unknown');
+    let hint = 'Проверьте Firestore Rules для publicProfiles и наличие searchableName/searchableEmail в документах.';
+    if (code === 'permission-denied') hint = 'Доступ запрещён правилами Firestore. Разрешите чтение publicProfiles только авторизованным пользователям.';
+    if (code === 'failed-precondition') hint = 'Firestore сообщил о недостающем индексе. Откройте ссылку из ошибки в консоли и создайте индекс.';
+    if (code === 'unavailable') hint = 'Firestore временно недоступен. Проверьте сеть и статус Firebase.';
+    box.innerHTML = `<div class="person-empty">Ошибка поиска (${esc(code)}): ${esc(e.message || String(e))}<br><br>${esc(hint)}</div>`;
+  }
+}
+window.searchUsers = searchUsers;
+
+/* ============================================================
+   WEATHER PRO SOCIAL: FRIENDS + PRIVATE CHATS
+   Canonical friendship/chat identity: sorted UID pair joined by "__".
+   ============================================================ */
+let activeChatId = null, activeChatUnsubscribe = null, activeChatsUnsubscribe = null;
+let activeRequestsUnsubscribes = [], activeFriendshipsUnsubscribe = null;
+let activeChatOtherUid = null, activeChatMessagesCache = [];
+let socialFriendIds = new Set(), socialRequestDocs = new Map();
+const socialEsc = value => esc(String(value == null ? '' : value));
+function socialAvatar(person){
+  if(person && person.avatar) return `<div class="person-avatar" style="background-image:url('${socialEsc(person.avatar)}')"></div>`;
+  return `<div class="person-avatar">${socialEsc((person?.displayName || person?.name || '?').trim().charAt(0).toUpperCase())}</div>`;
+}
+function socialNotice(message, error=false){ if(typeof showNotification==='function') showNotification(message,error); }
+function requireSocialAuth(){ if(!fbReady || !fbUser || !fbDb){ socialNotice('Для общения войдите через Google',true); return false; } return true; }
+function chatIdFor(a,b){ return [String(a),String(b)].sort().join('__'); }
+function requestIdFor(from,to){ return String(to)+'_'+String(from); }
+function stopSocialListeners(){
+  if(activeChatUnsubscribe){activeChatUnsubscribe();activeChatUnsubscribe=null;}
+  if(activeChatsUnsubscribe){activeChatsUnsubscribe();activeChatsUnsubscribe=null;}
+  activeRequestsUnsubscribes.forEach(unsub=>{try{unsub();}catch(_){}});activeRequestsUnsubscribes=[];
+  if(activeFriendshipsUnsubscribe){activeFriendshipsUnsubscribe();activeFriendshipsUnsubscribe=null;}
+  activeChatId=null;activeChatOtherUid=null;activeChatMessagesCache=[];
+  socialFriendIds=new Set();socialRequestDocs=new Map();
+  const msg=$('chatMessages');if(msg)msg.innerHTML='<div class="person-empty">Выберите друга, чтобы начать общение</div>';
+  const list=$('chatList');if(list)list.innerHTML='<div class="person-empty">Диалоги появятся после первого сообщения</div>';
+  const friends=$('friendsList');if(friends)friends.innerHTML='<div class="person-empty">Пока нет друзей — найдите пользователей выше</div>';
+  const req=$('friendRequests');if(req)req.innerHTML='<div class="person-empty">Здесь появятся заявки</div>';
+}
+async function sendFriendRequest(uid, name){
+  if(!requireSocialAuth() || !uid || uid===fbUser.uid) return;
+  try{
+    const outgoingId=requestIdFor(fbUser.uid,uid);
+    const [friendSnap,outSnap,inSnap]=await Promise.all([
+      fbDb.collection('friendships').where('members','array-contains',fbUser.uid).get(),
+      fbDb.collection('friendRequests').where('from','==',fbUser.uid).get(),
+      fbDb.collection('friendRequests').where('to','==',fbUser.uid).get()
+    ]);
+    if(friendSnap.docs.some(d=>(d.data().members||[]).includes(uid))){socialNotice('Уже в друзьях');return;}
+    const outgoingPending=outSnap.docs.find(d=>d.data().to===uid&&d.data().status==='pending');
+    const incomingPending=inSnap.docs.find(d=>d.data().from===uid&&d.data().status==='pending');
+    const outgoingDoc=outSnap.docs.find(d=>d.id===outgoingId);
+    if(outgoingPending){socialNotice('Заявка уже отправлена');return;}
+    if(incomingPending){socialNotice('Этот пользователь уже отправил вам заявку — примите её во входящих');return;}
+    const ref=fbDb.collection('friendRequests').doc(outgoingId);
+    const payload={from:fbUser.uid,to:uid,fromName:String(currentUser?.name||fbUser.displayName||'Пользователь').slice(0,80),fromAvatar:currentUser?.avatar||null,toName:String(name||'').slice(0,80),status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp()};
+    if(['declined','accepted'].includes(outgoingDoc?.data().status) && outgoingDoc.id===outgoingId){
+      await ref.update({status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp(),respondedAt:firebase.firestore.FieldValue.delete()});
+    }else{
+      await ref.set(payload);
+    }
+    socialNotice('Заявка в друзья отправлена');
+    if(typeof searchUsers==='function')searchUsers();
+  }catch(e){
+    console.error('[WeatherPro/Social] request',e);
+    socialNotice('Не удалось отправить заявку: '+(e.code||e.message),true);
+  }
+}
+async function respondFriendRequest(requestId, accept){
+  if(!requireSocialAuth()) return;
+  try{
+    const ref=fbDb.collection('friendRequests').doc(requestId),snap=await ref.get();
+    if(!snap.exists || snap.data().to!==fbUser.uid || snap.data().status!=='pending'){socialNotice('Заявка уже недоступна',true);return;}
+    const r=snap.data(),friendshipId=chatIdFor(r.from,r.to),friendshipRef=fbDb.collection('friendships').doc(friendshipId);
+    const existing=await fbDb.collection('friendships').where('members','array-contains',fbUser.uid).get();
+    const alreadyCanonical=existing.docs.some(d=>d.id===friendshipId && (d.data().members||[]).includes(r.from));
+    const batch=fbDb.batch();
+    if(accept && !alreadyCanonical){
+      const members=[r.from,r.to].sort();
+      batch.set(friendshipRef,{members,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+    }
+    batch.update(ref,{status:accept?'accepted':'declined',respondedAt:firebase.firestore.FieldValue.serverTimestamp()});
+    await batch.commit();
+    socialNotice(accept?'Теперь вы друзья!':'Заявка отклонена');
+    if(accept && typeof searchUsers==='function')searchUsers();
+  }catch(e){console.error('[WeatherPro/Social] response',e);socialNotice('Ошибка обработки заявки: '+(e.code||e.message),true);}
+}
+async function cancelFriendRequest(requestId){
+  if(!requireSocialAuth())return;
+  try{
+    const ref=fbDb.collection('friendRequests').doc(requestId),snap=await ref.get();
+    if(!snap.exists||snap.data().from!==fbUser.uid||snap.data().status!=='pending'){socialNotice('Исходящая заявка уже недоступна',true);return;}
+    await ref.delete();socialNotice('Исходящая заявка отменена');
+  }catch(e){socialNotice('Не удалось отменить заявку: '+(e.code||e.message),true);}
+}
+async function removeFriend(friendUid){
+  if(!requireSocialAuth()||!friendUid||friendUid===fbUser.uid)return;
+  if(!confirm('Удалить пользователя из друзей?'))return;
+  try{
+    const snap=await fbDb.collection('friendships').where('members','array-contains',fbUser.uid).get();
+    const matches=snap.docs.filter(d=>(d.data().members||[]).includes(friendUid));
+    const batch=fbDb.batch();matches.forEach(d=>batch.delete(d.ref));
+    if(!matches.length)throw new Error('Дружба уже отсутствует');
+    await batch.commit();
+    socialNotice('Пользователь удалён из друзей');
+    if(activeChatOtherUid===friendUid){if(activeChatUnsubscribe)activeChatUnsubscribe();activeChatUnsubscribe=null;activeChatId=null;activeChatOtherUid=null;activeChatMessagesCache=[];showPage('people');}
+  }catch(e){socialNotice('Не удалось удалить из друзей: '+(e.code||e.message),true);}
+}
+function renderFriendRequests(uid){
+  const requests=$('friendRequests');if(!requests)return;
+  const docs=[...socialRequestDocs.values()];
+  const dedupe=(rows,keyOf)=>[...new Map(rows.map(d=>[keyOf(d),d])).values()];
+  const incoming=dedupe(docs.filter(d=>d.to===uid&&d.status==='pending'),d=>d.from);
+  const outgoing=dedupe(docs.filter(d=>d.from===uid&&d.status==='pending'),d=>d.to);
+  const count=$('friendRequestCount');if(count)count.textContent=String(incoming.length);
+  requests.innerHTML='';
+  if(!incoming.length&&!outgoing.length){requests.innerHTML='<div class="person-empty">Новых заявок пока нет</div>';return;}
+  incoming.forEach(d=>{
+    const el=document.createElement('div');el.className='social-person';
+    el.innerHTML=`${socialAvatar({displayName:d.fromName,avatar:d.fromAvatar})}<div class="social-person-info"><strong>${socialEsc(d.fromName||'Пользователь')}</strong><small>Хочет добавить вас в друзья</small></div><div class="social-actions"><button type="button" data-action="accept">Принять</button><button type="button" class="muted" data-action="decline">Отклонить</button></div>`;
+    el.querySelector('[data-action="accept"]').addEventListener('click',()=>respondFriendRequest(d.id,true));
+    el.querySelector('[data-action="decline"]').addEventListener('click',()=>respondFriendRequest(d.id,false));
+    requests.appendChild(el);
+  });
+  outgoing.forEach(d=>{
+    const el=document.createElement('div');el.className='social-person';
+    el.innerHTML=`<div class="social-person-info"><strong>Исходящая заявка</strong><small>${socialEsc(d.toName||'Пользователь')}</small></div><div class="social-actions"><button class="muted" type="button">Отменить</button></div>`;
+    el.querySelector('button').addEventListener('click',()=>cancelFriendRequest(d.id));requests.appendChild(el);
+  });
+}
+async function renderFriends(uid, docs){
+  const box=$('friendsList');if(!box)return;
+  // Legacy duplicate friendship documents are collapsed by the other UID.
+  const unique=new Map();
+  docs.forEach(doc=>{
+    const members=doc.data().members||[],other=members.find(x=>x!==uid);
+    if(other && other!==uid && !unique.has(other))unique.set(other,doc);
+  });
+  socialFriendIds=new Set(unique.keys());
+  if(activeChatOtherUid && !socialFriendIds.has(activeChatOtherUid)){
+    if(activeChatUnsubscribe){activeChatUnsubscribe();activeChatUnsubscribe=null;}
+    activeChatId=null;activeChatOtherUid=null;activeChatMessagesCache=[];
+    if($('chat-page')?.classList.contains('active'))showPage('people');
+  }
+  box.innerHTML='';
+  if(!unique.size){box.innerHTML='<div class="person-empty">Пока нет друзей — найдите пользователей выше</div>';startChatListListener(uid);return;}
+  const entries=[...unique.keys()];
+  const profiles=await Promise.all(entries.map(id=>fbDb.collection('publicProfiles').doc(id).get().catch(()=>null)));
+  if(!fbUser||fbUser.uid!==uid)return;
+  entries.forEach((other,i)=>{
+    const p=profiles[i]?.data()||{},name=p.displayName||'Пользователь',el=document.createElement('div');el.className='social-person';
+    el.innerHTML=`${socialAvatar({displayName:name,avatar:p.avatar})}<div class="social-person-info"><strong>${socialEsc(name)}</strong><small>${socialEsc(p.email||'Друг Weather Pro')}</small></div><div class="social-actions"><button type="button" data-action="chat">Написать</button><button class="muted" type="button" data-action="remove">Удалить</button></div>`;
+    el.querySelector('[data-action="chat"]').addEventListener('click',()=>openChat(other,name));
+    el.querySelector('[data-action="remove"]').addEventListener('click',()=>removeFriend(other));
+    box.appendChild(el);
+  });
+  startChatListListener(uid);
+}
+function loadSocialHub(){
+  if(!requireSocialAuth())return;
+  const uid=fbUser.uid;
+  if(activeRequestsUnsubscribes.length||activeFriendshipsUnsubscribe||activeChatsUnsubscribe)return;
+  const requestsRef=fbDb.collection('friendRequests');
+  ['to','from'].forEach(field=>{
+    const unsub=requestsRef.where(field,'==',uid).onSnapshot(snap=>{
+      if(!fbUser||fbUser.uid!==uid)return;
+      snap.docs.forEach(d=>socialRequestDocs.set(d.id,{id:d.id,...d.data()}));
+      // Remove stale cached docs for this direction before re-populating.
+      const liveIds=new Set(snap.docs.map(d=>d.id));
+      [...socialRequestDocs.entries()].forEach(([id,d])=>{if(d[field]===uid&&!liveIds.has(id))socialRequestDocs.delete(id);});
+      renderFriendRequests(uid);
+    },e=>{console.error('[WeatherPro/Requests]',e);const box=$('friendRequests');if(box)box.textContent='Не удалось загрузить заявки: '+(e.code||e.message);});
+    activeRequestsUnsubscribes.push(unsub);
+  });
+  activeFriendshipsUnsubscribe=fbDb.collection('friendships').where('members','array-contains',uid).onSnapshot(snap=>{
+    if(!fbUser||fbUser.uid!==uid)return;
+    renderFriends(uid,snap.docs).catch(e=>console.error('[WeatherPro/Friends] render',e));
+  },e=>{console.error('[WeatherPro/Friends]',e);const box=$('friendsList');if(box)box.textContent='Не удалось загрузить друзей: '+(e.code||e.message);});
+}
+function startChatListListener(uid){
+  if(activeChatsUnsubscribe){activeChatsUnsubscribe();activeChatsUnsubscribe=null;}
+  const box=$('chatList');if(!box)return;
+  activeChatsUnsubscribe=fbDb.collection('chats').where('members','array-contains',uid).onSnapshot(async snap=>{
+    if(!fbUser||fbUser.uid!==uid)return;
+    const docs=snap.docs.filter(doc=>{
+      const other=(doc.data().members||[]).find(x=>x!==uid);
+      return !!other && socialFriendIds.has(other);
+    }).slice().sort((a,b)=>{
+      const av=a.data().updatedAt?.toMillis?.()||0,bv=b.data().updatedAt?.toMillis?.()||0;return bv-av;
+    });
+    box.innerHTML='';
+    if(!docs.length){box.innerHTML='<div class="person-empty">Диалоги появятся после первого сообщения</div>';return;}
+    for(const doc of docs){
+      const data=doc.data(),other=(data.members||[]).find(x=>x!==uid);if(!other)continue;
+      let profile={};try{const p=await fbDb.collection('publicProfiles').doc(other).get();profile=p.data()||{};}catch(_){}
+      if(!fbUser||fbUser.uid!==uid)return;
+      const el=document.createElement('div');el.className='social-person';
+      const last=String(data.lastMessage||'').slice(0,100);
+      el.innerHTML=`${socialAvatar({displayName:profile.displayName||'Друг',avatar:profile.avatar})}<div class="social-person-info"><strong>${socialEsc(profile.displayName||'Друг')}</strong><small class="chat-list-meta">${socialEsc(last||'Откройте диалог')}</small></div><div class="social-actions"><button type="button">Открыть</button></div>`;
+      el.querySelector('button').addEventListener('click',()=>openChat(other,profile.displayName||'Друг'));
+      box.appendChild(el);
+    }
+  },e=>{console.error('[WeatherPro/ChatList]',e);box.textContent='Не удалось загрузить диалоги: '+(e.code||e.message);});
+}
+async function openChat(otherUid, otherName){
+  if(!requireSocialAuth()||!otherUid||otherUid===fbUser.uid)return;
+  const uid=fbUser.uid,id=chatIdFor(uid,otherUid),ref=fbDb.collection('chats').doc(id);
+  try{
+    // A canonical friendship is required before either opening or creating a chat.
+    const friendshipSnap=await fbDb.collection('friendships').where('members','array-contains',uid).get();
+    if(!fbUser||fbUser.uid!==uid)return;
+    if(!friendshipSnap.docs.some(d=>d.id===id&&(d.data().members||[]).includes(otherUid))){
+      socialNotice('Личный чат доступен только действующим друзьям.',true);return;
+    }
+    // set(merge) intentionally avoids reading a possibly absent chat document.
+    // Security Rules separately authorize create vs update and require friendship.
+    await ref.set({members:[uid,otherUid].sort()},{merge:true});
+    if(activeChatUnsubscribe){activeChatUnsubscribe();activeChatUnsubscribe=null;}
+    activeChatId=id;activeChatOtherUid=otherUid;activeChatMessagesCache=[];
+    $('chatTitle').textContent=otherName||'Чат';$('chatSubtitle').textContent='Личная переписка';
+    $('chatMessages').innerHTML='<div class="person-empty">Загружаем сообщения…</div>';
+    if($('chatSearchInput'))$('chatSearchInput').value='';
+    showPage('chat');
+    activeChatUnsubscribe=ref.collection('messages').orderBy('createdAt','asc').limitToLast(200).onSnapshot(snapshot=>{
+      if(!fbUser||fbUser.uid!==uid||activeChatId!==id)return;
+      activeChatMessagesCache=snapshot.docs.map(d=>({id:d.id,...d.data()}));
+      renderChatMessages();
+    },e=>{console.error('[WeatherPro/Chat] listen',e);$('chatMessages').textContent='Нет доступа к переписке: '+(e.code||e.message);});
+  }catch(e){
+    console.error('[WeatherPro/Chat] open',e);
+    socialNotice('Не удалось открыть чат: '+(e.code||e.message),true);
+  }
+}
+function renderChatMessages(){
+  const box=$('chatMessages');if(!box)return;
+  const query=($('chatSearchInput')?.value||'').trim().toLocaleLowerCase();
+  const rows=activeChatMessagesCache.filter(m=>!query||String(m.text||'').toLocaleLowerCase().includes(query));
+  box.innerHTML='';
+  if(!rows.length){box.innerHTML='<div class="person-empty">'+(query?'Совпадений не найдено':'Начните разговор 👋')+'</div>';return;}
+  rows.forEach(m=>{
+    const mine=m.senderId===fbUser?.uid,el=document.createElement('div');el.className='chat-bubble'+(mine?' mine':'');
+    const body=document.createElement('div');body.textContent=String(m.text||'');el.appendChild(body);
+    const meta=document.createElement('small');const date=m.createdAt?.toDate?m.createdAt.toDate():null;
+    meta.textContent=(mine?'Вы':String(m.senderName||'Друг'))+' · '+(date?date.toLocaleString('ru-RU',{hour:'2-digit',minute:'2-digit'}):'');el.appendChild(meta);
+    if(mine){const del=document.createElement('button');del.className='chat-delete';del.type='button';del.textContent='Удалить';del.addEventListener('click',()=>deleteChatMessage(m.id));el.appendChild(del);}
+    box.appendChild(el);
+  });
+  if(!query)box.scrollTop=box.scrollHeight;
+}
+function filterChatMessages(){renderChatMessages();}
+async function deleteChatMessage(messageId){
+  if(!requireSocialAuth()||!activeChatId||!messageId)return;
+  if(!confirm('Удалить это сообщение?'))return;
+  try{
+    const chatId=activeChatId,uid=fbUser.uid,chatRef=fbDb.collection('chats').doc(chatId);
+    const msgRef=chatRef.collection('messages').doc(messageId),msg=await msgRef.get();
+    if(!fbUser||fbUser.uid!==uid)return;
+    if(!msg.exists||msg.data().senderId!==uid){socialNotice('Можно удалить только собственное сообщение',true);return;}
+    await msgRef.delete();
+    const latest=await chatRef.collection('messages').orderBy('createdAt','desc').limit(1).get();
+    if(!fbUser||fbUser.uid!==uid||activeChatId!==chatId)return;
+    const preview=latest.empty?'':String(latest.docs[0].data().text||'').slice(0,180);
+    await chatRef.update({lastMessage:preview,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+  }catch(e){socialNotice('Не удалось удалить сообщение: '+(e.code||e.message),true);}
+}
+async function sendChatMessage(event){
+  event?.preventDefault();if(!requireSocialAuth()||!activeChatId)return;
+  const input=$('chatMessageInput'),message=(input?.value||'').trim();
+  if(!message)return;if(message.length>2000){socialNotice('Сообщение слишком длинное',true);return;}
+  const uid=fbUser.uid,chatId=activeChatId;input.value='';
+  try{
+    const ref=fbDb.collection('chats').doc(chatId),batch=fbDb.batch(),msgRef=ref.collection('messages').doc();
+    batch.set(msgRef,{senderId:uid,senderName:String(currentUser?.name||fbUser.displayName||'Пользователь').slice(0,80),text:message,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+    batch.update(ref,{lastMessage:message.slice(0,180),updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+    await batch.commit();
+  }catch(e){if(input&&fbUser?.uid===uid)input.value=message;console.error('[WeatherPro/Chat] send',e);socialNotice('Не удалось отправить сообщение: '+(e.code||e.message),true);}
+}
+window.sendFriendRequest=sendFriendRequest;window.respondFriendRequest=respondFriendRequest;window.loadSocialHub=loadSocialHub;window.openChat=openChat;window.sendChatMessage=sendChatMessage;window.cancelFriendRequest=cancelFriendRequest;window.removeFriend=removeFriend;window.filterChatMessages=filterChatMessages;
+/* ============================================================
+   UTILS
+   ============================================================ */
 
 function formatTime(dateOrTs){
   const d = (dateOrTs instanceof Date) ? dateOrTs : new Date(dateOrTs);
@@ -1475,9 +2206,13 @@ function convertWind(speedMs){
   }
 }
 
+/* ============================================================
+   I18N
+   ============================================================ */
+
 const T = {
-  ru:{nav_home:'Главная',nav_charts:'Графики',nav_map:'Карта',nav_favorites:'Избранное',nav_stats:'Статистика',nav_history:'Архив',nav_widget:'Виджет',nav_ai:'Weather AI',nav_compare:'Сравнение',nav_profile:'Профиль',nav_settings:'Настройки',nav_about:'О нас',search_title:'Поиск города',search_btn:'Найти',history_title:'История поиска',history_clear:'Очистить',popular_title:'Популярные города',share_weather:'Поделиться',geo_btn:'Моё местоположение',pdf_btn:'Экспорт PDF',qr_btn:'QR-код',loading:'Загрузка данных...',feels_like:'Ощущается как',wind:'Ветер',humidity:'Влажность',pressure:'Давление',hourly_title:'Почасовой прогноз',forecast_title:'Прогноз на 5 дней',charts_title:'Графики погоды',chart_temp:'Температура',chart_humidity:'Влажность',map_title:'Карта осадков',fav_title:'Избранные города',stats_title:'Статистика погоды',stat_max_temp:'Макс. температура',stat_min_temp:'Мин. температура',stat_avg_temp:'Средняя температура',stat_rain_days:'Дней с осадками',history_desc:'Данные сохраняются локально при каждом просмотре прогноза',widget_title:'Виджет погоды',widget_desc:'Скопируйте этот код для вставки виджета на ваш сайт.',widget_copy:'Копировать код',auth_login:'Вход',auth_register:'Регистрация',login_title:'Вход в аккаунт',email:'Email',password:'Пароль',login_btn:'Войти',login_register_link:'Нет аккаунта? Зарегистрируйтесь',register_title:'Регистрация',name:'Имя',confirm_password:'Подтвердите пароль',register_btn:'Зарегистрироваться',register_login_link:'Уже есть аккаунт? Войдите',profile_title:'Мой профиль',default_city:'Город по умолчанию',reg_date:'Дата регистрации',bio:'О себе',save_profile:'Сохранить изменения',share_profile:'Поделиться профилем',settings_title:'Настройки',settings_appearance:'Внешний вид',dark_theme:'Темная тема',dark_theme_desc:'Использовать темный режим',animations:'Анимации',animations_desc:'Плавные анимации интерфейса',accent_color:'Акцентный цвет',accent_color_desc:'Основной цвет оформления',theme:'Тема оформления',theme_desc:'Готовая тема',settings_weather:'Погода',units:'Единицы измерения',units_desc:'Система измерения',auto_location:'Автоопределение',auto_location_desc:'Определять местоположение',weather_notifications:'Уведомления о погоде',weather_notifications_desc:'Получать уведомления',settings_notifications:'Уведомления',browser_notifications:'Уведомления в браузере',browser_notifications_desc:'Показывать уведомления',sound_notifications:'Звуковые уведомления',sound_notifications_desc:'Звук при уведомлениях',settings_data:'Данные',save_history:'История поиска',save_history_desc:'Сохранять историю',auto_save:'Автосохранение',auto_save_desc:'Сохранять изменения',save_settings:'Сохранить настройки',reset_settings:'Сбросить настройки',choose_avatar:'Выберите аватар',upload_photo:'Или загрузите фото',save_avatar:'Сохранить аватар',cancel:'Отмена',ai_send:'Отправить',ai_placeholder:'Например: Нужен ли зонт завтра?',alerts_title:'Предупреждения',visibility:'Видимость',wind_gust:'Порывы ветра',uv_index:'УФ-индекс',now_label:'Сейчас'},
-  en:{nav_home:'Home',nav_charts:'Charts',nav_map:'Map',nav_favorites:'Favorites',nav_stats:'Stats',nav_history:'History',nav_widget:'Widget',nav_ai:'Weather AI',nav_compare:'Compare',nav_profile:'Profile',nav_settings:'Settings',nav_about:'About',search_title:'Search City',search_btn:'Search',history_title:'Search History',history_clear:'Clear',popular_title:'Popular Cities',share_weather:'Share',geo_btn:'My Location',pdf_btn:'Export PDF',qr_btn:'QR Code',loading:'Loading...',feels_like:'Feels like',wind:'Wind',humidity:'Humidity',pressure:'Pressure',hourly_title:'Hourly Forecast',forecast_title:'5-Day Forecast',charts_title:'Weather Charts',chart_temp:'Temperature',chart_humidity:'Humidity',map_title:'Precipitation Map',fav_title:'Favorite Cities',stats_title:'Weather Statistics',stat_max_temp:'Max Temp',stat_min_temp:'Min Temp',stat_avg_temp:'Avg Temp',stat_rain_days:'Rainy Days',history_desc:'Data is stored locally each time you view a forecast',widget_title:'Weather Widget',widget_desc:'Copy this code to embed the widget.',widget_copy:'Copy Code',auth_login:'Login',auth_register:'Register',login_title:'Login',email:'Email',password:'Password',login_btn:'Sign In',login_register_link:"No account? Register",register_title:'Register',name:'Name',confirm_password:'Confirm Password',register_btn:'Sign Up',register_login_link:'Have an account? Login',profile_title:'My Profile',default_city:'Default City',reg_date:'Registration Date',bio:'Bio',save_profile:'Save Changes',share_profile:'Share Profile',settings_title:'Settings',settings_appearance:'Appearance',dark_theme:'Dark Theme',dark_theme_desc:'Use dark mode',animations:'Animations',animations_desc:'Smooth UI animations',accent_color:'Accent Color',accent_color_desc:'Primary UI color',theme:'Theme',theme_desc:'Preset theme',settings_weather:'Weather',units:'Units',units_desc:'Measurement system',auto_location:'Auto Location',auto_location_desc:'Detect location',weather_notifications:'Weather Notifications',weather_notifications_desc:'Receive alerts',settings_notifications:'Notifications',browser_notifications:'Browser Notifications',browser_notifications_desc:'Show notifications',sound_notifications:'Sound',sound_notifications_desc:'Play sound',settings_data:'Data',save_history:'Search History',save_history_desc:'Save search history',auto_save:'Auto Save',auto_save_desc:'Auto-save settings',save_settings:'Save Settings',reset_settings:'Reset Settings',choose_avatar:'Choose Avatar',upload_photo:'Or upload photo',save_avatar:'Save Avatar',cancel:'Cancel',ai_send:'Send',ai_placeholder:'e.g. Do I need an umbrella tomorrow?',alerts_title:'Alerts',visibility:'Visibility',wind_gust:'Wind Gust',uv_index:'UV Index',now_label:'Now'}
+  ru:{nav_home:'Главная',nav_charts:'Графики',nav_map:'Карта',nav_favorites:'Избранное',nav_stats:'Статистика',nav_history:'Архив',nav_widget:'Виджет',nav_ai:'Weather AI',nav_compare:'Сравнение',nav_people:'Люди',nav_profile:'Профиль',nav_settings:'Настройки',nav_about:'О нас',search_title:'Поиск города',search_btn:'Найти',history_title:'История поиска',history_clear:'Очистить',popular_title:'Популярные города',share_weather:'Поделиться',geo_btn:'Моё местоположение',pdf_btn:'Экспорт PDF',qr_btn:'QR-код',loading:'Загрузка данных...',feels_like:'Ощущается как',wind:'Ветер',humidity:'Влажность',pressure:'Давление',hourly_title:'Почасовой прогноз',forecast_title:'Прогноз на 5 дней',charts_title:'Графики погоды',chart_temp:'Температура',chart_humidity:'Влажность',map_title:'Карта осадков',fav_title:'Избранные города',stats_title:'Статистика погоды',stat_max_temp:'Макс. температура',stat_min_temp:'Мин. температура',stat_avg_temp:'Средняя температура',stat_rain_days:'Дней с осадками',history_desc:'Данные сохраняются локально',widget_title:'Виджет погоды',widget_desc:'Скопируйте этот код для вставки виджета.',widget_copy:'Копировать код',auth_login:'Вход',auth_register:'Регистрация',login_title:'Вход в аккаунт',email:'Email',password:'Пароль',login_btn:'Войти',login_register_link:'Нет аккаунта? Зарегистрируйтесь',register_title:'Регистрация',name:'Имя',confirm_password:'Подтвердите пароль',register_btn:'Зарегистрироваться',register_login_link:'Уже есть аккаунт? Войдите',profile_title:'Мой профиль',default_city:'Город по умолчанию',reg_date:'Дата регистрации',bio:'О себе',save_profile:'Сохранить изменения',share_profile:'Поделиться профилем',settings_title:'Настройки',settings_appearance:'Внешний вид',dark_theme:'Темная тема',dark_theme_desc:'Использовать темный режим',animations:'Анимации',animations_desc:'Плавные анимации интерфейса',accent_color:'Акцентный цвет',accent_color_desc:'Основной цвет оформления',theme:'Тема оформления',theme_desc:'Готовая тема',settings_weather:'Погода',units:'Единицы измерения',units_desc:'Система измерения',auto_location:'Автоопределение',auto_location_desc:'Определять местоположение',weather_notifications:'Уведомления о погоде',weather_notifications_desc:'Получать уведомления',settings_notifications:'Уведомления',browser_notifications:'Уведомления в браузере',browser_notifications_desc:'Показывать уведомления',sound_notifications:'Звуковые уведомления',sound_notifications_desc:'Звук при уведомлениях',settings_data:'Данные',save_history:'История поиска',save_history_desc:'Сохранять историю',auto_save:'Автосохранение',auto_save_desc:'Сохранять изменения',save_settings:'Сохранить настройки',reset_settings:'Сбросить настройки',choose_avatar:'Выберите аватар',upload_photo:'Или загрузите фото',save_avatar:'Сохранить аватар',cancel:'Отмена',ai_send:'Отправить',ai_placeholder:'Например: Нужен ли зонт завтра?',alerts_title:'Предупреждения',visibility:'Видимость',wind_gust:'Порывы ветра',uv_index:'УФ-индекс',now_label:'Сейчас'},
+  en:{nav_home:'Home',nav_charts:'Charts',nav_map:'Map',nav_favorites:'Favorites',nav_stats:'Stats',nav_history:'History',nav_widget:'Widget',nav_ai:'Weather AI',nav_compare:'Compare',nav_people:'People',nav_profile:'Profile',nav_settings:'Settings',nav_about:'About',search_title:'Search City',search_btn:'Search',history_title:'Search History',history_clear:'Clear',popular_title:'Popular Cities',share_weather:'Share',geo_btn:'My Location',pdf_btn:'Export PDF',qr_btn:'QR Code',loading:'Loading...',feels_like:'Feels like',wind:'Wind',humidity:'Humidity',pressure:'Pressure',hourly_title:'Hourly Forecast',forecast_title:'5-Day Forecast',charts_title:'Weather Charts',chart_temp:'Temperature',chart_humidity:'Humidity',map_title:'Precipitation Map',fav_title:'Favorite Cities',stats_title:'Weather Statistics',stat_max_temp:'Max Temp',stat_min_temp:'Min Temp',stat_avg_temp:'Avg Temp',stat_rain_days:'Rainy Days',history_desc:'Data is stored locally',widget_title:'Weather Widget',widget_desc:'Copy this code to embed the widget.',widget_copy:'Copy Code',auth_login:'Login',auth_register:'Register',login_title:'Login',email:'Email',password:'Password',login_btn:'Sign In',login_register_link:'No account? Register',register_title:'Register',name:'Name',confirm_password:'Confirm Password',register_btn:'Sign Up',register_login_link:'Have an account? Login',profile_title:'My Profile',default_city:'Default City',reg_date:'Registration Date',bio:'Bio',save_profile:'Save Changes',share_profile:'Share Profile',settings_title:'Settings',settings_appearance:'Appearance',dark_theme:'Dark Theme',dark_theme_desc:'Use dark mode',animations:'Animations',animations_desc:'Smooth UI animations',accent_color:'Accent Color',accent_color_desc:'Primary UI color',theme:'Theme',theme_desc:'Preset theme',settings_weather:'Weather',units:'Units',units_desc:'Measurement system',auto_location:'Auto Location',auto_location_desc:'Detect location',weather_notifications:'Weather Notifications',weather_notifications_desc:'Receive alerts',settings_notifications:'Notifications',browser_notifications:'Browser Notifications',browser_notifications_desc:'Show notifications',sound_notifications:'Sound',sound_notifications_desc:'Play sound',settings_data:'Data',save_history:'Search History',save_history_desc:'Save search history',auto_save:'Auto Save',auto_save_desc:'Auto-save settings',save_settings:'Save Settings',reset_settings:'Reset Settings',choose_avatar:'Choose Avatar',upload_photo:'Or upload photo',save_avatar:'Save Avatar',cancel:'Cancel',ai_send:'Send',ai_placeholder:'e.g. Do I need an umbrella tomorrow?',alerts_title:'Alerts',visibility:'Visibility',wind_gust:'Wind Gust',uv_index:'UV Index',now_label:'Now'}
 };
 function setLang(l){
   lang=l;
@@ -1490,6 +2225,11 @@ function setLang(l){
   });
   if(recognition) recognition.lang = l==='ru'?'ru-RU':'en-US';
 }
+window.setLang=setLang;
+
+/* ============================================================
+   INIT
+   ============================================================ */
 
 document.addEventListener('DOMContentLoaded', init);
 
@@ -1502,19 +2242,20 @@ function init(){
   showNotifBanner();
   applyCompactMode(settings.compactMode);
   initPWAInstall();
+  syncSmartAlertControls();
 
   document.querySelectorAll('.city-btn').forEach(b=>b.addEventListener('click',()=>{
-    cityInput.value=b.dataset.city; getWeather(b.dataset.city); addToSearch(b.dataset.city);
+    $('cityInput').value=b.dataset.city; getWeather(b.dataset.city); addToSearch(b.dataset.city);
   }));
 
-  let st; cityInput.addEventListener('input',()=>{clearTimeout(st); st=setTimeout(()=>{saveLast(cityInput.value);showSaveIndicator();},800);});
+  let st; $('cityInput').addEventListener('input',()=>{clearTimeout(st); st=setTimeout(()=>{saveLast($('cityInput').value);showSaveIndicator();},800);});
   $('searchBtn').addEventListener('click', async () => {
-    const c = cityInput.value.trim();
+    const c = $('cityInput').value.trim();
     if(!c) return;
     const handled = await handleCoordinateSearch(c);
     if(!handled){ getWeather(c); addToSearch(c); }
   });
-  cityInput.addEventListener('keypress',e=>{if(e.key==='Enter'){hideAC();$('searchBtn').click();}});
+  $('cityInput').addEventListener('keypress',e=>{if(e.key==='Enter'){hideAC();$('searchBtn').click();}});
   $('aiInput').addEventListener('keypress',e=>{if(e.key==='Enter')sendAIMessage();});
   document.addEventListener('keydown',e=>{
     if(e.key==='Escape'){closeQRModal();closeAvatarModal();hideAC();closeDayDetail();}
@@ -1532,6 +2273,7 @@ function init(){
   loadHistory();
   renderMultiCityHome();
 }
+window.init=init;
 function applyCompactMode(on){ document.body.classList.toggle('compact', !!on); }
 
 function initNetworkBadge(){
@@ -1560,6 +2302,10 @@ function registerSW(){
     navigator.serviceWorker.register(url).catch(()=>{});
   }catch(e){}
 }
+
+/* ============================================================
+   SETTINGS
+   ============================================================ */
 
 function loadSettings(){
   try{ settings=JSON.parse(localStorage.getItem(KEYS.SETTINGS))||{}; }catch(e){settings={};}
@@ -1625,7 +2371,6 @@ function autoTheme(d){
     else if(main === 'Rain' || main === 'Drizzle') theme = 'rain';
     else if(main === 'Thunderstorm') theme = 'cosmos';
     else if(main === 'Snow') theme = 'snow';
-    else theme = 'default';
   } else {
     if(main === 'Clear') theme = 'cosmos';
     else if(main === 'Rain' || main === 'Drizzle' || main === 'Thunderstorm') theme = 'rain';
@@ -1638,9 +2383,7 @@ function updateDayNightIndicator(isDay){
   const b = $('dayNightBadge');
   if(!b) return;
   b.classList.toggle('night', !isDay);
-  b.innerHTML = isDay
-    ? `${svg('i-sun')}<span>День</span>`
-    : `${svg('i-moon')}<span>Ночь</span>`;
+  b.innerHTML = isDay ? `${svg('i-sun')}<span>День</span>` : `${svg('i-moon')}<span>Ночь</span>`;
 }
 function saveSettingsSilent(){ localStorage.setItem(KEYS.SETTINGS,JSON.stringify(settings)); }
 function saveSettings(){
@@ -1658,13 +2401,16 @@ function saveSettings(){
   });
   saveSettingsSilent(); applyTheme(); applyCompactMode(settings.compactMode);
   if(!settings.autoTheme) applyTheme2(settings.theme);
-  getWeather(document.getElementById('locationName').textContent.split(',')[0]);
+  getWeather($('locationName').textContent.split(',')[0]);
+  syncToCloud();
   showNotification('Настройки сохранены');
 }
+window.saveSettings=saveSettings;
 function resetSettings(){
   if(!confirm('Сбросить настройки?')) return;
   localStorage.removeItem(KEYS.SETTINGS); loadSettings(); applyCompactMode(settings.compactMode); showNotification('Настройки сброшены');
 }
+window.resetSettings=resetSettings;
 function initColors(){
   const colors=['#3b82f6','#8b5cf6','#ec4899','#f59e0b','#10b981','#ef4444'];
   const c=$('colorOptions'); c.innerHTML='';
@@ -1672,7 +2418,7 @@ function initColors(){
     const d=document.createElement('div');
     d.className='color-option'+(col===settings.accentColor?' active':'');
     d.style.background=col; d.dataset.color=col;
-    d.onclick=()=>{document.querySelectorAll('.color-option').forEach(el=>el.classList.remove('active'));d.classList.add('active');applyAccent(col);};
+    d.onclick=()=>{document.querySelectorAll('.color-option').forEach(el=>el.classList.remove('active'));d.classList.add('active');applyAccent(col);syncToCloud();};
     c.appendChild(d);
   });
 }
@@ -1683,10 +2429,14 @@ function initThemes(){
     const b=document.createElement('button');
     b.className='theme-option'+(id===settings.theme?' active':'');
     b.dataset.theme=id; b.textContent=label;
-    b.onclick=()=>{settings.autoTheme=false; $('autoThemeToggle').checked=false; applyTheme2(id); saveSettingsSilent();};
+    b.onclick=()=>{settings.autoTheme=false; $('autoThemeToggle').checked=false; applyTheme2(id); saveSettingsSilent(); syncToCloud();};
     c.appendChild(b);
   });
 }
+
+/* ============================================================
+   USER
+   ============================================================ */
 
 function loadUser(){
   try{ currentUser=JSON.parse(localStorage.getItem(KEYS.USER)); }catch(e){}
@@ -1709,39 +2459,37 @@ function updateUI(){
   else if(currentUser.avatarIcon){ pv.innerHTML=svg(currentUser.avatarIcon); pv.style.backgroundImage='none'; pv.style.background='linear-gradient(135deg,#3b82f6,#1e40af)'; }
   else { pv.innerHTML=svg('i-user'); pv.style.backgroundImage='none'; pv.style.background='linear-gradient(135deg,#3b82f6,#1e40af)'; }
 }
-
 function switchAuthForm(f){
   const l=$('loginForm'), r=$('registerForm'), b=document.querySelectorAll('#authSwitcher .page-switch');
   if(f==='login'){ l.style.display='block'; r.style.display='none'; b[0].classList.add('active'); b[1].classList.remove('active'); }
   else { l.style.display='none'; r.style.display='block'; b[0].classList.remove('active'); b[1].classList.add('active'); }
 }
-function login(){
-  const e=$('loginEmail').value.trim(), p=$('loginPassword').value.trim();
-  if(!e||!p){showNotification('Заполните поля',true);return;}
-  currentUser={id:'u_'+Date.now(),name:e.split('@')[0],email:e,avatar:null,avatarIcon:null,defaultCity:'Москва',registrationDate:new Date().toISOString(),bio:''};
-  saveUser(); updateUI(); showPage('home'); showNotification('Вход выполнен');
-}
-function register(){
-  const n=$('registerName').value.trim(), e=$('registerEmail').value.trim(), p=$('registerPassword').value, c=$('registerConfirmPassword').value;
-  if(!n||!e||!p){showNotification('Заполните поля',true);return;}
-  if(p!==c){showNotification('Пароли не совпадают',true);return;}
-  if(p.length<6){showNotification('Пароль минимум 6 символов',true);return;}
-  currentUser={id:'u_'+Date.now(),name:n,email:e,avatar:null,avatarIcon:null,defaultCity:'Москва',registrationDate:new Date().toISOString(),bio:''};
-  saveUser(); updateUI(); showPage('home'); showNotification('Регистрация успешна');
-}
-function logout(){
+window.switchAuthForm=switchAuthForm;
+async function logout(){
   if(!confirm('Выйти из аккаунта?')) return;
-  currentUser={id:'guest',name:'Гость',email:'',avatar:null,avatarIcon:null,defaultCity:'Москва',registrationDate:new Date().toISOString(),bio:''};
-  saveUser(); updateUI(); showPage('auth'); showNotification('Вы вышли'); $('userMenu').classList.remove('show');
+  try {
+    if(fbReady && fbAuth && fbUser) await fbAuth.signOut();
+    else {
+      currentUser={id:'guest',name:'Гость',email:'',avatar:null,avatarIcon:null,defaultCity:'Москва',registrationDate:new Date().toISOString(),bio:''};
+      saveUser(); updateUI();
+    }
+    showPage('auth');
+    showNotification('Вы вышли');
+    $('userMenu').classList.remove('show');
+  } catch (error) {
+    console.error('[WeatherPro/Auth] Ошибка выхода:', error);
+    showNotification('Не удалось выйти: ' + (error.code || error.message), true);
+  }
 }
-
+window.logout=logout;
 function saveProfile(){
-  const n=$('profileName').value.trim(), e=$('profileEmail').value.trim(), c=$('profileCity').value.trim(), b=$('profileBio').value.trim();
+  const n=$('profileName').value.trim(), e=(fbUser && fbUser.email) ? fbUser.email : $('profileEmail').value.trim(), c=$('profileCity').value.trim(), b=$('profileBio').value.trim();
   if(!n){showNotification('Введите имя',true);return;}
   if(e && !e.includes('@')){showNotification('Неверный email',true);return;}
   Object.assign(currentUser,{name:n,email:e,defaultCity:c,bio:b});
-  saveUser(); updateUI(); showNotification('Профиль сохранён');
+  saveUser(); updateUI(); syncToCloud(); showNotification('Профиль сохранён');
 }
+window.saveProfile=saveProfile;
 const AV_ICONS=['i-av-1','i-av-2','i-av-3','i-av-4','i-av-5','i-av-6','i-av-7','i-av-8','i-av-9','i-av-10'];
 function changeAvatar(){
   const o=$('avatarOptions'); o.innerHTML=''; selectedAvatar=null;
@@ -1754,25 +2502,112 @@ function changeAvatar(){
   $('customAvatarInput').value='';
   $('avatarModal').classList.add('show'); document.body.style.overflow='hidden';
 }
-function saveAvatar(){
-  const f=$('customAvatarInput').files;
-  if(f&&f[0]){
-    const r=new FileReader();
-    r.onload=e=>{currentUser.avatar=e.target.result;currentUser.avatarIcon=null;saveUser();updateUI();closeAvatarModal();showNotification('Аватар загружен');};
-    r.readAsDataURL(f[0]);
-  } else if(selectedAvatar){
-    currentUser.avatar=null; currentUser.avatarIcon=selectedAvatar;
-    saveUser(); updateUI(); closeAvatarModal(); showNotification('Аватар изменён');
-  } else showNotification('Выберите аватар',true);
+window.changeAvatar=changeAvatar;
+function compressImage(file){
+  return new Promise((resolve,reject)=>{
+    if(!file || !file.type || !file.type.startsWith('image/')){
+      reject(new Error('Выберите файл изображения'));
+      return;
+    }
+
+    const image=new Image();
+    const objectUrl=URL.createObjectURL(file);
+
+    image.onload=()=>{
+      try{
+        const size=200;
+        const canvas=document.createElement('canvas');
+        const context=canvas.getContext('2d');
+
+        if(!context){
+          URL.revokeObjectURL(objectUrl);
+          reject(new Error('Не удалось обработать изображение'));
+          return;
+        }
+
+        canvas.width=size;
+        canvas.height=size;
+
+        // Обрезаем по центру, сохраняя пропорции изображения.
+        const scale=Math.max(size/image.width,size/image.height);
+        const width=image.width*scale;
+        const height=image.height*scale;
+        const x=(size-width)/2;
+        const y=(size-height)/2;
+
+        context.fillStyle='#fff';
+        context.fillRect(0,0,size,size);
+        context.drawImage(image,x,y,width,height);
+
+        const compressed=canvas.toDataURL('image/jpeg',0.7);
+        URL.revokeObjectURL(objectUrl);
+        resolve(compressed);
+      }catch(error){
+        URL.revokeObjectURL(objectUrl);
+        reject(error);
+      }
+    };
+
+    image.onerror=()=>{
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error('Не удалось загрузить изображение'));
+    };
+
+    image.src=objectUrl;
+  });
 }
+window.compressImage=compressImage;
+
+async function saveAvatar(){
+  const files=$('customAvatarInput').files;
+
+  if(files && files[0]){
+    try{
+      const compressedAvatar=await compressImage(files[0]);
+      currentUser.avatar=compressedAvatar;
+      currentUser.avatarIcon=null;
+
+      saveUser();
+      updateUI();
+      const cloudSaved = await syncToCloud();
+      if (fbUser && !cloudSaved) throw new Error('Аватар сохранён локально, но не синхронизирован с Firestore. Проверьте Rules и консоль.');
+      closeAvatarModal();
+      showNotification('Аватар загружен');
+    }catch(error){
+      console.warn('saveAvatar',error);
+      showNotification(error.message||'Не удалось сохранить аватар',true);
+    }
+  }else if(selectedAvatar){
+    currentUser.avatar=null;
+    currentUser.avatarIcon=selectedAvatar;
+
+    saveUser();
+    updateUI();
+    const cloudSaved = await syncToCloud();
+    if (fbUser && !cloudSaved) throw new Error('Аватар сохранён локально, но не синхронизирован с Firestore. Проверьте Rules и консоль.');
+    closeAvatarModal();
+    showNotification('Аватар изменён');
+  }else{
+    showNotification('Выберите аватар',true);
+  }
+}
+window.saveAvatar=saveAvatar;
 function closeAvatarModal(){ $('avatarModal').classList.remove('show'); document.body.style.overflow='auto'; }
+window.closeAvatarModal=closeAvatarModal;
+
+
+
+
+/* ============================================================
+   HISTORY / FAVORITES
+   ============================================================ */
 
 function getHistoryList(){ try{return JSON.parse(localStorage.getItem(KEYS.SEARCH))||[];}catch(e){return[];} }
 function addToSearch(city){
   if(!settings.saveHistory || !city) return;
   const n=city.trim(); if(!n) return;
   let h=getHistoryList().filter(x=>x!==n); h.unshift(n); if(h.length>10) h=h.slice(0,10);
-  localStorage.setItem(KEYS.SEARCH,JSON.stringify(h)); loadSearchHistory();
+  localStorage.setItem(KEYS.SEARCH,JSON.stringify(h)); loadSearchHistory(); syncToCloud();
 }
 function loadSearchHistory(){
   const h=getHistoryList(), g=$('historyGrid'), c=$('searchHistory');
@@ -1781,12 +2616,13 @@ function loadSearchHistory(){
     h.forEach(city=>{
       const el=document.createElement('button');
       el.className='history-item'; el.textContent=city;
-      el.onclick=()=>{cityInput.value=city;getWeather(city);};
+      el.onclick=()=>{$('cityInput').value=city;getWeather(city);};
       g.appendChild(el);
     });
   } else c.classList.remove('visible');
 }
-function clearSearchHistory(){ localStorage.removeItem(KEYS.SEARCH); loadSearchHistory(); showNotification('История очищена'); }
+function clearSearchHistory(){ localStorage.removeItem(KEYS.SEARCH); loadSearchHistory(); syncToCloud(); showNotification('История очищена'); }
+window.clearSearchHistory=clearSearchHistory;
 
 let acTimer=null, acIndex=-1, acItems=[];
 function initAutocomplete(){
@@ -1834,28 +2670,27 @@ function renderAC(){
   });
   ac.classList.add('show');
 }
-function pickAC(it){
-  cityInput.value=it.name; hideAC();
-  getWeather(it.name); addToSearch(it.name);
-}
+function pickAC(it){ $('cityInput').value=it.name; hideAC(); getWeather(it.name); addToSearch(it.name); }
 function hideAC(){ $('autocomplete').classList.remove('show'); acIndex=-1; }
 
 function getFavs(){ try{return JSON.parse(localStorage.getItem(KEYS.FAV))||[];}catch(e){return[];} }
 function toggleFavorite(){
-  const city=document.getElementById('locationName').textContent.split(',')[0].trim();
+  const city=$('locationName').textContent.split(',')[0].trim();
   let f=getFavs(); const i=f.indexOf(city);
   if(i===-1){ f.push(city); showNotification(`${city} в избранном`); }
   else { f.splice(i,1); showNotification(`${city} удалён из избранного`); }
   localStorage.setItem(KEYS.FAV,JSON.stringify(f));
-  updateFavBtn(); renderFavorites(); renderMultiCityHome();
+  updateFavBtn(); renderFavorites(); renderMultiCityHome(); syncToCloud();
 }
+window.toggleFavorite=toggleFavorite;
 function updateFavBtn(){
-  const city=document.getElementById('locationName').textContent.split(',')[0].trim();
+  const city=$('locationName').textContent.split(',')[0].trim();
   const btn=$('favoriteBtn'); const active=getFavs().includes(city);
   btn.classList.toggle('active',active);
   btn.innerHTML=svg(active?'i-star-fill':'i-star');
 }
 function showFavorites(){ showPage('favorites'); renderFavorites(); }
+window.showFavorites=showFavorites;
 function renderFavorites(){
   const g=$('favoritesGrid'), f=getFavs();
   if(!f.length){ g.innerHTML='<p style="color:var(--text-secondary);text-align:center;padding:20px;grid-column:1/-1">Пока нет избранных городов</p>'; return; }
@@ -1867,7 +2702,7 @@ function renderFavorites(){
       <div class="fav-city-icon">${svg('i-cloud-sun')}</div>
       <div class="fav-city-temp">--</div>
       <button class="fav-remove">${svg('i-x')} Удалить</button>`;
-    card.onclick=(e)=>{ if(e.target.closest('.fav-remove'))return; cityInput.value=city; getWeather(city); showPage('home'); };
+    card.onclick=(e)=>{ if(e.target.closest('.fav-remove'))return; $('cityInput').value=city; getWeather(city); showPage('home'); };
     card.querySelector('.fav-remove').onclick=(e)=>{e.stopPropagation();removeFav(city);};
     g.appendChild(card);
     fetchFav(city,card);
@@ -1886,8 +2721,12 @@ async function fetchFav(city,card){
 }
 function removeFav(city){
   localStorage.setItem(KEYS.FAV,JSON.stringify(getFavs().filter(c=>c!==city)));
-  renderFavorites(); updateFavBtn(); renderMultiCityHome(); showNotification(`${city} удалён`);
+  renderFavorites(); updateFavBtn(); renderMultiCityHome(); syncToCloud(); showNotification(`${city} удалён`);
 }
+
+/* ============================================================
+   ICONS
+   ============================================================ */
 
 function iconFor(main){
   return ({
@@ -1897,6 +2736,10 @@ function iconFor(main){
     Squall:'i-wind',Tornado:'i-tornado'
   })[main]||'i-cloud-sun';
 }
+
+/* ============================================================
+   CACHE / LOAD
+   ============================================================ */
 
 function loadCacheAll(){ try{return JSON.parse(localStorage.getItem(KEYS.CACHE))||{};}catch(e){return{};} }
 function cachePut(city,data){
@@ -1919,14 +2762,15 @@ function restoreCache(){
   renderCurrent(c.current); renderForecast(c.forecast); renderHourly(c.forecast); renderCharts(c.forecast);
   renderStats(c.forecast); updateFavBtn(); updateWidget();
   lastWeatherData=c.current; lastForecastData=c.forecast;
+  if(c.forecast){ renderWeatherIntelligence(c.current,c.forecast); }
+  applyWeatherAtmosphere(c.current);
   autoTheme(c.current);
 }
-
 function saveLast(c){ if(c&&c.trim()) localStorage.setItem(KEYS.LAST,c.trim()); }
 function loadWeather(){
   let c=currentUser.defaultCity||'Москва';
   const l=localStorage.getItem(KEYS.LAST); if(l) c=l;
-  cityInput.value=c; getWeather(c);
+  $('cityInput').value=c; getWeather(c);
 }
 async function getWeather(city){
   if(!city||!city.trim()) return;
@@ -1955,6 +2799,8 @@ async function getWeather(city){
       if(f.cod==="200"){
         renderForecast(f); renderHourly(f); renderCharts(f); renderStats(f); renderNowcast(f);
         lastForecastData=f;
+        renderWeatherIntelligence(d,f);
+        evaluateSmartWeatherAlerts(d,f);
         cachePut(city,{current:d,forecast:f});
         saveHist(city,f);
         if(f.list && f.list.length>1) updateTempTrend(d.main.temp, f.list[1].main.temp);
@@ -1978,6 +2824,7 @@ async function getWeather(city){
     else { showNotification('Ошибка загрузки',true); loadTestForecast(); }
   } finally { showLoading(false); }
 }
+window.getWeather=getWeather;
 function renderAll(c){
   renderCurrent(c.current);
   if(c.forecast){ renderForecast(c.forecast); renderHourly(c.forecast); renderCharts(c.forecast); renderStats(c.forecast); renderNowcast(c.forecast); }
@@ -1987,7 +2834,12 @@ function renderAll(c){
   updateMap(c.current.coord.lat,c.current.coord.lon);
 }
 
+/* ============================================================
+   RENDER
+   ============================================================ */
+
 function renderCurrent(d){
+  applyWeatherAtmosphere(d);
   const isM=settings.units==='metric';
   const tU=isM?'°C':'°F';
   $('locationName').textContent=`${d.name}, ${d.sys.country}`;
@@ -2114,19 +2966,12 @@ function renderHourly(data) {
   let svgHTML = `
     <svg class="hourly-line-svg" width="${trackW}" height="${chartTop + chartH + 10}" viewBox="0 0 ${trackW} ${chartTop + chartH + 10}" preserveAspectRatio="none">
       <defs>
-        <linearGradient id="tempAreaGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#60a5fa" stop-opacity="0.35"/>
-          <stop offset="100%" stop-color="#60a5fa" stop-opacity="0"/>
-        </linearGradient>
-        <linearGradient id="tempLineGrad" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="#60a5fa"/>
-          <stop offset="100%" stop-color="#a78bfa"/>
-        </linearGradient>
+        <linearGradient id="tempAreaGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#60a5fa" stop-opacity="0.35"/><stop offset="100%" stop-color="#60a5fa" stop-opacity="0"/></linearGradient>
+        <linearGradient id="tempLineGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#60a5fa"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient>
       </defs>
       <path d="${areaD}" fill="url(#tempAreaGrad)"/>
       <path d="${lineD}" fill="none" stroke="url(#tempLineGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>`;
-  const tU = settings.units === 'metric' ? '°' : '°';
   let itemsHTML = '';
   items.forEach((it, i) => {
     const d = new Date(it.dt * 1000);
@@ -2137,7 +2982,7 @@ function renderHourly(data) {
     if(settings.units === 'imperial') windMs = it.wind.speed / 2.237;
     itemsHTML += `
       <div class="hourly-item">
-        <div class="hourly-temp" style="top:${topOffset - 30}px;">${Math.round(it.main.temp)}${tU}</div>
+        <div class="hourly-temp" style="top:${topOffset - 30}px;">${Math.round(it.main.temp)}°</div>
         <div class="hourly-icon">${svg(iconFor(it.weather[0].main))}</div>
         <div class="hourly-wind">${svg('i-wind')} ${convertWind(windMs)}</div>
         <div class="hourly-time ${isNow ? 'now' : ''}">${time}</div>
@@ -2153,7 +2998,6 @@ function renderForecast(data) {
   const daily = [];
   for (let i = 0; i < data.list.length; i += 8) daily.push(data.list[i]);
   if (!daily.length) return;
-  const tU = settings.units === 'metric' ? '°' : '°';
   const allMin = Math.min(...daily.map(f => f.main.temp_min));
   const allMax = Math.max(...daily.map(f => f.main.temp_max));
   const range = allMax - allMin || 1;
@@ -2174,11 +3018,9 @@ function renderForecast(data) {
       <div class="forecast-row-day">${dn}<small>${ds}</small></div>
       <div class="forecast-row-icon">${svg(iconFor(f.weather[0].main))}</div>
       <div class="forecast-row-bar-wrap">
-        <span class="forecast-row-min">${minT}${tU}</span>
-        <div class="forecast-row-bar">
-          <div class="forecast-row-bar-fill" style="left:${leftPct}%;width:${Math.max(widthPct, 6)}%;"></div>
-        </div>
-        <span class="forecast-row-max">${maxT}${tU}</span>
+        <span class="forecast-row-min">${minT}°</span>
+        <div class="forecast-row-bar"><div class="forecast-row-bar-fill" style="left:${leftPct}%;width:${Math.max(widthPct, 6)}%;"></div></div>
+        <span class="forecast-row-max">${maxT}°</span>
       </div>`;
     el.onclick = () => showDayDetail(i);
     c.appendChild(el);
@@ -2278,10 +3120,10 @@ function loadHistoryData(){
   const sel=$('historyCitySelect'); const cities=Object.keys(historyData);
   if(cities.length){
     sel.innerHTML=''; cities.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o);});
-    const cur=document.getElementById('locationName').textContent.split(',')[0];
+    const cur=$('locationName').textContent.split(',')[0];
     if(cities.includes(cur)) sel.value=cur;
   } else {
-    sel.innerHTML='<option value="Москва">Москва</option><option value="Санкт-Петербург">Санкт-Петербург</option><option value="Новосибирск">Новосибирск</option>';
+    sel.innerHTML='<option value="Москва">Москва</option><option value="Санкт-Петербург">Санкт-Петербург</option>';
   }
 }
 function addHistEntry(city,t,h,p){
@@ -2312,11 +3154,18 @@ function loadHistory(){
     historyChart.update();
   }
 }
+window.loadHistory=loadHistory;
 function clearHistory(){
   if(!confirm('Очистить всю историю?')) return;
   historyData={}; localStorage.removeItem(KEYS.HIST); loadHistoryData(); loadHistory();
   showNotification('История очищена');
 }
+window.clearHistory=clearHistory;
+
+
+/* ============================================================
+   MAP / RADAR
+   ============================================================ */
 
 function initMap(){
   mapInst=L.map('weatherMap',{zoomControl:true}).setView([55.7558,37.6173],6);
@@ -2353,13 +3202,13 @@ function updateRadarFrame(idx){
   ).addTo(mapInst);
   updateRadarFrameLabel();
 }
+window.updateRadarFrame=updateRadarFrame;
 function updateRadarFrameLabel(){
   if(!radarFrames.length) return;
   const frame = radarFrames[radarCurrentIdx];
   const t = new Date(frame.time * 1000);
   const isFuture = frame.time * 1000 > Date.now();
-  const timeStr = (isFuture ? '+' : '') + formatTime(t);
-  if($('radarTime')) $('radarTime').textContent = timeStr;
+  if($('radarTime')) $('radarTime').textContent = (isFuture ? '+' : '') + formatTime(t);
   const last = radarFrames[radarFrames.length-1];
   if($('radarForecast')){
     const lt = new Date(last.time * 1000);
@@ -2373,14 +3222,13 @@ function toggleRadarPlay(){
   const btn = $('radarPlayBtn');
   if(radarPlaying){
     if(btn) btn.innerHTML = svg('i-stop');
-    radarAnimTimer = setInterval(()=>{
-      updateRadarFrame((radarCurrentIdx + 1) % radarFrames.length);
-    }, 650);
+    radarAnimTimer = setInterval(()=>{ updateRadarFrame((radarCurrentIdx + 1) % radarFrames.length); }, 650);
   } else {
     if(btn) btn.innerHTML = svg('i-play');
     clearInterval(radarAnimTimer);
   }
 }
+window.toggleRadarPlay=toggleRadarPlay;
 function setLayerByName(name){
   if(radarLayer){ mapInst.removeLayer(radarLayer); radarLayer=null; }
   if(mapLayerObj){ mapInst.removeLayer(mapLayerObj); mapLayerObj=null; }
@@ -2405,6 +3253,7 @@ function setMapLayer(btn){
   btn.classList.add('active');
   setLayerByName(btn.dataset.layer);
 }
+window.setMapLayer=setMapLayer;
 function updateMap(lat,lon){
   if(!mapInst) return;
   mapInst.setView([lat,lon],8);
@@ -2413,10 +3262,14 @@ function updateMap(lat,lon){
   setTimeout(()=>mapInst.invalidateSize(),150);
 }
 
+/* ============================================================
+   WIDGET / PDF / SHARE
+   ============================================================ */
+
 function updateWidget(){
-  const city=document.getElementById('locationName').textContent.split(',')[0];
-  const temp=document.getElementById('temperature').textContent;
-  const desc=document.getElementById('weatherDescription').textContent;
+  const city=$('locationName').textContent.split(',')[0];
+  const temp=$('temperature').textContent;
+  const desc=$('weatherDescription').textContent;
   $('widgetCity').textContent=city; $('widgetTemp').textContent=temp; $('widgetDesc').textContent=desc;
   const code=`<div style="background:#1a2332;border-radius:16px;padding:16px;color:#fff;font-family:'Inter',sans-serif;max-width:200px;text-align:center;border:1px solid rgba(255,255,255,0.1)">
   <div style="font-size:18px;font-weight:600">${city}</div>
@@ -2433,16 +3286,16 @@ function copyWidgetCode(){
     showNotification('Код скопирован');
   });
 }
+window.copyWidgetCode=copyWidgetCode;
 
 async function exportPDF() {
-  const city = document.getElementById('locationName').textContent;
-  const temp = document.getElementById('temperature').textContent;
-  const desc = document.getElementById('weatherDescription').textContent;
-  const feels = document.getElementById('feelsLike').textContent;
-  const wind = document.getElementById('windSpeed').textContent;
-  const hum = document.getElementById('humidity').textContent;
-  const press = document.getElementById('pressure').textContent;
-
+  const city = $('locationName').textContent;
+  const temp = $('temperature').textContent;
+  const desc = $('weatherDescription').textContent;
+  const feels = $('feelsLike').textContent;
+  const wind = $('windSpeed').textContent;
+  const hum = $('humidity').textContent;
+  const press = $('pressure').textContent;
   let forecastHTML = '';
   if (lastForecastData) {
     const daily = [];
@@ -2450,20 +3303,13 @@ async function exportPDF() {
     daily.slice(0, 5).forEach(f => {
       const d = new Date(f.dt * 1000);
       const ds = String(d.getDate()).padStart(2, '0') + '.' + String(d.getMonth() + 1).padStart(2, '0');
-      forecastHTML += `<div style="display:flex;justify-content:space-between;border-bottom:1px solid #eee;padding:8px 0;font-size:14px;">
-        <span>${ds}</span>
-        <span>${Math.round(f.main.temp)}°C</span>
-        <span style="color:#666">${f.weather[0].description}</span>
-      </div>`;
+      forecastHTML += `<div style="display:flex;justify-content:space-between;border-bottom:1px solid #eee;padding:8px 0;font-size:14px;"><span>${ds}</span><span>${Math.round(f.main.temp)}°C</span><span style="color:#666">${f.weather[0].description}</span></div>`;
     });
   }
-
-  const html = `
-    <div id="pdf-content" style="width:800px;padding:40px;background:#fff;color:#000;font-family:'Inter',sans-serif;box-sizing:border-box;">
+  const html = `<div id="pdf-content" style="width:800px;padding:40px;background:#fff;color:#000;font-family:'Inter',sans-serif;box-sizing:border-box;">
       <h1 style="color:#3b82f6;text-align:center;margin-bottom:5px;font-size:32px;">Weather Pro — Прогноз погоды</h1>
       <p style="text-align:center;color:#666;font-size:14px;margin-bottom:30px;">Дата: ${new Date().toLocaleString('ru-RU')}</p>
       <hr style="border:none;border-top:2px solid #3b82f6;margin-bottom:20px;">
-      
       <h2 style="font-size:20px;margin-bottom:15px;color:#0a0e17;">Текущая погода</h2>
       <table style="width:100%;border-collapse:collapse;margin-bottom:30px;font-size:16px;">
         <tr><td style="padding:8px 0;color:#666;width:150px;">Город</td><td style="font-weight:600;">${city}</td></tr>
@@ -2474,62 +3320,52 @@ async function exportPDF() {
         <tr><td style="padding:8px 0;color:#666;">Влажность</td><td style="font-weight:600;">${hum}</td></tr>
         <tr><td style="padding:8px 0;color:#666;">Давление</td><td style="font-weight:600;">${press}</td></tr>
       </table>
-
       <h2 style="font-size:20px;margin-bottom:15px;color:#0a0e17;">Прогноз на 5 дней</h2>
       ${forecastHTML}
-      
       <p style="text-align:center;color:#999;font-size:12px;margin-top:40px;">Сгенерировано приложением Weather Pro</p>
-    </div>
-  `;
-
-  // Создаем контейнер вне зоны видимости
+    </div>`;
   const wrapper = document.createElement('div');
   wrapper.innerHTML = html;
-  wrapper.style.position = 'absolute';
-  wrapper.style.left = '-9999px';
-  wrapper.style.top = '0';
+  wrapper.style.position = 'absolute'; wrapper.style.left = '-9999px'; wrapper.style.top = '0';
   document.body.appendChild(wrapper);
-
   try {
     showNotification('Генерация PDF...');
     const canvas = await html2canvas(wrapper.firstElementChild, { scale: 2 });
     const imgData = canvas.toDataURL('image/png');
-    
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF('p', 'mm', 'a4');
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-    
     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
     pdf.save('weather_forecast.pdf');
     showNotification('PDF создан');
   } catch (e) {
-    console.error(e);
-    showNotification('Ошибка при создании PDF', true);
-  } finally {
-    document.body.removeChild(wrapper);
-  }
+    console.error(e); showNotification('Ошибка при создании PDF', true);
+  } finally { document.body.removeChild(wrapper); }
 }
+window.exportPDF=exportPDF;
 
 function shareWeather(){
-  const city=document.getElementById('locationName').textContent;
-  const temp=document.getElementById('temperature').textContent;
-  const desc=document.getElementById('weatherDescription').textContent;
+  const city=$('locationName').textContent;
+  const temp=$('temperature').textContent;
+  const desc=$('weatherDescription').textContent;
   const text=`Погода в ${city}: ${temp}°C, ${desc}. Weather Pro`;
   const url=location.href;
   if(navigator.share) navigator.share({title:'Погода',text,url}).catch(()=>{});
   else navigator.clipboard?.writeText(text+'\n'+url).then(()=>showNotification('Скопировано'));
 }
+window.shareWeather=shareWeather;
 function shareProfile(){
   const text=`${currentUser.name} — Weather Pro\nГород: ${currentUser.defaultCity||'—'}\n${currentUser.bio||''}`;
   const url=location.href;
   if(navigator.share) navigator.share({title:currentUser.name,text,url}).catch(()=>{});
   else navigator.clipboard?.writeText(text+'\n'+url).then(()=>showNotification('Скопировано'));
 }
+window.shareProfile=shareProfile;
 function shareSocial(p){
-  const city=document.getElementById('locationName').textContent;
-  const temp=document.getElementById('temperature').textContent;
-  const desc=document.getElementById('weatherDescription').textContent;
+  const city=$('locationName').textContent;
+  const temp=$('temperature').textContent;
+  const desc=$('weatherDescription').textContent;
   const text=`Погода в ${city}: ${temp}°C, ${desc}`;
   const url=encodeURIComponent(location.href), txt=encodeURIComponent(text);
   let u='';
@@ -2538,6 +3374,7 @@ function shareSocial(p){
   if(p==='tw') u=`https://twitter.com/intent/tweet?text=${txt}&url=${url}`;
   if(u) window.open(u,'_blank','width=600,height=400');
 }
+window.shareSocial=shareSocial;
 function getLocation(){
   if(!navigator.geolocation){showNotification('Геолокация не поддерживается',true);return;}
   showNotification('Определяем местоположение...');
@@ -2546,10 +3383,11 @@ function getLocation(){
       const {latitude,longitude}=pos.coords;
       const r=await fetch(`https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=${OWM_KEY}`);
       const d=await r.json();
-      if(d&&d.length){ cityInput.value=d[0].name; getWeather(d[0].name); showNotification('Найдено: '+d[0].name); }
+      if(d&&d.length){ $('cityInput').value=d[0].name; getWeather(d[0].name); showNotification('Найдено: '+d[0].name); }
     }catch(e){showNotification('Не удалось определить город',true);}
   },()=>showNotification('Разрешите доступ к геолокации',true));
 }
+window.getLocation=getLocation;
 function showQRModal(){
   $('qrModal').classList.add('show');
   setTimeout(()=>{
@@ -2557,7 +3395,13 @@ function showQRModal(){
     try{ qrInst=new QRCode(c,{text:location.href,width:200,height:200,colorDark:'#0a0e17',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.H}); }catch(e){}
   },100);
 }
+window.showQRModal=showQRModal;
 function closeQRModal(){ $('qrModal').classList.remove('show'); }
+window.closeQRModal=closeQRModal;
+
+/* ============================================================
+   NOTIFICATIONS
+   ============================================================ */
 
 function showNotifBanner() {
   if (!('Notification' in window)) return;
@@ -2569,22 +3413,20 @@ function dismissNotifBanner() {
   $('notifBanner').classList.remove('show');
   localStorage.setItem(KEYS.NOTIF, '1');
 }
+window.dismissNotifBanner=dismissNotifBanner;
 async function allowNotifications() {
   if (!('Notification' in window)) { showNotification('Уведомления не поддерживаются', true); return; }
   try {
     const perm = await Notification.requestPermission();
     if (perm === 'granted') {
-      settings.browserNotifications = true;
-      saveSettingsSilent();
-      $('browserNotifications').checked = true;
+      settings.browserNotifications = true; saveSettingsSilent(); $('browserNotifications').checked = true;
       showNotification('Уведомления включены');
-      try { new Notification('Weather Pro', { body: 'Уведомления успешно подключены' }); } catch (e) {}
-    } else {
-      showNotification('Уведомления отклонены', true);
-    }
+      try { new Notification('Weather Pro', { body: 'Уведомления подключены' }); } catch (e) {}
+    } else showNotification('Уведомления отклонены', true);
   } catch (e) { showNotification('Ошибка запроса', true); }
   dismissNotifBanner();
 }
+window.allowNotifications=allowNotifications;
 function sendNotif(title,body){
   if('Notification' in window && Notification.permission==='granted' && settings.browserNotifications)
     try{ new Notification(title,{body}); }catch(e){}
@@ -2596,6 +3438,10 @@ function checkWeatherChange(t,desc){
   }
   lastTemp=t; lastDesc=desc;
 }
+
+/* ============================================================
+   AI
+   ============================================================ */
 
 function initAI(){
   const c=$('aiModelSelector'); c.innerHTML='';
@@ -2636,31 +3482,18 @@ async function sendAIMessage() {
   const thinkingEl = document.createElement('div');
   thinkingEl.className = 'ai-message assistant';
   thinkingEl.id = thinkingId;
-  thinkingEl.style.maxWidth = '85%';
-  thinkingEl.style.padding = '0';
-  thinkingEl.style.background = 'transparent';
-  thinkingEl.style.border = 'none';
-  thinkingEl.innerHTML = `
-    <div class="ai-thinking">
-      <div class="ai-thinking-dot"></div>
-      <div class="ai-thinking-dot"></div>
-      <div class="ai-thinking-dot"></div>
-    </div>
-    <div class="ai-progress"><div class="ai-progress-bar" id="prog_${thinkingId}"></div></div>
-  `;
+  thinkingEl.style.maxWidth = '85%'; thinkingEl.style.padding = '0';
+  thinkingEl.style.background = 'transparent'; thinkingEl.style.border = 'none';
+  thinkingEl.innerHTML = `<div class="ai-thinking"><div class="ai-thinking-dot"></div><div class="ai-thinking-dot"></div><div class="ai-thinking-dot"></div></div><div class="ai-progress"><div class="ai-progress-bar" id="prog_${thinkingId}"></div></div>`;
   $('aiMessages').appendChild(thinkingEl);
   $('aiMessages').scrollTop = $('aiMessages').scrollHeight;
   let progress = 0;
   const progBar = $('prog_' + thinkingId);
   const progInterval = setInterval(() => {
-    progress += Math.random() * 12 + 3;
-    if (progress > 90) progress = 90;
+    progress += Math.random() * 12 + 3; if (progress > 90) progress = 90;
     if (progBar) progBar.style.width = progress + '%';
   }, 400);
-  const system = `Ты — метеоролог-ассистент в приложении Weather Pro. Отвечай кратко, по делу, на русском языке. Используй ТОЛЬКО данные ниже, не выдумывай. Если данных недостаточно — честно скажи.
-
-Данные о погоде:
-${buildWeatherContext()}`;
+  const system = `Ты — метеоролог-ассистент в приложении Weather Pro. Отвечай кратко, по делу, на русском. Используй ТОЛЬКО данные ниже, не выдумывай.\n\nДанные о погоде:\n${buildWeatherContext()}`;
   try {
     const url = `${CHAT_API}${encodeURIComponent(msg)}?model=${window._aiModel}&system=${encodeURIComponent(system)}`;
     const r = await fetch(url);
@@ -2678,7 +3511,9 @@ ${buildWeatherContext()}`;
     addMsg('assistant', 'Ошибка связи с нейросетью. Попробуйте позже.');
   }
 }
+window.sendAIMessage=sendAIMessage;
 function quickAsk(text) { $('aiInput').value = text; sendAIMessage(); }
+window.quickAsk=quickAsk;
 function addMsg(role,content,tmp=false){
   const w=document.createElement('div'); w.className='ai-message '+role;
   const t=document.createElement('div'); t.textContent=content; w.appendChild(t);
@@ -2688,6 +3523,10 @@ function addMsg(role,content,tmp=false){
   $('aiMessages').scrollTop=$('aiMessages').scrollHeight;
   return tmp?w:null;
 }
+
+/* ============================================================
+   COMPARE / DAY DETAIL
+   ============================================================ */
 
 async function compareCities(){
   const c1=$('compareCity1').value.trim()||'Москва', c2=$('compareCity2').value.trim()||'Санкт-Петербург';
@@ -2717,43 +3556,94 @@ async function compareCities(){
     renderCompareChart(c1, c2);
   }catch(e){ showNotification('Ошибка сравнения',true); }
 }
+window.compareCities=compareCities;
 
-function loadTestForecast(){
-  const c=$('forecast'); c.innerHTML='';
-  const tU=settings.units==='metric'?'°':'°';
-  const data=[
-    {date:'11.01',dn:'Сегодня',min:-10,max:-6},
-    {date:'12.01',dn:'Завтра',min:-9,max:-5},
-    {date:'13.01',dn:'Вт',min:-19,max:-15},
-    {date:'14.01',dn:'Ср',min:-14,max:-8},
-    {date:'15.01',dn:'Чт',min:-12,max:-6}
-  ];
-  const allMin=Math.min(...data.map(d=>d.min));
-  const allMax=Math.max(...data.map(d=>d.max));
-  const range=allMax-allMin||1;
-  data.forEach(f=>{
-    const leftPct=((f.min-allMin)/range)*100;
-    const widthPct=((f.max-f.min)/range)*100;
-    const el=document.createElement('div'); el.className='forecast-row';
-    el.innerHTML=`
-      <div class="forecast-row-day">${f.dn}<small>${f.date}</small></div>
-      <div class="forecast-row-icon">${svg('i-cloud-snow')}</div>
-      <div class="forecast-row-bar-wrap">
-        <span class="forecast-row-min">${f.min}${tU}</span>
-        <div class="forecast-row-bar"><div class="forecast-row-bar-fill" style="left:${leftPct}%;width:${Math.max(widthPct,6)}%;"></div></div>
-        <span class="forecast-row-max">${f.max}${tU}</span>
-      </div>`;
-    c.appendChild(el);
-  });
-  const items=[];
-  for(let i=0;i<8;i++){
-    const h=6+i; const temp=-5-i;
-    const d=new Date(); d.setHours(h,0,0,0);
-    items.push({dt:d.getTime()/1000, main:{temp}, weather:[{main:'Clouds'}], wind:{speed:2.5}});
-  }
-  renderHourly({list:items});
-  showNotification('Примерные данные (нет соединения)');
+async function renderCompareChart(c1, c2){
+  const box = $('compareChartContainer');
+  if(!box) return;
+  try{
+    const u = settings.units || 'metric';
+    const [r1, r2] = await Promise.all([
+      fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(c1)}&appid=${OWM_KEY}&units=${u}&lang=ru`).then(x => x.json()),
+      fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(c2)}&appid=${OWM_KEY}&units=${u}&lang=ru`).then(x => x.json())
+    ]);
+    if(r1.cod !== '200' || r2.cod !== '200') return;
+    const labels = [], t1 = [], t2 = [];
+    const n = Math.min(r1.list.length, r2.list.length, 16);
+    for(let i = 0; i < n; i += 2){
+      const d = new Date(r1.list[i].dt * 1000);
+      labels.push(d.toLocaleDateString('ru-RU', { weekday: 'short', hour: '2-digit' }));
+      t1.push(Math.round(r1.list[i].main.temp));
+      t2.push(Math.round(r2.list[i].main.temp));
+    }
+    box.classList.add('show');
+    if(compareChartInst) compareChartInst.destroy();
+    const ctx = $('compareChart').getContext('2d');
+    compareChartInst = new Chart(ctx, {
+      type: 'line',
+      data: { labels, datasets: [
+        { label: r1.city.name, data: t1, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,.1)', tension: .35, fill: true, pointRadius: 3 },
+        { label: r2.city.name, data: t2, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,.1)', tension: .35, fill: true, pointRadius: 3 }
+      ]},
+      options: { responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: '#94a3b8' } } },
+        scales: { y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,.1)' } },
+                  x: { ticks: { color: '#94a3b8', maxRotation: 45 }, grid: { display: false } } }
+      }
+    });
+  }catch(e){ console.warn('compareChart', e); }
 }
+
+function showDayDetail(dayIndex){
+  if(!lastForecastData || !lastForecastData.list) return;
+  const daily = [];
+  for(let i = 0; i < lastForecastData.list.length; i += 8) daily.push(i);
+  const startIdx = daily[dayIndex];
+  if(startIdx == null) return;
+  const slice = lastForecastData.list.slice(startIdx, startIdx + 8);
+  const d0 = new Date(slice[0].dt * 1000);
+  const dayNames = ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
+  $('dayDetailTitle').textContent = `${dayNames[d0.getDay()]}, ${d0.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })}`;
+  const labels = slice.map(f => formatHour(new Date(f.dt * 1000)));
+  const temps = slice.map(f => Math.round(f.main.temp));
+  const hums = slice.map(f => f.main.humidity);
+  const winds = slice.map(f => Math.round(f.wind.speed));
+  if(dayDetailChartInst) dayDetailChartInst.destroy();
+  dayDetailChartInst = new Chart($('dayDetailChart').getContext('2d'), {
+    type: 'line',
+    data: { labels, datasets: [
+      { label: 'Температура', data: temps, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,.1)', tension: .35, fill: true, yAxisID: 'y' },
+      { label: 'Влажность', data: hums, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,.05)', tension: .35, fill: false, yAxisID: 'y1' }
+    ]},
+    options: { responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#94a3b8' } } },
+      scales: {
+        y: { position: 'left', ticks: { color: '#3b82f6' }, grid: { color: 'rgba(148,163,184,.1)' } },
+        y1: { position: 'right', ticks: { color: '#10b981' }, grid: { display: false } },
+        x: { ticks: { color: '#94a3b8' }, grid: { display: false } }
+      }
+    }
+  });
+  const tU = settings.units === 'metric' ? '°C' : '°F';
+  const avg = slice.reduce((a, f) => a + f.main.temp, 0) / slice.length;
+  const maxT = Math.max(...temps), minT = Math.min(...temps);
+  const maxWind = Math.max(...winds);
+  const rainProb = Math.round(Math.max(...slice.map(f => (f.pop || 0) * 100)));
+  $('dayDetailList').innerHTML = `
+    <div class="detail-item"><div class="detail-icon">${svg('i-thermometer')}</div><div class="detail-content"><div class="detail-label">Средняя</div><div class="detail-value">${Math.round(avg)}${tU}</div></div></div>
+    <div class="detail-item"><div class="detail-icon">${svg('i-arrow-up')}</div><div class="detail-content"><div class="detail-label">Максимум</div><div class="detail-value">${maxT}${tU}</div></div></div>
+    <div class="detail-item"><div class="detail-icon">${svg('i-arrow-down')}</div><div class="detail-content"><div class="detail-label">Минимум</div><div class="detail-value">${minT}${tU}</div></div></div>
+    <div class="detail-item"><div class="detail-icon">${svg('i-wind')}</div><div class="detail-content"><div class="detail-label">Макс. ветер</div><div class="detail-value">${maxWind} м/с</div></div></div>
+    <div class="detail-item" style="grid-column:1/-1"><div class="detail-icon">${svg('i-droplet')}</div><div class="detail-content"><div class="detail-label">Вероятность осадков</div><div class="detail-value">${rainProb}%</div></div></div>
+  `;
+  $('dayDetailModal').classList.add('show');
+}
+function closeDayDetail(){ $('dayDetailModal').classList.remove('show'); }
+window.closeDayDetail=closeDayDetail;
+
+/* ============================================================
+   VOICE / NAV / NOTIF
+   ============================================================ */
 
 function initVoice(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -2761,11 +3651,9 @@ function initVoice(){
   recognition=new SR(); recognition.lang=lang==='ru'?'ru-RU':'en-US';
   recognition.onresult=e=>{
     const t=e.results[0][0].transcript;
-    cityInput.value=t; getWeather(t); addToSearch(t); showNotification('Голос: '+t);
-    stopVoice();
+    $('cityInput').value=t; getWeather(t); addToSearch(t); showNotification('Голос: '+t); stopVoice();
   };
-  recognition.onerror=()=>stopVoice();
-  recognition.onend=()=>stopVoice();
+  recognition.onerror=()=>stopVoice(); recognition.onend=()=>stopVoice();
 }
 function startVoiceSearch(){
   if(!recognition){showNotification('Голосовой поиск недоступен',true);return;}
@@ -2776,6 +3664,7 @@ function startVoiceSearch(){
     $('voiceBtn').innerHTML=svg('i-stop');
   }catch(e){}
 }
+window.startVoiceSearch=startVoiceSearch;
 function stopVoice(){
   if(recognition){try{recognition.stop();}catch(e){}}
   listening=false; $('voiceBtn').classList.remove('listening');
@@ -2783,6 +3672,7 @@ function stopVoice(){
 }
 
 function showPage(id){
+  if(id!=='chat' && activeChatUnsubscribe){activeChatUnsubscribe();activeChatUnsubscribe=null;activeChatId=null;activeChatOtherUid=null;}
   if((id==='profile'||id==='settings') && currentUser.id==='guest'){
     showPage('auth'); showNotification('Войдите в аккаунт',true); return;
   }
@@ -2790,16 +3680,21 @@ function showPage(id){
   const t=document.getElementById(id+'-page'); if(t) t.classList.add('active');
   document.querySelectorAll('.nav-link').forEach(l=>l.classList.toggle('active',l.dataset.page===id));
   if(id==='home') loadWeather();
+  if(id==='people' && fbUser) loadSocialHub();
   if(id==='favorites') renderFavorites();
   if(id==='widget') updateWidget();
   if(id==='compare') compareCities();
   if(id==='history'){ loadHistoryData(); loadHistory(); }
+  if(id==='people' && $('peopleResults').innerHTML==='') $('peopleResults').innerHTML='<div class="person-empty">Введите имя или email</div>';
+  if(id==='people' && fbUser) loadSocialHub();
   if(id==='map') setTimeout(()=>{ mapInst && mapInst.invalidateSize(); if(currentRadarMode) updateRadarFrame(radarCurrentIdx); },200);
   $('userMenu').classList.remove('show');
   window.scrollTo({top:0,behavior:'smooth'});
   updateBottomNav(id);
 }
+window.showPage=showPage;
 function toggleUserMenu(e){ e?.stopPropagation(); $('userMenu').classList.toggle('show'); }
+window.toggleUserMenu=toggleUserMenu;
 document.addEventListener('click',e=>{
   if(!$('userProfile').contains(e.target) && !$('userMenu').contains(e.target))
     $('userMenu').classList.remove('show');
@@ -2819,14 +3714,17 @@ function showNotification(msg,isErr=false){
   n.classList.add('show');
   clearTimeout(n._t); n._t=setTimeout(()=>n.classList.remove('show'),3000);
 }
+window.showNotification=showNotification;
+function updateBottomNav(pageId){
+  document.querySelectorAll('.bottom-nav-item').forEach(b => b.classList.toggle('active', b.dataset.page === pageId));
+}
 
 /* ============================================================
-   NEW v2.7 — ALL NEW FUNCTIONS
+   NEW v3.0 — доп. функции
    ============================================================ */
 
 function applyTempColor(temp){
-  const el = document.getElementById('temperature');
-  if(!el) return;
+  const el = $('temperature'); if(!el) return;
   el.classList.remove('temp-freezing','temp-cold','temp-cool','temp-mild','temp-warm','temp-hot','temp-scorching');
   const v = Number(temp);
   if(v <= -15) el.classList.add('temp-freezing');
@@ -2838,7 +3736,7 @@ function applyTempColor(temp){
   else el.classList.add('temp-scorching');
 }
 function updateTempTrend(current, next){
-  const wrap = document.getElementById('tempTrendWrap');
+  const wrap = $('tempTrendWrap');
   if(!wrap) return;
   if(next == null){ wrap.innerHTML=''; return; }
   const diff = Math.round(next - current);
@@ -2851,9 +3749,9 @@ function updateTempTrend(current, next){
 
 function renderNowcast(forecast){
   if(!forecast || !forecast.list) return;
-  const card = document.getElementById('nowcastCard');
-  const bars = document.getElementById('nowcastBars');
-  const sum = document.getElementById('nowcastSummary');
+  const card = $('nowcastCard');
+  const bars = $('nowcastBars');
+  const sum = $('nowcastSummary');
   if(!card || !bars) return;
   const items = forecast.list.slice(0, 4);
   if(!items.length) return;
@@ -2869,10 +3767,7 @@ function renderNowcast(forecast){
     const h = Math.max(6, pop);
     const cls = vol > 3 ? 'heavy' : pop > 40 ? 'filled' : '';
     const d = new Date(it.dt * 1000);
-    bars.innerHTML += `
-      <div class="nowcast-bar ${cls}" style="height:${h}%">
-        <span class="nowcast-tip">${formatHour(d)} · ${pop}%</span>
-      </div>`;
+    bars.innerHTML += `<div class="nowcast-bar ${cls}" style="height:${h}%"><span class="nowcast-tip">${formatHour(d)} · ${pop}%</span></div>`;
   });
   const isRain = /rain|drizzle/i.test(forecast.list[0].weather[0].main);
   const willRain = items.some(it => (it.pop || 0) > 0.35);
@@ -2884,8 +3779,8 @@ function renderNowcast(forecast){
 }
 
 function renderAQIForecast(data){
-  const box = document.getElementById('aqiForecast');
-  const bars = document.getElementById('aqiForecastBars');
+  const box = $('aqiForecast');
+  const bars = $('aqiForecastBars');
   if(!box || !bars || !data.list) return;
   const byDay = {};
   data.list.forEach(it => {
@@ -2908,8 +3803,8 @@ function renderAQIForecast(data){
 }
 
 async function loadPollen(lat, lon){
-  const block = document.getElementById('pollenBlock');
-  const content = document.getElementById('pollenContent');
+  const block = $('pollenBlock');
+  const content = $('pollenContent');
   if(!block || !content) return;
   try{
     const url = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&current=alder_pollen,birch_pollen,grass_pollen,mugwort_pollen,olive_pollen,ragweed_pollen&timezone=auto`;
@@ -2938,8 +3833,8 @@ async function loadPollen(lat, lon){
 }
 
 async function loadYearAgo(lat, lon){
-  const block = document.getElementById('yearAgoBlock');
-  const data = document.getElementById('yearAgoData');
+  const block = $('yearAgoBlock');
+  const data = $('yearAgoData');
   if(!block || !data) return;
   try{
     const d = new Date();
@@ -2962,10 +3857,10 @@ async function loadYearAgo(lat, lon){
 
 function speakWeather(){
   if(!('speechSynthesis' in window)){ showNotification('Озвучка не поддерживается', true); return; }
-  const city = document.getElementById('locationName').textContent;
-  const temp = document.getElementById('temperature').textContent;
-  const desc = document.getElementById('weatherDescription').textContent;
-  const hum = document.getElementById('humidity').textContent;
+  const city = $('locationName').textContent;
+  const temp = $('temperature').textContent;
+  const desc = $('weatherDescription').textContent;
+  const hum = $('humidity').textContent;
   const text = `Погода в ${city}. Температура ${temp} градусов. ${desc}. Влажность ${hum}.`;
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
@@ -2974,6 +3869,7 @@ function speakWeather(){
   window.speechSynthesis.speak(u);
   showNotification('Озвучиваем погоду');
 }
+window.speakWeather=speakWeather;
 
 function generateShareCard(){
   const canvas = document.createElement('canvas');
@@ -2986,11 +3882,11 @@ function generateShareCard(){
   rg.addColorStop(0, 'rgba(59,130,246,.35)'); rg.addColorStop(1, 'rgba(59,130,246,0)');
   ctx.fillStyle = rg; ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = 'rgba(255,255,255,.06)'; ctx.fillRect(0, 0, canvas.width, 8);
-  const city = document.getElementById('locationName').textContent;
-  const temp = document.getElementById('temperature').textContent;
-  const desc = document.getElementById('weatherDescription').textContent;
-  const hum = document.getElementById('humidity').textContent;
-  const wind = document.getElementById('windSpeed').textContent;
+  const city = $('locationName').textContent;
+  const temp = $('temperature').textContent;
+  const desc = $('weatherDescription').textContent;
+  const hum = $('humidity').textContent;
+  const wind = $('windSpeed').textContent;
   ctx.font = '700 64px Inter, sans-serif'; ctx.fillStyle = '#f8fafc'; ctx.textAlign = 'center';
   ctx.fillText(city, canvas.width/2, 200);
   const tval = Number(temp);
@@ -3045,6 +3941,7 @@ function generateShareCard(){
     showNotification('Карточка сохранена');
   }, 'image/png');
 }
+window.generateShareCard=generateShareCard;
 
 function generateWidgetImage(){
   const canvas = document.createElement('canvas');
@@ -3054,9 +3951,9 @@ function generateWidgetImage(){
   g.addColorStop(0, '#1a2332'); g.addColorStop(1, '#0a0e17');
   ctx.fillStyle = g; ctx.fillRect(0, 0, 600, 800);
   ctx.fillStyle = 'rgba(59,130,246,.12)'; ctx.fillRect(0, 0, 600, 6);
-  const city = document.getElementById('locationName').textContent.split(',')[0];
-  const temp = document.getElementById('temperature').textContent;
-  const desc = document.getElementById('weatherDescription').textContent;
+  const city = $('locationName').textContent.split(',')[0];
+  const temp = $('temperature').textContent;
+  const desc = $('weatherDescription').textContent;
   ctx.font = '600 56px Inter, sans-serif'; ctx.fillStyle = '#f8fafc'; ctx.textAlign = 'center';
   ctx.fillText(city, 300, 180);
   const tval = Number(temp);
@@ -3080,9 +3977,10 @@ function generateWidgetImage(){
     showNotification('Виджет-картинка сохранена');
   }, 'image/png');
 }
+window.generateWidgetImage=generateWidgetImage;
 
 async function renderMultiCityHome(){
-  const box = document.getElementById('multiCityHome');
+  const box = $('multiCityHome');
   if(!box) return;
   const favs = getFavs().filter(c => c.toLowerCase() !== currentCity.toLowerCase()).slice(0, 6);
   if(!favs.length){
@@ -3090,13 +3988,13 @@ async function renderMultiCityHome(){
     return;
   }
   box.innerHTML = `<div class="multi-city-header"><div class="multi-city-title">${svg('i-star')} Мои города</div><button class="multi-city-add" onclick="toggleFavorite()">${svg('i-plus-circle')} Добавить</button></div><div class="multi-city-grid" id="multiCityGrid"></div>`;
-  const grid = document.getElementById('multiCityGrid');
+  const grid = $('multiCityGrid');
   const u = settings.units || 'metric';
   favs.forEach(city => {
     const card = document.createElement('div');
     card.className = 'mini-city';
     card.innerHTML = `<div class="mini-city-name">${esc(city)}</div><div class="mini-city-temp">--</div><div class="mini-city-icon">${svg('i-loader')}</div>`;
-    card.onclick = () => { cityInput.value = city; getWeather(city); showPage('home'); };
+    card.onclick = () => { $('cityInput').value = city; getWeather(city); showPage('home'); };
     grid.appendChild(card);
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${OWM_KEY}&units=${u}&lang=ru`)
       .then(r => r.json()).then(d => {
@@ -3108,6 +4006,102 @@ async function renderMultiCityHome(){
   });
 }
 
+
+/* ============================================================
+   WEATHERPRO 4.0 — SMART BRIEFING / PERSONAL ALERTS
+   ============================================================ */
+function applyWeatherAtmosphere(data){
+  if(!data || !data.weather || !data.weather[0]) return;
+  document.body.classList.remove('wp-clear','wp-clouds','wp-rain','wp-snow');
+  const main=String(data.weather[0].main||'').toLowerCase();
+  const desc=String(data.weather[0].description||'').toLowerCase();
+  if(/snow|снег/.test(main+' '+desc)) document.body.classList.add('wp-snow');
+  else if(/rain|drizzle|thunder|дожд|лив|гроза/.test(main+' '+desc)) document.body.classList.add('wp-rain');
+  else if(/clear|sun|ясно/.test(main+' '+desc)) document.body.classList.add('wp-clear');
+  else document.body.classList.add('wp-clouds');
+}
+function renderWeatherIntelligence(current,forecast){
+  if(!current || !current.main) return;
+  const set=(id,value)=>{const el=$(id);if(el)el.textContent=value;};
+  const metric=(settings.units||'metric')==='metric';
+  const tempUnit=metric?'°C':'°F';
+  const windUnit=metric?'м/с':'миль/ч';
+  const next=(forecast&&forecast.list?forecast.list:[]).slice(0,8);
+  const rainMax=next.length?Math.round(Math.max(...next.map(x=>(x.pop||0)*100))):0;
+  set('wpFeels',Math.round(current.main.feels_like)+tempUnit);
+  set('wpRain',rainMax+'%');
+  set('wpWind',Math.round((current.wind?.speed||0)*10)/10+' '+windUnit);
+  set('wpHumidity',(current.main.humidity??'—')+'%');
+  const summary=$('wpBriefSummary'),tip=$('wpBriefTip');
+  const desc=current.weather?.[0]?.description||'Погодные условия обновлены';
+  const t=Math.round(current.main.temp);
+  let headline=`Сейчас ${desc}. Температура ${t>0?'+':''}${t}${tempUnit}.`;
+  let advice='Ориентируйтесь на ощущаемую температуру и выбирайте одежду по погоде.';
+  if(rainMax>=55){headline+=' В ближайшие часы вероятны осадки.';advice='Возьмите зонт или непромокаемую верхнюю одежду.';}
+  else if((current.wind?.speed||0)>(metric?12:26.8)){headline+=' Ожидается сильный ветер.';advice='Лучше выбрать одежду, защищающую от ветра, и быть осторожнее на открытых участках.';}
+  else if(t<=0){advice='На улице холодно: пригодятся тёплая куртка, закрытая обувь и перчатки.';}
+  else if(t>=27){advice='Тепло или жарко: пейте достаточно воды и не забывайте о защите от солнца.';}
+  else if(/snow|снег/i.test(desc)){advice='Возможна скользкая поверхность — выбирайте обувь с хорошим сцеплением.';}
+  if(summary) summary.textContent=headline;
+  if(tip) tip.innerHTML=`${svg('i-sparkles')}<span>${esc(advice)}</span>`;
+  const grid=$('wpHourGrid');
+  if(grid){
+    grid.innerHTML='';
+    if(!next.length){grid.innerHTML='<div class="wp-intel-empty">Почасовой прогноз пока недоступен.</div>';}
+    next.forEach(item=>{
+      const date=new Date(item.dt*1000);
+      const hour=date.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+      const rain=Math.round((item.pop||0)*100);
+      const icon=iconFor(item.weather?.[0]?.main||'Clouds');
+      const el=document.createElement('div');el.className='wp-hour';
+      el.innerHTML=`<div class="wp-hour-time">${hour}</div><div class="wp-hour-icon">${svg(icon)}</div><div class="wp-hour-temp">${Math.round(item.main.temp)}°</div><div class="wp-hour-rain">${rain?rain+'% ☂':'—'}</div>`;
+      grid.appendChild(el);
+    });
+  }
+}
+function getSmartAlertPrefs(){
+  const defaults={rain:true,wind:true,cold:true};
+  try{return Object.assign(defaults,JSON.parse(localStorage.getItem('wp_smart_alerts')||'{}'));}catch(e){return defaults;}
+}
+function syncSmartAlertControls(){
+  const p=getSmartAlertPrefs();
+  if($('wpAlertRain'))$('wpAlertRain').checked=!!p.rain;
+  if($('wpAlertWind'))$('wpAlertWind').checked=!!p.wind;
+  if($('wpAlertCold'))$('wpAlertCold').checked=!!p.cold;
+}
+function saveSmartAlertSettings(){
+  const prefs={rain:!!$('wpAlertRain')?.checked,wind:!!$('wpAlertWind')?.checked,cold:!!$('wpAlertCold')?.checked};
+  localStorage.setItem('wp_smart_alerts',JSON.stringify(prefs));
+  if($('wpAlertFeed'))$('wpAlertFeed').innerHTML='<div class="wp-alert-item good">'+svg('i-check-circle')+'<span>Настройки персональных уведомлений сохранены на этом устройстве.</span></div>';
+  showNotification('Настройки уведомлений сохранены');
+}
+function evaluateSmartWeatherAlerts(current,forecast){
+  if(!current||!forecast||!Array.isArray(forecast.list))return;
+  const prefs=getSmartAlertPrefs(), events=[];
+  const city=(current.name||currentCity||'город').toLowerCase();
+  const metric=(settings.units||'metric')==='metric';
+  const upcoming=forecast.list.slice(0,4);
+  const rain=Math.max(0,...upcoming.map(x=>(x.pop||0)*100));
+  if(prefs.rain&&rain>=55)events.push({id:'rain',title:'Возможен дождь',body:`Вероятность осадков в ${current.name||currentCity} — до ${Math.round(rain)}%.`});
+  const windMs=metric?(current.wind?.speed||0):(current.wind?.speed||0)/2.237;
+  if(prefs.wind&&windMs>=12)events.push({id:'wind',title:'Сильный ветер',body:`Скорость ветра около ${Math.round(windMs*10)/10} м/с. Будьте осторожны на улице.`});
+  const futureMin=Math.min(...upcoming.map(x=>x.main.temp));
+  if(prefs.cold&&current.main.temp-futureMin>=5)events.push({id:'cold',title:'Ожидается похолодание',body:`В ближайшие часы температура может снизиться примерно на ${Math.round(current.main.temp-futureMin)}°.`});
+  const feed=$('wpAlertFeed');
+  if(feed){
+    if(!events.length)feed.innerHTML='<div class="wp-alert-item good">'+svg('i-check-circle')+'<span>Серьёзных погодных изменений по выбранным критериям не обнаружено.</span></div>';
+    else feed.innerHTML=events.map(e=>`<div class="wp-alert-item">${svg('i-alert-tri')}<span><strong>${esc(e.title)}.</strong> ${esc(e.body)}</span></div>`).join('');
+  }
+  events.forEach(event=>{
+    const key=`wp_smart_notif_${city}_${event.id}`;
+    const last=Number(localStorage.getItem(key)||0);
+    if(Date.now()-last<3*60*60*1000)return;
+    localStorage.setItem(key,String(Date.now()));
+    sendNotif(`WeatherPro · ${event.title}`,event.body);
+  });
+}
+window.saveSmartAlertSettings=saveSmartAlertSettings;
+
 async function handleCoordinateSearch(query){
   const m = query.trim().match(/^(-?\d+(?:\.\d+)?)[\s,]+(-?\d+(?:\.\d+)?)$/);
   if(!m) return false;
@@ -3116,7 +4110,7 @@ async function handleCoordinateSearch(query){
   try{
     const r = await fetch(`https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${OWM_KEY}`);
     const d = await r.json();
-    if(d && d.length){ cityInput.value = d[0].name; getWeather(d[0].name); showNotification('Найдено: ' + d[0].name); }
+    if(d && d.length){ $('cityInput').value = d[0].name; getWeather(d[0].name); showNotification('Найдено: ' + d[0].name); }
     else getWeather(`${lat},${lon}`);
     return true;
   }catch(e){ return false; }
@@ -3139,99 +4133,44 @@ function installPWA(){
     _pwaPrompt = null;
   });
 }
+window.installPWA=installPWA;
 function dismissInstall(){
   document.getElementById('installBanner').classList.remove('show');
   localStorage.setItem('wp_install_dismissed', '1');
 }
+window.dismissInstall=dismissInstall;
 
-async function renderCompareChart(c1, c2){
-  const box = document.getElementById('compareChartContainer');
-  if(!box) return;
-  try{
-    const u = settings.units || 'metric';
-    const [r1, r2] = await Promise.all([
-      fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(c1)}&appid=${OWM_KEY}&units=${u}&lang=ru`).then(x => x.json()),
-      fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(c2)}&appid=${OWM_KEY}&units=${u}&lang=ru`).then(x => x.json())
-    ]);
-    if(r1.cod !== '200' || r2.cod !== '200') return;
-    const labels = [], t1 = [], t2 = [];
-    const n = Math.min(r1.list.length, r2.list.length, 16);
-    for(let i = 0; i < n; i += 2){
-      const d = new Date(r1.list[i].dt * 1000);
-      labels.push(d.toLocaleDateString('ru-RU', { weekday: 'short', hour: '2-digit' }));
-      t1.push(Math.round(r1.list[i].main.temp));
-      t2.push(Math.round(r2.list[i].main.temp));
-    }
-    box.classList.add('show');
-    if(compareChartInst) compareChartInst.destroy();
-    const ctx = document.getElementById('compareChart').getContext('2d');
-    compareChartInst = new Chart(ctx, {
-      type: 'line',
-      data: { labels, datasets: [
-        { label: r1.city.name, data: t1, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,.1)', tension: .35, fill: true, pointRadius: 3 },
-        { label: r2.city.name, data: t2, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,.1)', tension: .35, fill: true, pointRadius: 3 }
-      ]},
-      options: { responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { labels: { color: '#94a3b8' } } },
-        scales: { y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,.1)' } },
-                  x: { ticks: { color: '#94a3b8', maxRotation: 45 }, grid: { display: false } } }
-      }
-    });
-  }catch(e){ console.warn('compareChart', e); }
-}
-
-function showDayDetail(dayIndex){
-  if(!lastForecastData || !lastForecastData.list) return;
-  const daily = [];
-  for(let i = 0; i < lastForecastData.list.length; i += 8) daily.push(i);
-  const startIdx = daily[dayIndex];
-  if(startIdx == null) return;
-  const slice = lastForecastData.list.slice(startIdx, startIdx + 8);
-  const d0 = new Date(slice[0].dt * 1000);
-  const dayNames = ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
-  document.getElementById('dayDetailTitle').textContent = `${dayNames[d0.getDay()]}, ${d0.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })}`;
-  const labels = slice.map(f => formatHour(new Date(f.dt * 1000)));
-  const temps = slice.map(f => Math.round(f.main.temp));
-  const hums = slice.map(f => f.main.humidity);
-  const winds = slice.map(f => Math.round(f.wind.speed));
-  if(dayDetailChartInst) dayDetailChartInst.destroy();
-  dayDetailChartInst = new Chart(document.getElementById('dayDetailChart').getContext('2d'), {
-    type: 'line',
-    data: { labels, datasets: [
-      { label: 'Температура', data: temps, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,.1)', tension: .35, fill: true, yAxisID: 'y' },
-      { label: 'Влажность', data: hums, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,.05)', tension: .35, fill: false, yAxisID: 'y1' }
-    ]},
-    options: { responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { labels: { color: '#94a3b8' } } },
-      scales: {
-        y: { position: 'left', ticks: { color: '#3b82f6' }, grid: { color: 'rgba(148,163,184,.1)' } },
-        y1: { position: 'right', ticks: { color: '#10b981' }, grid: { display: false } },
-        x: { ticks: { color: '#94a3b8' }, grid: { display: false } }
-      }
-    }
+function loadTestForecast(){
+  const c=$('forecast'); c.innerHTML='';
+  const data=[
+    {date:'11.01',dn:'Сегодня',min:-10,max:-6},
+    {date:'12.01',dn:'Завтра',min:-9,max:-5},
+    {date:'13.01',dn:'Вт',min:-19,max:-15},
+    {date:'14.01',dn:'Ср',min:-14,max:-8},
+    {date:'15.01',dn:'Чт',min:-12,max:-6}
+  ];
+  const allMin=Math.min(...data.map(d=>d.min));
+  const allMax=Math.max(...data.map(d=>d.max));
+  const range=allMax-allMin||1;
+  data.forEach(f=>{
+    const leftPct=((f.min-allMin)/range)*100;
+    const widthPct=((f.max-f.min)/range)*100;
+    const el=document.createElement('div'); el.className='forecast-row';
+    el.innerHTML=`
+      <div class="forecast-row-day">${f.dn}<small>${f.date}</small></div>
+      <div class="forecast-row-icon">${svg('i-cloud-snow')}</div>
+      <div class="forecast-row-bar-wrap">
+        <span class="forecast-row-min">${f.min}°</span>
+        <div class="forecast-row-bar"><div class="forecast-row-bar-fill" style="left:${leftPct}%;width:${Math.max(widthPct,6)}%;"></div></div>
+        <span class="forecast-row-max">${f.max}°</span>
+      </div>`;
+    c.appendChild(el);
   });
-  const tU = settings.units === 'metric' ? '°C' : '°F';
-  const avg = slice.reduce((a, f) => a + f.main.temp, 0) / slice.length;
-  const maxT = Math.max(...temps), minT = Math.min(...temps);
-  const maxWind = Math.max(...winds);
-  const rainProb = Math.round(Math.max(...slice.map(f => (f.pop || 0) * 100)));
-  document.getElementById('dayDetailList').innerHTML = `
-    <div class="detail-item"><div class="detail-icon">${svg('i-thermometer')}</div><div class="detail-content"><div class="detail-label">Средняя</div><div class="detail-value">${Math.round(avg)}${tU}</div></div></div>
-    <div class="detail-item"><div class="detail-icon">${svg('i-arrow-up')}</div><div class="detail-content"><div class="detail-label">Максимум</div><div class="detail-value">${maxT}${tU}</div></div></div>
-    <div class="detail-item"><div class="detail-icon">${svg('i-arrow-down')}</div><div class="detail-content"><div class="detail-label">Минимум</div><div class="detail-value">${minT}${tU}</div></div></div>
-    <div class="detail-item"><div class="detail-icon">${svg('i-wind')}</div><div class="detail-content"><div class="detail-label">Макс. ветер</div><div class="detail-value">${maxWind} м/с</div></div></div>
-    <div class="detail-item" style="grid-column:1/-1"><div class="detail-icon">${svg('i-droplet')}</div><div class="detail-content"><div class="detail-label">Вероятность осадков</div><div class="detail-value">${rainProb}%</div></div></div>
-  `;
-  document.getElementById('dayDetailModal').classList.add('show');
-}
-function closeDayDetail(){ document.getElementById('dayDetailModal').classList.remove('show'); }
-
-function updateBottomNav(pageId){
-  document.querySelectorAll('.bottom-nav-item').forEach(b => b.classList.toggle('active', b.dataset.page === pageId));
+  showNotification('Примерные данные (нет соединения)');
 }
 
 setLang('ru');
-console.log('%cWeather Pro v2.7.2 — Diamond SVG Edition','color:#3b82f6;font-weight:800;font-size:14px');
+console.log('%cWeather Pro v4.3 — Social Edition + Firebase','color:#3b82f6;font-weight:800;font-size:14px');
 </script>
 </body>
 </html>
