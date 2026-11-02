@@ -1,0 +1,67 @@
+{
+  "id": "./",
+  "name": "Weather Pro MAX.0.4 — Device Engine MAX",
+  "short_name": "Weather Pro MAX",
+  "description": "Weather Pro MAX.0 Ultimate: прогноз, AI-аналитика, радар, уведомления, сравнение городов и PWA.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#070d18",
+  "theme_color": "#0a1224",
+  "icons": [
+    {
+      "src": "./weather-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./weather-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./weather-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Погодный радар",
+      "short_name": "Радар",
+      "url": "./?page=map",
+      "icons": [
+        {
+          "src": "./weather-icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "AI-прогноз",
+      "short_name": "AI-прогноз",
+      "url": "./?page=intelligence",
+      "icons": [
+        {
+          "src": "./weather-icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Статистика",
+      "short_name": "Статистика",
+      "url": "./?page=stats",
+      "icons": [
+        {
+          "src": "./weather-icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}
