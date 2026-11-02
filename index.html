@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Weather Pro 10.1.1 — Smart Device Ultimate</title>
+<title>Weather Pro 10.1.2 — Google Auth Fix 2</title>
 <meta name="theme-color" content="#0a1224">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -1517,6 +1517,20 @@ body.wp-performance-background-pause.wp-performance-hidden *::after{
 }
 </style>
 
+
+<style id="wp1012-auth-styles">
+.wp-auth-form{display:flex;flex-direction:column;gap:2px;min-width:0}
+.wp-auth-form .form-group{margin-bottom:14px}
+.wp-auth-form .form-input{width:100%;box-sizing:border-box}
+.wp-auth-submit,.wp-auth-google{width:100%;justify-content:center;display:flex;align-items:center;gap:10px;min-height:48px}
+.wp-auth-divider{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--text-secondary);font-size:12px}
+.wp-auth-divider:before,.wp-auth-divider:after{content:"";height:1px;flex:1;background:var(--glass-border,rgba(148,163,184,.22))}
+.wp-auth-google{background:rgba(148,163,184,.1);border:1px solid var(--glass-border,rgba(148,163,184,.24));color:var(--text-primary,#fff)}
+.wp-auth-google:hover{transform:translateY(-1px);border-color:var(--accent,#8b5cf6)}
+#auth-page .form-links{margin-top:14px;text-align:center}
+#auth-page .form-link{cursor:pointer}
+@media(max-width:480px){#auth-page .auth-card{padding:20px 16px}.wp-auth-divider{margin:14px 0}}
+</style>
 </head>
 <body>
 
@@ -2343,7 +2357,7 @@ body.wp-performance-background-pause.wp-performance-hidden *::after{
       <article class="wp104-module"><div class="wp104-module-head"><div><span class="wp6-kicker">15 · LIVE DEVICE DASHBOARD</span><h3>Живая панель устройства</h3></div><i class="fa-solid fa-chart-line"></i></div><div class="wp104-module-body"><div class="wp104-kv"><span>Монитор реального времени</span><b id="wp104LiveState">Выключен</b></div><div class="wp104-kv"><span>Последний замер</span><b id="wp104LiveTime">—</b></div><div class="wp104-kv"><span>Состояние страницы</span><b id="wp104PageState">Активна</b></div><div class="wp104-actions"><button class="wp6-action primary" onclick="wp10ToggleMonitor()"><i class="fa-solid fa-wave-square"></i> Включить / выключить монитор</button></div><div class="wp104-small-list">Использует существующий Device Monitor 3.0 и его суточную историю.</div></div><p class="wp104-note">Мониторинг работает только при открытой активной странице и вручную включённом режиме.</p></article>
     </div>
     <section class="wp101-section" aria-labelledby="wp101SmartTitle">
-      <div class="wp5-panel-head"><div><div class="wp6-kicker">SMART DEVICE ULTIMATE · 10.1.1</div><h2 id="wp101SmartTitle">Расширенный центр устройства</h2><p>Новые инструменты поверх Device Engine MAX. Все результаты обрабатываются локально.</p></div><button class="wp6-action primary" onclick="wp101RunSmartDiagnostics()"><i class="fa-solid fa-wand-magic-sparkles"></i> Автодиагностика</button></div>
+      <div class="wp5-panel-head"><div><div class="wp6-kicker">SMART DEVICE ULTIMATE · 10.1.2</div><h2 id="wp101SmartTitle">Расширенный центр устройства</h2><p>Новые инструменты поверх Device Engine MAX. Все результаты обрабатываются локально.</p></div><button class="wp6-action primary" onclick="wp101RunSmartDiagnostics()"><i class="fa-solid fa-wand-magic-sparkles"></i> Автодиагностика</button></div>
       <div class="wp101-grid">
         <article class="wp101-card"><div class="wp6-kicker">01 · BATTERY INTELLIGENCE</div><h3>Интеллект батареи</h3><div class="wp101-value" id="wp101BatteryTrend">—</div><p id="wp101BatteryMeta">История доступного уровня заряда. Температура и здоровье батареи браузером не раскрываются.</p><canvas id="wp101BatteryChart" class="wp101-history" height="120" aria-label="История уровня заряда"></canvas><div class="wp101-actions"><button class="wp6-action" onclick="wp101RecordBattery()">Снять замер</button><button class="wp6-action" onclick="wp101ExportBattery()">Экспорт</button></div></article>
         <article class="wp101-card"><div class="wp6-kicker">02 · ADVANCED BENCHMARK</div><h3>История производительности</h3><div class="wp101-value" id="wp101BenchBest">Нет тестов</div><p id="wp101BenchMeta">Сравнивает запуски локального JS/Canvas теста на этом устройстве.</p><div class="wp101-actions"><button class="wp6-action primary" onclick="wp104RunBenchmark();setTimeout(wp101SaveBenchmark,250)">Запустить и сохранить</button><button class="wp6-action" onclick="wp101ClearBenchmarks()">Сбросить историю</button></div><div id="wp101BenchHistory" class="wp104-small-list">История пока пуста.</div></article>
@@ -2573,7 +2587,7 @@ body.wp-performance-background-pause.wp-performance-hidden *::after{
 
   <div class="people-card">
     <h2 class="card-title"><svg class="icon"><use href="#i-globe"/></svg> Поиск пользователей</h2>
-    <p style="color:var(--text-secondary);margin-bottom:16px;position:relative;z-index:1">Найдите пользователей Weather Pro по имени или email. Войдите через Google, чтобы вас тоже можно было найти.</p>
+    <p style="color:var(--text-secondary);margin-bottom:16px;position:relative;z-index:1">Найдите пользователей Weather Pro по имени или email. Войдите в аккаунт, чтобы вас тоже можно было найти.</p>
     <div class="search-box" style="margin-bottom:20px">
       <div class="search-input-container">
         <input type="text" class="search-input" id="peopleSearchInput" placeholder="Имя или email…" autocomplete="off" onkeypress="if(event.key==='Enter')searchUsers()">
@@ -2604,14 +2618,29 @@ body.wp-performance-background-pause.wp-performance-hidden *::after{
   </div>
   <div class="auth-card" id="loginForm">
     <h2 class="card-title"><svg class="icon"><use href="#i-log-in"/></svg> <span data-i18n="login_title">Вход в аккаунт</span></h2>
-    <p style="color:var(--text-secondary);margin-bottom:16px">Войдите через Google, чтобы синхронизировать настройки и избранное между устройствами.</p>
-    <button class="btn" onclick="loginWithGoogle()" style="margin-bottom:16px"><svg class="icon"><use href="#i-globe"/></svg> Войти через Google</button>
+    <p style="color:var(--text-secondary);margin-bottom:16px">Войдите по email и паролю или используйте Google. После входа загрузится ваш облачный профиль.</p>
+    <form id="wpEmailLoginForm" class="wp-auth-form" onsubmit="loginWithEmail(event)" novalidate>
+      <div class="form-group"><label class="form-label" for="wpLoginEmail">Email</label><input class="form-input" id="wpLoginEmail" type="email" inputmode="email" autocomplete="email" placeholder="name@example.com" maxlength="254" required></div>
+      <div class="form-group"><label class="form-label" for="wpLoginPassword">Пароль</label><input class="form-input" id="wpLoginPassword" type="password" autocomplete="current-password" placeholder="Ваш пароль" required></div>
+      <button class="btn wp-auth-submit" id="wpEmailLoginSubmit" type="submit"><i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i> Войти по email</button>
+      <div class="form-links"><a class="form-link" href="#" onclick="resetEmailPassword(event)">Забыли пароль?</a></div>
+    </form>
+    <div class="wp-auth-divider"><span>или</span></div>
+    <button class="btn wp-auth-google" onclick="loginWithGoogle()"><i class="fa-brands fa-google" aria-hidden="true"></i> Войти через Google</button>
     <div class="form-links"><a class="form-link" onclick="switchAuthForm('register')" data-i18n="login_register_link">Нет аккаунта? Зарегистрируйтесь</a></div>
   </div>
   <div class="auth-card" id="registerForm" style="display:none">
     <h2 class="card-title"><svg class="icon"><use href="#i-user-plus"/></svg> <span data-i18n="register_title">Регистрация</span></h2>
-    <p style="color:var(--text-secondary);margin-bottom:16px">Создайте аккаунт через Google за один клик.</p>
-    <button class="btn" onclick="loginWithGoogle()" style="margin-bottom:16px"><svg class="icon"><use href="#i-globe"/></svg> Регистрация через Google</button>
+    <p style="color:var(--text-secondary);margin-bottom:16px">Создайте отдельный аккаунт Weather Pro по email. Пароль должен содержать не менее 6 символов.</p>
+    <form id="wpEmailRegisterForm" class="wp-auth-form" onsubmit="registerWithEmail(event)" novalidate>
+      <div class="form-group"><label class="form-label" for="wpRegisterName">Имя</label><input class="form-input" id="wpRegisterName" type="text" autocomplete="name" placeholder="Как к вам обращаться" maxlength="48" required></div>
+      <div class="form-group"><label class="form-label" for="wpRegisterEmail">Email</label><input class="form-input" id="wpRegisterEmail" type="email" inputmode="email" autocomplete="email" placeholder="name@example.com" maxlength="254" required></div>
+      <div class="form-group"><label class="form-label" for="wpRegisterPassword">Пароль</label><input class="form-input" id="wpRegisterPassword" type="password" autocomplete="new-password" minlength="6" placeholder="Минимум 6 символов" required></div>
+      <div class="form-group"><label class="form-label" for="wpRegisterPasswordConfirm">Повторите пароль</label><input class="form-input" id="wpRegisterPasswordConfirm" type="password" autocomplete="new-password" minlength="6" placeholder="Повторите пароль" required></div>
+      <button class="btn wp-auth-submit" id="wpEmailRegisterSubmit" type="submit"><i class="fa-solid fa-user-plus" aria-hidden="true"></i> Создать аккаунт</button>
+    </form>
+    <div class="wp-auth-divider"><span>или</span></div>
+    <button class="btn wp-auth-google" onclick="loginWithGoogle()"><i class="fa-brands fa-google" aria-hidden="true"></i> Продолжить через Google</button>
     <div class="form-links"><a class="form-link" onclick="switchAuthForm('login')" data-i18n="register_login_link">Уже есть аккаунт? Войдите</a></div>
   </div>
 </div>
@@ -2855,6 +2884,82 @@ let fbAuthReady = false;
 let fbSyncInProgress = false;
 let fbAuthGeneration = 0;
 
+
+// Route to the personal profile after an explicit Google sign-in, including mobile redirects.
+// Restoring an existing session on an ordinary app launch does not force a navigation.
+const WP_AUTH_PROFILE_INTENT = 'wp_auth_profile_after_google';
+
+
+function wpGoogleCompleteSignIn(user, source='Google'){
+  if(!user) throw new Error('Google не вернул данные пользователя.');
+  const activeUser = fbAuth?.currentUser;
+  if(activeUser && activeUser.uid !== user.uid){
+    throw new Error('Firebase подтвердил другой аккаунт. Закройте окно входа и повторите попытку.');
+  }
+
+  fbUser = user;
+  fbAuthReady = true;
+  if(typeof wp6AdoptFirebaseIdentity === 'function') wp6AdoptFirebaseIdentity(user);
+  if(!currentUser || currentUser.id !== user.uid){
+    currentUser = {
+      id:user.uid,
+      name:user.displayName || (user.email ? user.email.split('@')[0] : 'Пользователь'),
+      email:user.email || '',
+      avatar:user.photoURL || null,
+      avatarIcon:null,
+      defaultCity:'Москва',
+      registrationDate:new Date().toISOString(),
+      bio:''
+    };
+  }else{
+    currentUser.email = user.email || currentUser.email || '';
+    if(user.displayName && (!currentUser.name || currentUser.name === 'Гость')) currentUser.name = user.displayName;
+    if(user.photoURL) currentUser.avatar = user.photoURL;
+  }
+  saveUser();
+  updateUI();
+  try{localStorage.removeItem(WP_AUTH_PROFILE_INTENT);}catch(_){ }
+  // This is deliberately synchronous with the successful Firebase result.
+  // Firestore is hydrated separately and is never allowed to keep the user on Guest.
+  showPage('profile');
+  if(typeof wp81UpdateHubSummaries === 'function'){
+    wp81UpdateHubSummaries();
+    if(typeof requestAnimationFrame === 'function') requestAnimationFrame(()=>wp81UpdateHubSummaries());
+  }
+  showNotification('Вход через Google выполнен. Открыт ваш профиль.');
+  return true;
+}
+function wpAuthRouteToProfile(user, force=false){
+  if(!user) return false;
+  const activeAuthUser = fbAuth?.currentUser;
+  if(activeAuthUser && activeAuthUser.uid !== user.uid) return false;
+
+  let pendingIntent = false;
+  try{
+    const raw = localStorage.getItem(WP_AUTH_PROFILE_INTENT);
+    if(raw){
+      const startedAt = Number(raw);
+      pendingIntent = Number.isFinite(startedAt) && startedAt > 0 && (Date.now() - startedAt) < 10*60*1000;
+      if(!pendingIntent) localStorage.removeItem(WP_AUTH_PROFILE_INTENT);
+    }
+  }catch(_){ }
+
+  const authPageActive = !!document.getElementById('auth-page')?.classList.contains('active');
+  if(!force && !pendingIntent && !authPageActive) return false;
+  try{ localStorage.removeItem(WP_AUTH_PROFILE_INTENT); }catch(_){ }
+
+  fbUser = user;
+  fbAuthReady = true;
+  if(typeof wp6AdoptFirebaseIdentity === 'function') wp6AdoptFirebaseIdentity(user);
+  if(typeof updateUI === 'function' && document.readyState !== 'loading') updateUI();
+  if(typeof showPage === 'function') showPage('profile');
+  if(typeof wp81UpdateHubSummaries === 'function'){
+    wp81UpdateHubSummaries();
+    if(typeof requestAnimationFrame === 'function') requestAnimationFrame(()=>wp81UpdateHubSummaries());
+  }
+  return true;
+}
+
 try {
   if (!window.firebase || !firebaseConfig.apiKey || firebaseConfig.apiKey.startsWith('ВСТАВЬ')) {
     console.error('[WeatherPro/Firebase] SDK или конфигурация Firebase не найдены.');
@@ -2891,6 +2996,7 @@ try {
         };
         saveUser();
         updateUI();
+        if(typeof wp81UpdateHubSummaries==='function') wp81UpdateHubSummaries();
         return;
       }
 
@@ -2918,11 +3024,16 @@ try {
       saveUser();
       loadSettings();
       updateUI();
+      // Complete an explicit Google handoff as soon as Firebase confirms the user.
+      // Cloud profile loading below is not a prerequisite for navigation.
+      wpAuthRouteToProfile(user, false);
+      if(typeof wp81UpdateHubSummaries==='function') wp81UpdateHubSummaries();
 
       try {
         await loadFromCloud();
         if (generation !== fbAuthGeneration || !fbUser || fbUser.uid !== user.uid) return;
         console.info('[WeatherPro/Firebase] Профиль аккаунта загружен и синхронизирован.');
+        if(typeof wp81UpdateHubSummaries==='function') wp81UpdateHubSummaries();
         if(document.getElementById('people-page')?.classList.contains('active')) loadSocialHub();
       } catch (error) {
         console.error('[WeatherPro/Firebase] Ошибка инициализации профиля:', error);
@@ -2933,7 +3044,10 @@ try {
     // Completes a signInWithRedirect flow on mobile browsers.
     if (typeof fbAuth.getRedirectResult === 'function') {
       fbAuth.getRedirectResult().then(result => {
-        if (result?.user) console.info('[WeatherPro/Auth] Google redirect sign-in completed.');
+        if (result?.user) {
+          console.info('[WeatherPro/Auth] Google redirect sign-in completed.');
+          wpGoogleCompleteSignIn(result.user, 'redirect');
+        }
       }).catch(error => {
         console.error('[WeatherPro/Auth] Google redirect result failed:', error);
         const messages = {
@@ -2976,52 +3090,230 @@ const wp5FaIcon = (name, extra='')=>`<i class="fa-solid ${name} ${extra}" aria-h
 function loginWithGoogle(){
   if(!fbReady || !fbAuth){
     showNotification('Firebase не подключён. Проверьте firebaseConfig и SDK.', true);
-    console.error('[WeatherPro/Auth] Вход невозможен: Firebase Auth не инициализирован.');
+    console.error('[WeatherPro/Auth] Google-вход невозможен: Firebase Auth не инициализирован.');
     return;
   }
 
+  const ua = String(navigator.userAgent || '');
+  const isEmbeddedWebView = /;\s*wv\)|\bFBAN\b|\bFBAV\b|Instagram|\bTelegram\b|\bLine\//i.test(ua);
   const provider = new firebase.auth.GoogleAuthProvider();
-  provider.setCustomParameters({ prompt: 'select_account' });
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '')
-    || !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+  provider.addScope('email');
+  provider.addScope('profile');
+  provider.setCustomParameters({prompt:'select_account'});
 
-  const handleError = error => {
-    console.error('[WeatherPro/Auth] Google sign-in failed:', error);
+  const buttons = Array.from(document.querySelectorAll('.wp-auth-google'));
+  buttons.forEach(button => { button.disabled = true; button.dataset.wpGoogleBusy = '1'; });
+  const restoreButtons = () => buttons.forEach(button => {
+    button.disabled = false;
+    delete button.dataset.wpGoogleBusy;
+  });
+  const clearIntent = () => { try{localStorage.removeItem(WP_AUTH_PROFILE_INTENT);}catch(_){ } };
+  const explainError = error => {
+    const code = String(error?.code || '');
     const messages = {
-      'auth/unauthorized-domain': 'Текущий адрес не разрешён Firebase. Добавьте 127.0.0.1 (или домен сайта) в Authentication → Settings → Authorized domains.',
-      'auth/popup-blocked': 'Браузер заблокировал окно входа. Разрешите всплывающие окна или повторите вход.',
-      'auth/popup-closed-by-user': 'Окно Google было закрыто до завершения входа.',
-      'auth/cancelled-popup-request': 'Предыдущий запрос входа ещё обрабатывается. Повторите попытку через секунду.',
-      'auth/operation-not-allowed': 'Включите Google provider в Firebase Authentication.',
-      'auth/invalid-api-key': 'Проверьте apiKey в firebaseConfig.',
-      'auth/network-request-failed': 'Нет соединения с Firebase. Проверьте интернет и попробуйте снова.',
-      'auth/web-storage-unsupported': 'Браузер блокирует хранилище авторизации. Откройте сайт в обычном режиме браузера.'
+      'auth/unauthorized-domain':'Адрес сайта не разрешён Firebase. Добавьте домен сайта в Firebase Console → Authentication → Settings → Authorized domains.',
+      'auth/operation-not-allowed':'В Firebase не включён Google-провайдер. Откройте Authentication → Sign-in method → Google и включите его.',
+      'auth/popup-blocked':'Браузер заблокировал окно Google. Разрешите всплывающие окна или откройте сайт в Chrome.',
+      'auth/popup-closed-by-user':'Окно Google закрыто до завершения входа. Попробуйте ещё раз.',
+      'auth/cancelled-popup-request':'Запрос Google-входа уже выполняется. Подождите секунду и попробуйте снова.',
+      'auth/network-request-failed':'Не удалось связаться с Google/Firebase. Проверьте интернет и повторите попытку.',
+      'auth/web-storage-unsupported':'Браузер блокирует хранилище авторизации. Откройте сайт в обычном режиме Chrome.',
+      'auth/account-exists-with-different-credential':'Эта Google-почта уже зарегистрирована другим способом. Войдите существующим способом (email/пароль), затем свяжите Google в настройках аккаунта.',
+      'auth/credential-already-in-use':'Этот Google-аккаунт уже привязан к другому профилю Weather Pro.',
+      'auth/invalid-api-key':'Firebase API key некорректен. Проверьте firebaseConfig.',
+      'auth/user-disabled':'Этот аккаунт отключён в Firebase.',
+      'auth/too-many-requests':'Слишком много попыток входа. Подождите немного и повторите.'
     };
-    showNotification(messages[error.code] || ('Ошибка Google-входа: ' + (error.code || error.message)), true);
+    if(isEmbeddedWebView && (code === 'auth/operation-not-supported-in-this-environment' || code === 'auth/web-storage-unsupported')){
+      return 'Google блокирует вход во встроенном браузере. Откройте эту же ссылку в Google Chrome и повторите вход.';
+    }
+    return messages[code] || ('Google не смог выполнить вход: ' + (code || error?.message || 'неизвестная ошибка'));
+  };
+  const handleError = error => {
+    clearIntent();
+    restoreButtons();
+    console.error('[WeatherPro/Auth] Google sign-in failed:', {
+      code:error?.code || null,
+      message:error?.message || String(error),
+      email:error?.customData?.email || null,
+      authDomain:firebaseConfig.authDomain,
+      host:location.host
+    });
+    showNotification(explainError(error), true);
   };
 
-  const persistence = firebase.auth.Auth?.Persistence?.LOCAL;
-  const prepare = persistence && typeof fbAuth.setPersistence === 'function'
-    ? fbAuth.setPersistence(persistence)
-    : Promise.resolve();
+  // Store the intended destination before opening the provider. It survives a redirect.
+  try{localStorage.setItem(WP_AUTH_PROFILE_INTENT, String(Date.now()));}catch(_){ }
 
-  prepare.then(() => {
-    if(isMobile){
-      showNotification('Открываем безопасный вход Google…');
-      return fbAuth.signInWithRedirect(provider);
-    }
-    return fbAuth.signInWithPopup(provider).catch(error => {
-      // Some mobile browsers and embedded webviews block popups even when the
-      // desktop flow works. Redirect is the supported fallback for those cases.
-      if(['auth/popup-blocked','auth/operation-not-supported-in-this-environment'].includes(error.code)){
-        showNotification('Переключаемся на вход Google через перенаправление…');
-        return fbAuth.signInWithRedirect(provider);
-      }
-      throw error;
+  // IMPORTANT: do not await setPersistence here. Popup APIs need the original click's
+  // user activation; Firebase LOCAL persistence is configured once during app startup.
+  let popupRequest;
+  try{
+    popupRequest = fbAuth.signInWithPopup(provider);
+  }catch(error){
+    handleError(error);
+    return;
+  }
+
+  Promise.resolve(popupRequest).then(result => {
+    if(!result?.user) throw new Error('Google не вернул авторизованного пользователя.');
+    console.info('[WeatherPro/Auth] Google popup sign-in completed.', {
+      uid:result.user.uid,
+      email:result.user.email,
+      provider:result.user.providerData?.map(item=>item.providerId)
     });
-  }).catch(handleError);
+    wpGoogleCompleteSignIn(result.user, 'popup');
+    restoreButtons();
+  }).catch(error => {
+    const fallbackCodes = [
+      'auth/popup-blocked',
+      'auth/operation-not-supported-in-this-environment'
+    ];
+    // Redirect is only a fallback. Popup is attempted first so Chrome/Android receives
+    // the actual user gesture instead of a delayed call after setPersistence().
+    if(fallbackCodes.includes(error?.code) && !isEmbeddedWebView && typeof fbAuth.signInWithRedirect === 'function'){
+      console.warn('[WeatherPro/Auth] Popup unavailable; falling back to Google redirect:', error.code);
+      showNotification('Окно Google недоступно. Переключаемся на безопасный вход…');
+      fbAuth.signInWithRedirect(provider).catch(handleError);
+      return;
+    }
+    handleError(error);
+  });
 }
 window.loginWithGoogle = loginWithGoogle;
+
+
+function wpAuthErrorMessage(error, action){
+  const code=String(error?.code||'');
+  const messages={
+    'auth/email-already-in-use':'Эта почта уже зарегистрирована. Перейдите во вкладку «Вход» и войдите с этой почтой. Если аккаунт создавался через Google, используйте кнопку Google.',
+    'auth/account-exists-with-different-credential':'Эта почта уже зарегистрирована через другой способ входа. Используйте тот способ, которым создавали аккаунт (Google или email/пароль).',
+    'auth/credential-already-in-use':'Эти данные уже привязаны к другому аккаунту.',
+    'auth/invalid-email':'Проверьте правильность адреса электронной почты.',
+    'auth/weak-password':'Пароль слишком простой. Используйте не менее 6 символов.',
+    'auth/operation-not-allowed':'В Firebase не включён вход по email/паролю. Откройте Firebase Console → Authentication → Sign-in method и включите Email/Password.',
+    'auth/user-not-found':'Аккаунт с такой почтой не найден. Проверьте email или зарегистрируйтесь.',
+    'auth/wrong-password':'Неверная почта или пароль. Проверьте данные и попробуйте снова.',
+    'auth/invalid-credential':'Неверная почта или пароль. Проверьте данные и попробуйте снова.',
+    'auth/too-many-requests':'Слишком много попыток. Подождите немного и попробуйте снова.',
+    'auth/network-request-failed':'Не удалось связаться с Firebase. Проверьте интернет-соединение.',
+    'auth/user-disabled':'Этот аккаунт отключён. Обратитесь к администратору проекта.',
+    'auth/requires-recent-login':'Для этого действия войдите в аккаунт повторно.'
+  };
+  return messages[code] || ((action==='register'?'Не удалось создать аккаунт: ':'Не удалось войти: ')+(code||error?.message||'неизвестная ошибка'));
+}
+
+async function wpAuthPrepare(){
+  if(!fbReady||!fbAuth) throw new Error('Firebase Auth не инициализирован. Проверьте конфигурацию и подключение SDK.');
+  const localPersistence=firebase.auth.Auth?.Persistence?.LOCAL;
+  if(localPersistence&&typeof fbAuth.setPersistence==='function') await fbAuth.setPersistence(localPersistence);
+}
+
+async function wpAuthActivateUser(user, successText){
+  if(!user) throw new Error('Firebase не вернул пользователя после входа.');
+  // Firebase Auth UID is the account identity; local guest cache is never treated as signed in.
+  fbUser=user;
+  fbAuthReady=true;
+  wp6AdoptFirebaseIdentity(user);
+  let cloudLoaded=true, cloudError=null;
+  try{await loadFromCloud();}
+  catch(error){
+    cloudLoaded=false;cloudError=error;
+    console.error('[WeatherPro/Auth] Вход выполнен, но облачный профиль недоступен:',error);
+  }
+  if(fbAuth.currentUser && fbAuth.currentUser.uid!==user.uid) return;
+  fbUser=fbAuth.currentUser||user;
+  // Reassert the authenticated identity even when Firestore is temporarily unavailable.
+  if(!currentUser||currentUser.id!==user.uid){
+    currentUser={id:user.uid,name:user.displayName||(user.email?user.email.split('@')[0]:'Пользователь'),email:user.email||'',avatar:user.photoURL||null,avatarIcon:null,defaultCity:'Москва',registrationDate:new Date().toISOString(),bio:''};
+  }else{
+    currentUser.email=user.email||'';
+    if(!currentUser.name) currentUser.name=user.displayName||(user.email?user.email.split('@')[0]:'Пользователь');
+  }
+  saveUser();
+  updateUI();
+  if(typeof wp81UpdateHubSummaries==='function') wp81UpdateHubSummaries();
+  showPage('profile');
+  if(typeof wp81UpdateHubSummaries==='function') wp81UpdateHubSummaries();
+  if(cloudLoaded) showNotification(successText||'Вход выполнен. Ваш профиль загружен.');
+  else showNotification('Вход выполнен, аккаунт активен. Не удалось загрузить облачные данные: '+(cloudError?.code||'проверьте Firestore Rules и соединение.'),true);
+}
+
+async function loginWithEmail(event){
+  if(event?.preventDefault) event.preventDefault();
+  const email=String($('wpLoginEmail')?.value||'').trim().toLowerCase();
+  const password=String($('wpLoginPassword')?.value||'');
+  const button=$('wpEmailLoginSubmit');
+  if(!email||!/^\S+@\S+\.\S+$/.test(email)){showNotification('Введите корректный email.',true);$('wpLoginEmail')?.focus();return;}
+  if(!password){showNotification('Введите пароль.',true);$('wpLoginPassword')?.focus();return;}
+  if(button){button.disabled=true;button.dataset.originalText=button.innerHTML;button.innerHTML='<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Входим…';}
+  try{
+    await wpAuthPrepare();
+    const credential=await fbAuth.signInWithEmailAndPassword(email,password);
+    await wpAuthActivateUser(credential.user,'Вход выполнен. Загружен ваш аккаунт.');
+    const form=$('wpEmailLoginForm');form?.reset();
+  }catch(error){
+    console.error('[WeatherPro/Auth] Email sign-in failed:',error);
+    showNotification(wpAuthErrorMessage(error,'login'),true);
+  }finally{
+    if(button){button.disabled=false;button.innerHTML=button.dataset.originalText||'<i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i> Войти по email';}
+  }
+}
+window.loginWithEmail=loginWithEmail;
+
+async function registerWithEmail(event){
+  if(event?.preventDefault) event.preventDefault();
+  const name=String($('wpRegisterName')?.value||'').trim().slice(0,48);
+  const email=String($('wpRegisterEmail')?.value||'').trim().toLowerCase();
+  const password=String($('wpRegisterPassword')?.value||'');
+  const confirmPassword=String($('wpRegisterPasswordConfirm')?.value||'');
+  const button=$('wpEmailRegisterSubmit');
+  if(name.length<2){showNotification('Укажите имя (не менее 2 символов).',true);$('wpRegisterName')?.focus();return;}
+  if(!email||!/^\S+@\S+\.\S+$/.test(email)){showNotification('Введите корректный email.',true);$('wpRegisterEmail')?.focus();return;}
+  if(password.length<6){showNotification('Пароль должен содержать не менее 6 символов.',true);$('wpRegisterPassword')?.focus();return;}
+  if(password!==confirmPassword){showNotification('Пароли не совпадают. Проверьте оба поля.',true);$('wpRegisterPasswordConfirm')?.focus();return;}
+  if(button){button.disabled=true;button.dataset.originalText=button.innerHTML;button.innerHTML='<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Создаём аккаунт…';}
+  try{
+    await wpAuthPrepare();
+    const credential=await fbAuth.createUserWithEmailAndPassword(email,password);
+    const newUser=credential.user;
+    try{await newUser.updateProfile({displayName:name});}catch(profileError){console.warn('[WeatherPro/Auth] Не удалось записать displayName в Auth; имя сохранится в профиле.',profileError);}
+    // Immediately replace the guest identity with the newly created Firebase UID.
+    fbUser=fbAuth.currentUser||newUser;
+    wp6AdoptFirebaseIdentity(fbUser);
+    currentUser.name=name;
+    currentUser.email=fbUser.email||email;
+    saveUser();
+    updateUI();
+    await wpAuthActivateUser(fbUser,'Аккаунт создан. Вы вошли в Weather Pro.');
+    $('wpEmailRegisterForm')?.reset();
+  }catch(error){
+    console.error('[WeatherPro/Auth] Email registration failed:',error);
+    showNotification(wpAuthErrorMessage(error,'register'),true);
+    if(error?.code==='auth/email-already-in-use'||error?.code==='auth/account-exists-with-different-credential'){
+      switchAuthForm('login');
+      const loginEmail=$('wpLoginEmail');if(loginEmail)loginEmail.value=email;
+    }
+  }finally{
+    if(button){button.disabled=false;button.innerHTML=button.dataset.originalText||'<i class="fa-solid fa-user-plus" aria-hidden="true"></i> Создать аккаунт';}
+  }
+}
+window.registerWithEmail=registerWithEmail;
+
+async function resetEmailPassword(event){
+  if(event?.preventDefault) event.preventDefault();
+  const email=String($('wpLoginEmail')?.value||'').trim().toLowerCase();
+  if(!email||!/^\S+@\S+\.\S+$/.test(email)){showNotification('Сначала укажите email в поле входа.',true);$('wpLoginEmail')?.focus();return;}
+  try{
+    await wpAuthPrepare();
+    await fbAuth.sendPasswordResetEmail(email);
+    showNotification('Письмо для сброса пароля отправлено, проверьте почту.');
+  }catch(error){
+    console.error('[WeatherPro/Auth] Password reset failed:',error);
+    showNotification(wpAuthErrorMessage(error,'login'),true);
+  }
+}
+window.resetEmailPassword=resetEmailPassword;
 
 // Wait for Firebase's initial auth-state restoration before deciding that a user
 // is a guest. This avoids false "please sign in" errors during a slow mobile start.
@@ -3076,6 +3368,7 @@ function wp6AdoptFirebaseIdentity(user){
     saveUser();
     if(document.readyState !== 'loading') updateUI();
   }
+  if(typeof wp81UpdateHubSummaries==='function' && document.readyState !== 'loading') wp81UpdateHubSummaries();
 }
 
 
@@ -3209,7 +3502,7 @@ async function searchUsers(){
   }
   const authUser = await wp6WaitForAuth();
   if(!authUser){
-    box.innerHTML = '<div class="person-empty">Firebase не видит активную Google-сессию. Войдите через Google в этом же браузере.</div>';
+    box.innerHTML = '<div class="person-empty">Firebase не видит активную сессию. Войдите по email или через Google в этом же браузере.</div>';
     console.warn('[WeatherPro/Search] Поиск вызван без подтверждённой Firebase-сессии.');
     return;
   }
@@ -6261,7 +6554,7 @@ async function wp6SubmitReport(event){
   try{
     const authUser=await wp6WaitForAuth();
     if(!fbReady||!authUser){
-      showNotification('Firebase не видит активную Google-сессию. Войдите через Google в этом браузере.',true);
+      showNotification('Firebase не видит активную сессию. Войдите по email или через Google в этом браузере.',true);
       return;
     }
     fbUser=authUser;wp6AdoptFirebaseIdentity(authUser);
@@ -7256,7 +7549,7 @@ async function wp104ToggleCamera(){if(wp104CameraStream){wp104StopCamera();retur
 function wp104StopCamera(){if(wp104CameraStream){wp104CameraStream.getTracks().forEach(t=>t.stop());wp104CameraStream=null;}const video=$('wp104CameraVideo');if(video){video.pause();video.srcObject=null;video.classList.remove('active');}const button=$('wp104CameraButton');if(button)button.innerHTML='<i class="fa-solid fa-camera"></i> Запустить камеру';wp104Text('wp104CameraResult','Камера остановлена. Видеопоток закрыт.');}
 function wp104ExportReport(){const report={application:'Weather Pro 10.1',module:'Device Engine 4.0 MAX',createdAt:new Date().toISOString(),privacy:'Generated locally after explicit user action. No audio/video/media data or raw sensor stream is included.',device:wp10DeviceSnapshotCache||null,storageEstimate:navigator.storage?.estimate? 'Available; see live storage panel':'Unavailable',benchmark:wp104BenchLast,capabilities:{secureContext:!!window.isSecureContext,mediaDevices:!!navigator.mediaDevices?.getUserMedia,webgl:!!window.WebGLRenderingContext,motion:'DeviceMotionEvent'in window,orientation:'DeviceOrientationEvent'in window,vibration:typeof navigator.vibrate==='function',bluetooth:!!navigator.bluetooth,usb:!!navigator.usb,nfc:!!navigator.nfc},note:'Browser capabilities are not a full hardware health diagnosis. Browser may hide hardware details.'};const blob=new Blob([JSON.stringify(report,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='weather-pro-device-engine-max-report.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);showNotification('Отчёт Device Engine MAX экспортирован');}
 
-/* Weather Pro 10.1 Smart Device Ultimate: local-only add-ons. */
+/* Weather Pro 10.1.2 Account & Auth Fix: local-only add-ons. */
 const WP101_BAT_KEY='wp101_battery_history',WP101_BENCH_KEY='wp101_bench_history',WP101_SESSION_START=Date.now();
 let wp101BatteryHistory=[],wp101BenchHistory=[];
 try{wp101BatteryHistory=JSON.parse(localStorage.getItem(WP101_BAT_KEY)||'[]').filter(x=>x&&Number.isFinite(x.at)).slice(-288);}catch(e){}
@@ -7272,7 +7565,7 @@ function wp101ClearBenchmarks(){wp101BenchHistory=[];wp101Store(WP101_BENCH_KEY,
 async function wp101RunSecurityCheck(){const checks=[];const add=(n,ok,detail)=>checks.push({name:n,ok:!!ok,detail});add('HTTPS / secure context',!!isSecureContext,isSecureContext?'Защищённый контекст':'Часть API может быть ограничена');add('CSP',!!document.querySelector('meta[http-equiv="Content-Security-Policy"]'),'Проверяется наличие meta CSP; серверный HTTP-заголовок браузерной странице не виден');add('Permissions API',!!navigator.permissions,'Статусы разрешений не меняются автоматически');add('Local storage',(()=>{try{const k='wp101_test';localStorage.setItem(k,'1');localStorage.removeItem(k);return true;}catch(e){return false;}})(),'Пробная запись без персональных данных');add('Service Worker',!!navigator.serviceWorker?.controller,'Контроллер PWA текущей страницы');add('Firebase Auth',typeof firebase!=='undefined'&&!!firebase.auth?.().currentUser,'Статус авторизации; токены и email не экспортируются');const score=Math.round(checks.filter(x=>x.ok).length/checks.length*100);wp104Text('wp101SecurityScore',`${score}/100`);wp104Text('wp101SecurityMeta',`${checks.filter(x=>x.ok).length} из ${checks.length} проверок пройдены. Это базовая проверка конфигурации, не аудит сервера.`);const box=$('wp101SecurityList');if(box)box.innerHTML=checks.map(x=>`<div class="wp104-permission-item"><span><i class="fa-solid ${x.ok?'fa-circle-check':'fa-triangle-exclamation'}" aria-hidden="true"></i> ${x.name}</span><b>${x.ok?'OK':'Проверить'}</b></div><div class="wp101-note">${x.detail}</div>`).join('');return checks;}
 async function wp101RunSmartDiagnostics(){const out=[];const run=async(name,fn)=>{try{await fn();out.push({ok:true,name});}catch(e){out.push({ok:false,name,detail:e.message||'ошибка'});}};await run('Информация об устройстве',()=>wp10RefreshDeviceInfo());await run('Проверка хранилища',()=>wp104AnalyzeStorage());await run('Статусы разрешений',()=>wp104CheckPermissions());await run('Security Center',()=>wp101RunSecurityCheck());await run('Battery Intelligence',()=>wp101RecordBattery());await run('Device Engine API',()=>wp104CheckSupport());const el=$('wp101AutoDiag');if(el)el.innerHTML=out.map(x=>`<div class="wp104-permission-item"><span><i class="fa-solid ${x.ok?'fa-circle-check':'fa-triangle-exclamation'}" aria-hidden="true"></i> ${esc(x.name)}${x.detail?': '+esc(x.detail):''}</span><b>${x.ok?'OK':'Ошибка'}</b></div>`).join('')+`<br><span class="wp101-note">Завершено ${new Date().toLocaleTimeString('ru-RU')}. Неподдерживаемые API не считаются аппаратной неисправностью.</span>`;}
 function wp101Download(blob,name){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000);}
-function wp101ExportFullReport(){const report={application:'Weather Pro 10.1 Smart Device Ultimate',createdAt:new Date().toISOString(),device:wp10DeviceSnapshotCache||null,benchmark:wp104BenchLast||null,benchmarkHistory:wp101BenchHistory,batteryHistory:wp101BatteryHistory,security:{secureContext:!!isSecureContext,serviceWorker:!!navigator.serviceWorker?.controller,permissionsApi:!!navigator.permissions},usage:{currentSessionMs:Date.now()-WP101_SESSION_START,launches:Number(localStorage.getItem('wp101_launches')||1)},privacy:'Created locally on explicit export. No auth tokens, email, raw media, or raw sensor streams included.'};wp101Download(new Blob([JSON.stringify(report,null,2)],{type:'application/json'}),'weather-pro-10.1-device-report.json');}
+function wp101ExportFullReport(){const report={application:'Weather Pro 10.1.2 Account & Auth Fix',createdAt:new Date().toISOString(),device:wp10DeviceSnapshotCache||null,benchmark:wp104BenchLast||null,benchmarkHistory:wp101BenchHistory,batteryHistory:wp101BatteryHistory,security:{secureContext:!!isSecureContext,serviceWorker:!!navigator.serviceWorker?.controller,permissionsApi:!!navigator.permissions},usage:{currentSessionMs:Date.now()-WP101_SESSION_START,launches:Number(localStorage.getItem('wp101_launches')||1)},privacy:'Created locally on explicit export. No auth tokens, email, raw media, or raw sensor streams included.'};wp101Download(new Blob([JSON.stringify(report,null,2)],{type:'application/json'}),'weather-pro-10.1-device-report.json');}
 function wp101Jump(id){const el=$(id)||document.getElementById(id);if(!el)return;el.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});el.animate?.([{outline:'2px solid rgba(96,165,250,.8)'},{outline:'2px solid transparent'}],{duration:1100});}
 function wp101UsageTick(){const e=$('wp101SessionTime');if(e){const m=Math.floor((Date.now()-WP101_SESSION_START)/60000),sec=Math.floor((Date.now()-WP101_SESSION_START)/1000)%60;e.textContent=m?`${m} мин ${sec} с`:`${sec} с`;}const state=$('wp101TabState');if(state)state.textContent=document.hidden?'В фоне':'Активна';}
 try{localStorage.setItem('wp101_launches',String(Number(localStorage.getItem('wp101_launches')||0)+1));}catch(e){}
