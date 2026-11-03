@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#0a1224">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<link rel="stylesheet" href="./push-notifications.css">
+<link rel="stylesheet" href="./push-notifications.css?v=11.2.3">
 <meta name="description" content="Weather Pro 11.2 — интеллектуальное планирование дня, погодные риски, радар, AI-аналитика и персональные рекомендации">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%231e40af'/%3E%3Cstop offset='1' stop-color='%2360a5fa'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='116' fill='%230a0e17'/%3E%3Crect x='26' y='26' width='460' height='460' rx='94' fill='url(%23g)'/%3E%3Cg fill='none' stroke='%23fff' stroke-width='17' stroke-linecap='round'%3E%3Ccircle cx='196' cy='186' r='52'/%3E%3Cpath d='M196 92v26M196 254v26M102 186h26M264 186h26'/%3E%3C/g%3E%3Cpath d='M356 396H236a58 58 0 0 1-9-115 78 78 0 0 1 150 17 52 52 0 0 1-21 98z' fill='%23fff'/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1547,6 +1547,102 @@ body.wp-performance-background-pause.wp-performance-hidden *::after{
 @media(prefers-reduced-motion:no-preference){.wp11-command{animation:wp11Enter .55s ease both}@keyframes wp11Enter{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}}
 </style>
 
+
+<style id="wp1123-clean-mobile-button-feedback">
+/* Remove the rectangular flash shown by Android/WebView when a control is tapped. */
+:where(button,a,[role="button"],input[type="button"],input[type="submit"],input[type="reset"],label[for]){
+  -webkit-tap-highlight-color:transparent!important;
+  tap-highlight-color:transparent!important;
+}
+/* Keep keyboard navigation accessible, but do not leave a focus rectangle after a touch tap. */
+:where(button,a,[role="button"]):focus:not(:focus-visible){outline:none!important;}
+/* The catalog's current page is indicated by its blue icon/text, not a filled rectangular tile. */
+@media (hover:none), (pointer:coarse){
+  .nav-group-menu .nav-link.active,
+  .nav-links.mobile-open .nav-group-menu .nav-link.active{
+    background:transparent!important;
+    border-color:transparent!important;
+    box-shadow:none!important;
+    color:#8bc2ff!important;
+  }
+  .nav-group-menu .nav-link:hover,
+  .nav-links.mobile-open .nav-group-menu .nav-link:hover{
+    background:transparent!important;
+    box-shadow:none!important;
+    transform:none!important;
+  }
+}
+/* The People tab needs a badge anchor, but its SVG itself must remain on a clear background. */
+.bottom-nav-item>.wp-nav-icon-wrap{
+  display:inline-flex!important;
+  flex:0 0 22px!important;
+  width:22px!important;
+  height:22px!important;
+  min-width:22px!important;
+  min-height:22px!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:inherit!important;
+}
+.bottom-nav-item>.wp-nav-icon-wrap>.icon{
+  display:block!important;
+  width:22px!important;
+  height:22px!important;
+  min-width:22px!important;
+  min-height:22px!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+@media(max-width:380px){
+  .bottom-nav-item>.wp-nav-icon-wrap{flex-basis:20px!important;width:20px!important;height:20px!important;min-width:20px!important;min-height:20px!important}
+  .bottom-nav-item>.wp-nav-icon-wrap>.icon{width:20px!important;height:20px!important;min-width:20px!important;min-height:20px!important}
+}
+</style>
+
+
+<style id="weather-pro-v8-3-1-globe-icon-cleanup">
+/* Remove the extra tile behind the People tab globe. Keep the active pill itself. */
+#bottomNav .bottom-nav-item[data-page="people"] > .wp-people-nav-globe-icon {
+  display:block!important;
+  flex:0 0 22px!important;
+  width:22px!important;
+  height:22px!important;
+  min-width:22px!important;
+  min-height:22px!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  background-color:transparent!important;
+  box-shadow:none!important;
+  outline:none!important;
+}
+/* Avoid Android's rectangular tap highlight on the icon while preserving the
+   rounded active tab and keyboard-only focus indicator. */
+#bottomNav .bottom-nav-item,
+#bottomNav .bottom-nav-item * {
+  -webkit-tap-highlight-color:transparent!important;
+}
+#bottomNav .bottom-nav-item:focus:not(:focus-visible) {
+  outline:none!important;
+}
+@media(max-width:380px){
+  #bottomNav .bottom-nav-item[data-page="people"] > .wp-people-nav-globe-icon {
+    flex-basis:20px!important;width:20px!important;height:20px!important;
+    min-width:20px!important;min-height:20px!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -2908,7 +3004,7 @@ body.wp-performance-background-pause.wp-performance-hidden *::after{
       <svg class="icon" aria-hidden="true"><use href="#i-brain"/></svg><span>AI</span>
     </button>
     <button class="bottom-nav-item" type="button" data-page="people" onclick="showPage('people')">
-      <span class="wp-nav-icon-wrap"><svg class="icon" aria-hidden="true"><use href="#i-globe"/></svg><b id="wpMessageBadge" class="wp-count-badge" hidden>0</b></span><span>Люди</span>
+      <svg class="icon wp-people-nav-globe-icon" aria-hidden="true"><use href="#i-globe"/></svg><span>Люди</span>
     </button>
     <button class="bottom-nav-item" type="button" data-page="profile" onclick="showPage('profile')">
       <svg class="icon" aria-hidden="true"><use href="#i-user"/></svg><span>Профиль</span>
@@ -5889,19 +5985,155 @@ async function loadYearAgo(lat, lon){
   }catch(e){ block.classList.remove('show'); }
 }
 
-function speakWeather(){
-  if(!('speechSynthesis' in window)){ showNotification('Озвучка не поддерживается', true); return; }
-  const city = $('locationName').textContent;
-  const temp = $('temperature').textContent;
-  const desc = $('weatherDescription').textContent;
-  const hum = $('humidity').textContent;
-  const text = `Погода в ${city}. Температура ${temp} градусов. ${desc}. Влажность ${hum}.`;
+// Мужская озвучка погоды: бесплатный Piper (Denis для RU) через TTS.ai.
+// У сервиса есть бесплатная анонимная квота; ключ API не требуется.
+const WP_TTS_API = 'https://api.tts.ai/v1';
+let wpWeatherAudio = null;
+let wpWeatherTtsBusy = false;
+const WP_TTS_VOICE_CACHE_KEY = 'weatherProMaleTtsVoiceV1';
+
+function wpTtsDelay(ms){ return new Promise(resolve => setTimeout(resolve, ms)); }
+
+async function wpTtsFetchJson(url, options = {}, timeoutMs = 18000){
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  try{
+    const response = await fetch(url, { ...options, signal: controller.signal, cache: 'no-store' });
+    const raw = await response.text();
+    let data = {};
+    try{ data = raw ? JSON.parse(raw) : {}; }catch(_){ data = { message: raw.slice(0, 240) }; }
+    if(!response.ok){
+      const message = data.detail || data.message || data.error || `HTTP ${response.status}`;
+      throw new Error(String(message));
+    }
+    return data;
+  }finally{ clearTimeout(timeout); }
+}
+
+async function wpGetMaleTtsVoice(languageCode){
+  const cacheKey = `${WP_TTS_VOICE_CACHE_KEY}_${languageCode}`;
+  try{
+    const cached = JSON.parse(localStorage.getItem(cacheKey) || 'null');
+    if(cached && cached.id && cached.model && Date.now() - cached.savedAt < 7 * 86400000) return cached;
+  }catch(_){}
+
+  const query = new URLSearchParams({ language: languageCode, gender: 'male' });
+  const data = await wpTtsFetchJson(`${WP_TTS_API}/voices/?${query.toString()}`, {}, 12000);
+  const voices = Array.isArray(data.voices) ? data.voices : [];
+  const freeModels = new Set(['piper', 'vits', 'melotts', 'kokoro']);
+  const suitable = voices.filter(v => String(v.gender || '').toLowerCase() === 'male'
+    && freeModels.has(String(v.model || '').toLowerCase()));
+  if(!suitable.length) throw new Error('Не найден бесплатный мужской голос для выбранного языка');
+
+  // Denis — бесплатный мужской русский голос Piper; для английского берём доступный бесплатный мужской голос.
+  const voice = suitable.find(v => languageCode === 'ru' && /denis/i.test(`${v.name || ''} ${v.id || ''}`))
+    || suitable.find(v => /piper/i.test(String(v.model || '')))
+    || suitable[0];
+  if(!voice.id || !voice.model) throw new Error('Сервис не вернул идентификатор голоса');
+  const selected = { id: voice.id, name: voice.name || voice.id, model: voice.model, language: languageCode, savedAt: Date.now() };
+  try{ localStorage.setItem(cacheKey, JSON.stringify(selected)); }catch(_){}
+  return selected;
+}
+
+async function wpGenerateMaleSpeech(text, languageCode){
+  const voice = await wpGetMaleTtsVoice(languageCode);
+  // Анонимный бесплатный тариф ограничивает одну генерацию 500 символами.
+  const safeText = String(text || '').replace(/\s+/g, ' ').trim().slice(0, 480);
+  if(!safeText) throw new Error('Нет текста для озвучивания');
+  const job = await wpTtsFetchJson(`${WP_TTS_API}/tts/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({
+      model: voice.model,
+      voice: voice.id,
+      text: safeText,
+      language: languageCode,
+      format: 'mp3',
+      speed: 0.97
+    })
+  }, 25000);
+
+  let audioUrl = job.result_url || job.audio_url || job.url || '';
+  const jobId = job.uuid || job.job_id;
+  if(!audioUrl && jobId){
+    for(let attempt = 0; attempt < 24; attempt++){
+      await wpTtsDelay(1250);
+      const result = await wpTtsFetchJson(`${WP_TTS_API}/speech/results/?uuid=${encodeURIComponent(jobId)}`, {}, 12000);
+      if(result.status === 'failed') throw new Error(result.error || 'Не удалось создать аудио');
+      audioUrl = result.result_url || result.audio_url || result.url || '';
+      if(audioUrl || result.status === 'completed') break;
+    }
+  }
+  if(!audioUrl) throw new Error('Сервис не вернул аудиофайл');
+  return { audioUrl, voiceName: voice.name };
+}
+
+function wpSpeakWithSystemMale(text, languageCode){
+  if(!('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined')
+    throw new Error('Озвучка не поддерживается этим браузером');
   window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = lang === 'ru' ? 'ru-RU' : 'en-US';
-  u.rate = 1; u.pitch = 1;
-  window.speechSynthesis.speak(u);
-  showNotification('Озвучиваем погоду');
+  const voices = window.speechSynthesis.getVoices();
+  const langPrefix = languageCode === 'ru' ? 'ru' : 'en';
+  const candidates = voices.filter(v => String(v.lang || '').toLowerCase().startsWith(langPrefix));
+  const maleHints = /male|man|alex|andrew|daniel|david|dmitri|dmitry|denis|ivan|pavel|paul|sergey|sergei|yuri|nikita|русск.*муж|мужск/i;
+  const chosen = candidates.find(v => maleHints.test(`${v.name || ''} ${v.voiceURI || ''}`)) || candidates[0] || null;
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = languageCode === 'ru' ? 'ru-RU' : 'en-US';
+  if(chosen) utterance.voice = chosen;
+  utterance.rate = 0.96;
+  utterance.pitch = chosen && maleHints.test(`${chosen.name || ''} ${chosen.voiceURI || ''}`) ? 0.92 : 0.78;
+  window.speechSynthesis.speak(utterance);
+  return chosen ? chosen.name : 'системный голос с пониженным тоном';
+}
+
+async function speakWeather(){
+  const city = $('locationName')?.textContent?.trim() || (lang === 'ru' ? 'вашем городе' : 'your city');
+  const temp = $('temperature')?.textContent?.trim() || '';
+  const desc = $('weatherDescription')?.textContent?.trim() || '';
+  const hum = $('humidity')?.textContent?.trim() || '';
+  const languageCode = lang === 'ru' ? 'ru' : 'en';
+  const text = languageCode === 'ru'
+    ? `Погода в городе ${city}. Температура ${temp}. ${desc}. Влажность ${hum}.`
+    : `Weather in ${city}. Temperature ${temp}. ${desc}. Humidity ${hum}.`;
+
+  if(wpWeatherTtsBusy){
+    if(wpWeatherAudio){ try{ wpWeatherAudio.pause(); wpWeatherAudio.currentTime = 0; }catch(_){} }
+    if('speechSynthesis' in window) window.speechSynthesis.cancel();
+    showNotification(languageCode === 'ru' ? 'Озвучка остановлена' : 'Speech stopped');
+    wpWeatherTtsBusy = false;
+    return;
+  }
+
+  wpWeatherTtsBusy = true;
+  if('speechSynthesis' in window) window.speechSynthesis.cancel();
+  if(wpWeatherAudio){ try{ wpWeatherAudio.pause(); wpWeatherAudio.currentTime = 0; }catch(_){} }
+  showNotification(languageCode === 'ru' ? 'Подключаем мужской голос…' : 'Loading male voice…');
+
+  try{
+    const generated = await wpGenerateMaleSpeech(text, languageCode);
+    const audio = new Audio(generated.audioUrl);
+    audio.preload = 'auto';
+    // Немного понижаем тембр без сильного замедления речи (поддержка зависит от браузера).
+    try{ audio.preservesPitch = false; audio.mozPreservesPitch = false; audio.webkitPreservesPitch = false; audio.playbackRate = 0.96; }catch(_){}
+    wpWeatherAudio = audio;
+    audio.onended = () => { wpWeatherTtsBusy = false; };
+    audio.onerror = () => { wpWeatherTtsBusy = false; };
+    await audio.play();
+    showNotification(languageCode === 'ru'
+      ? `Озвучка: мужской голос ${generated.voiceName}`
+      : `Speech: male voice ${generated.voiceName}`);
+  }catch(error){
+    console.warn('Weather Pro male TTS unavailable; using device speech:', error);
+    try{
+      const fallbackName = wpSpeakWithSystemMale(text, languageCode);
+      showNotification(languageCode === 'ru'
+        ? `Облачный голос временно недоступен. Используется голос устройства: ${fallbackName}`
+        : `Cloud voice unavailable. Using device voice: ${fallbackName}`, true);
+    }catch(fallbackError){
+      showNotification(languageCode === 'ru' ? 'Не удалось запустить озвучку' : 'Could not start speech', true);
+    }
+    wpWeatherTtsBusy = false;
+  }
 }
 window.speakWeather=speakWeather;
 
@@ -7836,6 +8068,6 @@ window.wp11SetMission=wp11SetMission;
 window.wp11Recalculate=wp11Recalculate;
 
 </script>
-<script src="./push-notifications.js"></script>
+<script src="./push-notifications.js?v=11.2.2"></script>
 </body>
 </html>

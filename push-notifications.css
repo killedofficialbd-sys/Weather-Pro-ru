@@ -34,3 +34,8 @@
 .wp81-people-action .wp-nav-icon-wrap{display:inline-flex;flex:0 0 32px;width:32px;height:32px;min-width:32px;min-height:32px}
 .wp81-people-action .wp-nav-icon-wrap>i{font-size:14px}
 @media(max-width:600px){.wp81-people-action .wp-nav-icon-wrap{flex-basis:29px;width:29px;height:29px;min-width:29px;min-height:29px}}
+
+/* Restore the blue icon tile for the nested Messages action (not a direct child icon). */
+.wp81-people-action .wp-nav-icon-wrap{background:rgba(59,130,246,.14);border-radius:10px;color:#7db2ff;}
+.wp81-people-action .wp-nav-icon-wrap>i{color:inherit;font-size:14px;}
+.wp81-people-action .wp-nav-icon-wrap .wp-count-badge{color:#fff;background:#ef4444;}

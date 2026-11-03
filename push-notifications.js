@@ -15,6 +15,7 @@
   let notificationDocs = [];
   let serverUnreadCount = 0;
   const chatUnreadById = new Map();
+  const chatUnreadRequestTokens = new Map();
   const chatMessageUnsubs = new Map();
   const chatSeenMessageIds = new Map();
   let presenceHeartbeat = null;
@@ -28,6 +29,7 @@
   const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
   const localStorageKey = uid => `weatherpro_local_notifications_${uid}`;
   const preferenceKey = uid => `weatherpro_browser_notifications_${uid}`;
+  const chatReadsKey = uid => `weatherpro_chat_reads_${uid}`;
 
   function readLocalNotifications(uid = currentUid) {
     if (!uid) return [];
@@ -41,6 +43,20 @@
     try { localStorage.setItem(localStorageKey(uid), JSON.stringify(items.slice(0, 200))); }
     catch (error) { console.warn('[WeatherPro/Notifications] local history save failed', error); }
   }
+  function readLocalChatReads(uid = currentUid) {
+    if (!uid) return {};
+    try {
+      const value = JSON.parse(localStorage.getItem(chatReadsKey(uid)) || '{}');
+      return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+    } catch (_) { return {}; }
+  }
+  function writeLocalChatRead(chatId, milliseconds = Date.now(), uid = currentUid) {
+    if (!uid || !chatId) return;
+    const reads = readLocalChatReads(uid);
+    reads[chatId] = Math.max(Number(reads[chatId]) || 0, Number(milliseconds) || Date.now());
+    try { localStorage.setItem(chatReadsKey(uid), JSON.stringify(reads)); }
+    catch (error) { console.warn('[WeatherPro/Notifications] local read cursor save failed', error); }
+  }
   function setBadge(id, count) {
     const element = $id(id);
     if (!element) return;
@@ -53,7 +69,6 @@
   function refreshMessageBadge() {
     let total = 0;
     for (const count of chatUnreadById.values()) total += count;
-    setBadge('wpMessageBadge', total);
     setBadge('wpMessageActionBadge', total);
   }
   function notifyToast(message, error = false) {
@@ -78,6 +93,7 @@
     for (const unsubscribe of chatMessageUnsubs.values()) { try { unsubscribe(); } catch (_) {} }
     chatMessageUnsubs.clear();
     chatSeenMessageIds.clear();
+    chatUnreadRequestTokens.clear();
     if (presenceHeartbeat) clearInterval(presenceHeartbeat);
     presenceHeartbeat = null;
     currentPresenceChat = null;
@@ -93,7 +109,8 @@
       chatRef.collection('messages').where('senderId', '==', otherUid).get()
     ]);
     const readMap = userSnap.exists ? (userSnap.data().chatReads || {}) : {};
-    const lastRead = timestampMillis(readMap[chatId]);
+    const localReadMap = readLocalChatReads(user.uid);
+    const lastRead = Math.max(timestampMillis(readMap[chatId]), Number(localReadMap[chatId]) || 0);
     return messagesSnap.docs.reduce((total, doc) => {
       return timestampMillis(doc.data().createdAt) > lastRead ? total + 1 : total;
     }, 0);
@@ -151,26 +168,14 @@
   function watchChatMessages(chatId, otherUid) {
     if (chatMessageUnsubs.has(chatId) || !db()) return;
     let initialized = false;
-    const listenerStartedAt = Date.now() - 15000;
     const seen = new Set();
     const unsubscribe = db().collection('chats').doc(chatId).collection('messages')
       .orderBy('createdAt', 'desc').limit(25)
       .onSnapshot(snapshot => {
         if (!initialized) {
-          snapshot.docs.forEach(doc => {
-            seen.add(doc.id);
-            const message = doc.data() || {};
-            const createdAt = timestampMillis(message.createdAt);
-            if (message.senderId && message.senderId !== currentUid && message.senderId === otherUid
-                && createdAt >= listenerStartedAt && !isChatBeingRead(chatId)) {
-              addLocalNotification({
-                id: `local_message_${chatId}_${doc.id}`,
-                title: String(message.senderName || 'Новое сообщение').slice(0, 80),
-                body: String(message.text || 'Вам отправили сообщение').slice(0, 180),
-                type: 'message', chatId, actionUrl: '/chat'
-              });
-            }
-          });
+          // Treat the first snapshot as the baseline only. Existing recent messages must
+          // not create fresh notifications every time the user reloads the app.
+          snapshot.docs.forEach(doc => seen.add(doc.id));
           initialized = true;
           chatSeenMessageIds.set(chatId, seen);
           return;
@@ -241,15 +246,11 @@
     refreshMessageBadge();
     refreshNotificationBadge();
 
-    const userNotifications = db().collection('users').doc(uid).collection('notifications');
-    notifUnreadUnsub = userNotifications.where('read', '==', false).onSnapshot(snapshot => {
-      serverUnreadCount = snapshot.size;
-      refreshNotificationBadge();
-    }, error => console.warn('[WeatherPro/Notifications] server unread count', error));
-    notifHistoryUnsub = userNotifications.orderBy('createdAt', 'desc').limit(100).onSnapshot(snapshot => {
-      notificationDocs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), source: 'firestore' }));
-      renderNotifications();
-    }, error => console.warn('[WeatherPro/Notifications] server notification history', error));
+    // Browser-only edition: notification history is stored per account in localStorage.
+    // There is deliberately no read from users/{uid}/notifications: this collection is
+    // not written by a backend in the no-deploy edition, and Firestore Rules do not expose it.
+    notificationDocs = [];
+    serverUnreadCount = 0;
 
     chatsUnsub = db().collection('chats').where('members', 'array-contains', uid).onSnapshot(snapshot => {
       const valid = new Set();
@@ -259,8 +260,10 @@
         if (!otherUid) return;
         valid.add(doc.id);
         watchChatMessages(doc.id, otherUid);
+        const requestToken = (chatUnreadRequestTokens.get(doc.id) || 0) + 1;
+        chatUnreadRequestTokens.set(doc.id, requestToken);
         getChatUnread(doc.id, otherUid).then(count => {
-          if (currentUid !== uid) return;
+          if (currentUid !== uid || chatUnreadRequestTokens.get(doc.id) !== requestToken) return;
           chatUnreadById.set(doc.id, count);
           refreshMessageBadge();
         }).catch(error => console.warn('[WeatherPro/Notifications] unread chat count', doc.id, error));
@@ -284,21 +287,35 @@
       // Store the user's read cursor in their existing private profile document.
       // Existing owner-only Firestore rules already permit this update; no Rules deployment is needed.
       const userRef = db().collection('users').doc(user.uid);
-      const userSnap = await userRef.get();
-      const userData = userSnap.exists ? (userSnap.data() || {}) : {};
-      const profile = userData.profile || {
-        displayName: user.displayName || (user.email ? user.email.split('@')[0] : 'Пользователь'),
-        email: user.email || '', avatar: user.photoURL || null,
-        avatarIcon: null, bio: '', defaultCity: 'Москва'
-      };
-      await userRef.set({
-        profile,
-        chatReads: { [chatId]: fire().firestore.FieldValue.serverTimestamp() }
-      }, { merge: true });
+      // Update only this chat's cursor; other chat read-cursors remain untouched.
+      let readAt = Date.now();
+      // Prefer the timestamp of the newest message actually loaded in this chat. This avoids
+      // relying only on the phone clock, which may be ahead of or behind Firestore server time.
+      if (typeof activeChatMessagesCache !== 'undefined' && Array.isArray(activeChatMessagesCache)) {
+        const visibleIncomingTimes = activeChatMessagesCache
+          .filter(message => message && message.senderId && message.senderId !== user.uid)
+          .map(message => timestampMillis(message.createdAt))
+          .filter(value => value > 0);
+        if (visibleIncomingTimes.length) readAt = Math.max(...visibleIncomingTimes);
+      }
+      // Always persist locally first so the badge resets even if the current Firestore
+      // Rules do not yet allow the optional cross-device read cursor update.
+      writeLocalChatRead(chatId, readAt, user.uid);
+      chatUnreadRequestTokens.set(chatId, (chatUnreadRequestTokens.get(chatId) || 0) + 1);
       chatUnreadById.set(chatId, 0);
+      try {
+        await userRef.update({ [`chatReads.${chatId}`]: fire().firestore.FieldValue.serverTimestamp() });
+      } catch (syncError) {
+        console.warn('[WeatherPro/Notifications] cross-device read cursor sync unavailable; local cursor retained', syncError);
+      }
+      const localItems = readLocalNotifications();
+      localItems.forEach(item => { if (item.chatId === chatId) item.read = true; });
+      writeLocalNotifications(localItems);
       refreshMessageBadge();
+      refreshNotificationBadge();
       const row = document.querySelector(`[data-chat-id="${CSS.escape(chatId)}"]`);
       if (row) { row.classList.remove('wp-chat-unread'); row.querySelector('.wp-chat-count')?.remove(); }
+      renderNotifications();
     } catch (error) { console.warn('[WeatherPro/Notifications] mark chat read', error); }
   };
 
@@ -337,31 +354,17 @@
   }
 
   async function markNotificationRead(item) {
-    if (item.source === 'local' || String(item.id).startsWith('local_')) {
-      const items = readLocalNotifications();
-      const target = items.find(entry => entry.id === item.id);
-      if (target) target.read = true;
-      writeLocalNotifications(items);
-    } else {
-      const user = authUser();
-      if (user) {
-        try { await db().collection('users').doc(user.uid).collection('notifications').doc(item.id)
-          .update({ read: true, readAt: fire().firestore.FieldValue.serverTimestamp() }); }
-        catch (error) { console.warn('[WeatherPro/Notifications] mark notification read', error); }
-      }
-    }
+    const items = readLocalNotifications();
+    const target = items.find(entry => entry.id === item.id);
+    if (target) target.read = true;
+    writeLocalNotifications(items);
+    refreshNotificationBadge();
     renderNotifications();
   }
   async function deleteNotification(item) {
-    if (item.source === 'local' || String(item.id).startsWith('local_')) {
-      writeLocalNotifications(readLocalNotifications().filter(entry => entry.id !== item.id));
-    } else {
-      const user = authUser();
-      if (user) {
-        try { await db().collection('users').doc(user.uid).collection('notifications').doc(item.id).delete(); }
-        catch (error) { notifyToast('Не удалось удалить уведомление', true); return; }
-      }
-    }
+    const items = readLocalNotifications().filter(entry => entry.id !== item.id);
+    writeLocalNotifications(items);
+    refreshNotificationBadge();
     renderNotifications();
   }
   async function openNotification(item) {
@@ -392,23 +395,18 @@
     renderNotifications();
   };
   window.wpMarkAllNotificationsRead = async function() {
-    const user = authUser();
-    if (!user) return;
+    if (!authUser()) { notifyToast('Войдите в аккаунт, чтобы управлять уведомлениями', true); return; }
     try {
-      const localItems = readLocalNotifications();
-      localItems.forEach(item => { item.read = true; });
-      writeLocalNotifications(localItems);
-      const collection = db().collection('users').doc(user.uid).collection('notifications');
-      while (true) {
-        const snapshot = await collection.where('read', '==', false).limit(400).get();
-        if (snapshot.empty) break;
-        const batch = db().batch();
-        snapshot.docs.forEach(doc => batch.update(doc.ref, { read: true, readAt: fire().firestore.FieldValue.serverTimestamp() }));
-        await batch.commit();
-      }
+      const items = readLocalNotifications();
+      items.forEach(item => { item.read = true; });
+      writeLocalNotifications(items);
+      refreshNotificationBadge();
       renderNotifications();
       notifyToast('Все уведомления прочитаны');
-    } catch (error) { notifyToast('Не удалось обновить уведомления', true); }
+    } catch (error) {
+      console.error('[WeatherPro/Notifications] mark all local notifications read', error);
+      notifyToast('Не удалось обновить локальную историю уведомлений', true);
+    }
   };
 
   async function updatePushStatus() {
