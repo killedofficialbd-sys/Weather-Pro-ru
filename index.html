@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Weather Pro 10.1.2 — Google Auth Fix 2</title>
+<title>Weather Pro 11.0 — Hyper Intelligence</title>
 <meta name="theme-color" content="#0a1224">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<meta name="description" content="Weather Pro 10.0.4 — прогноз, радар, AI-аналитика, погодные предупреждения и Device Engine 4.0 MAX">
+<meta name="description" content="Weather Pro 11.0 — интеллектуальное планирование дня, погодные риски, радар, AI-аналитика и персональные рекомендации">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%231e40af'/%3E%3Cstop offset='1' stop-color='%2360a5fa'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='116' fill='%230a0e17'/%3E%3Crect x='26' y='26' width='460' height='460' rx='94' fill='url(%23g)'/%3E%3Cg fill='none' stroke='%23fff' stroke-width='17' stroke-linecap='round'%3E%3Ccircle cx='196' cy='186' r='52'/%3E%3Cpath d='M196 92v26M196 254v26M102 186h26M264 186h26'/%3E%3C/g%3E%3Cpath d='M356 396H236a58 58 0 0 1-9-115 78 78 0 0 1 150 17 52 52 0 0 1-21 98z' fill='%23fff'/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -1531,6 +1531,21 @@ body.wp-performance-background-pause.wp-performance-hidden *::after{
 #auth-page .form-link{cursor:pointer}
 @media(max-width:480px){#auth-page .auth-card{padding:20px 16px}.wp-auth-divider{margin:14px 0}}
 </style>
+
+<style id="wp11-command-center-style">
+.wp11-command{--w11-line:rgba(148,163,184,.16);--w11-muted:#9fb0c7;position:relative;isolation:isolate;overflow:hidden;margin:0 0 24px;padding:clamp(18px,2.4vw,28px);border:1px solid rgba(96,165,250,.24);border-radius:24px;background:radial-gradient(ellipse at 94% 2%,rgba(59,130,246,.18),transparent 35%),linear-gradient(145deg,rgba(15,29,52,.96),rgba(10,18,34,.94) 62%,rgba(18,28,48,.96));box-shadow:0 22px 65px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.045)}
+.wp11-command:before{content:"";position:absolute;inset:0;z-index:-1;opacity:.26;background-image:linear-gradient(rgba(148,163,184,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(148,163,184,.08) 1px,transparent 1px);background-size:34px 34px;mask-image:linear-gradient(110deg,#000,transparent 72%);pointer-events:none}
+.wp11-command-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:20px}.wp11-kicker{display:flex;align-items:center;gap:9px;color:#83b7ff;font-size:10px;font-weight:800;letter-spacing:.15em}.wp11-live-dot,.wp11-status-dot{width:8px;height:8px;display:inline-block;border-radius:50%;background:#38bdf8;box-shadow:0 0 13px rgba(56,189,248,.8);flex:0 0 auto}.wp11-command-head h2{font-size:clamp(21px,3vw,29px);line-height:1.15;margin:10px 0 7px;color:#f8fbff}.wp11-command-copy p{max-width:680px;color:#a8b7cc;font-size:13px;line-height:1.65}.wp11-command-status{display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid rgba(148,163,184,.18);border-radius:999px;color:#bdcadd;background:rgba(15,23,42,.55);font-size:11px;white-space:nowrap}.wp11-status-dot{width:7px;height:7px;background:#94a3b8;box-shadow:none}.wp11-command-status.ready .wp11-status-dot{background:#34d399;box-shadow:0 0 12px rgba(52,211,153,.6)}
+.wp11-mission-row{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 16px}.wp11-mission{display:inline-flex;align-items:center;gap:9px;padding:10px 14px;border:1px solid rgba(148,163,184,.18);border-radius:13px;background:rgba(15,23,42,.56);color:#c1cee0;font:inherit;font-weight:600;font-size:12px;cursor:pointer;transition:transform .18s,border-color .18s,background .18s,color .18s}.wp11-mission i{font-size:13px;color:#7dd3fc}.wp11-mission:hover{transform:translateY(-1px);border-color:rgba(96,165,250,.45)}.wp11-mission.active{color:#fff;border-color:rgba(96,165,250,.6);background:linear-gradient(135deg,rgba(37,99,235,.30),rgba(14,165,233,.12));box-shadow:inset 0 0 22px rgba(59,130,246,.09)}.wp11-mission.active i{color:#93c5fd}
+.wp11-command-main{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.35fr);gap:13px}.wp11-score-panel,.wp11-best-panel{min-width:0;padding:18px;border:1px solid var(--w11-line);border-radius:18px;background:rgba(7,15,29,.52)}.wp11-panel-label{display:block;color:#8fa7c6;font-size:9px;font-weight:800;letter-spacing:.13em}.wp11-score-line{display:flex;align-items:center;gap:16px;margin-top:16px}.wp11-score-ring{width:112px;height:112px;display:grid;place-items:center;flex:0 0 auto;border-radius:50%;background:conic-gradient(#38bdf8 var(--wp11-score),rgba(148,163,184,.13) 0);position:relative}.wp11-score-ring:before{content:"";position:absolute;inset:8px;border-radius:50%;background:#101d32;border:1px solid rgba(148,163,184,.12)}.wp11-score-ring>div{position:relative;display:flex;align-items:baseline;gap:3px}.wp11-score-ring strong{font-size:32px;line-height:1;color:#fff;font-weight:800}.wp11-score-ring small{font-size:10px;color:#9fb0c7}.wp11-score-copy{min-width:0}.wp11-score-copy>strong{font-size:15px;color:#f5f8ff}.wp11-score-copy p{font-size:12px;line-height:1.55;color:#a9b9ce;margin:6px 0}.wp11-score-copy>span{font-size:10px;color:#7f95b3}.wp11-score-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:17px;padding-top:12px;border-top:1px solid var(--w11-line)}.wp11-score-legend span{display:inline-flex;align-items:center;gap:5px;color:#8297b2;font-size:9px}.wp11-score-legend i{width:6px;height:6px;border-radius:50%;display:inline-block}.wp11-score-legend i.good{background:#34d399}.wp11-score-legend i.medium{background:#fbbf24}.wp11-score-legend i.low{background:#fb7185}
+.wp11-best-panel{display:flex;flex-direction:column;justify-content:center;background:radial-gradient(ellipse at 88% 16%,rgba(14,165,233,.16),transparent 44%),rgba(7,15,29,.52)}.wp11-best-time{font-size:clamp(24px,3vw,34px);font-weight:800;letter-spacing:-.04em;color:#f8fbff;margin:12px 0 6px}.wp11-best-panel>p{font-size:12px;line-height:1.6;color:#a9b9ce;max-width:580px}.wp11-best-meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:14px;color:#8297b2;font-size:10px}.wp11-best-meta i{color:#7dd3fc}.wp11-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.wp11-action{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid rgba(148,163,184,.2);border-radius:11px;background:rgba(30,41,59,.55);color:#d9e6f6;font:inherit;font-weight:600;font-size:11px;cursor:pointer}.wp11-action.primary{background:linear-gradient(135deg,#2563eb,#0284c7);border-color:transparent;color:white}.wp11-action:hover{filter:brightness(1.12)}
+.wp11-metric-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:13px}.wp11-metric{display:flex;align-items:center;gap:11px;min-width:0;padding:13px;border:1px solid var(--w11-line);border-radius:15px;background:rgba(15,27,46,.72)}.wp11-metric-icon{width:35px;height:35px;display:grid;place-items:center;flex:0 0 auto;border-radius:11px;background:rgba(56,189,248,.12);color:#7dd3fc}.wp11-metric-icon.wind{background:rgba(167,139,250,.13);color:#c4b5fd}.wp11-metric-icon.temp{background:rgba(251,146,60,.13);color:#fdba74}.wp11-metric-icon.drops{background:rgba(45,212,191,.12);color:#5eead4}.wp11-metric>div{min-width:0;display:flex;flex-direction:column;gap:3px}.wp11-metric small{font-size:9px;color:#8fa7c6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.wp11-metric strong{font-size:18px;color:#f5f8ff;line-height:1.15}.wp11-metric em{font-size:9px;color:#7086a2;font-style:normal}
+.wp11-risk-section{margin-top:19px}.wp11-risk-heading{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin-bottom:10px}.wp11-risk-heading h3{font-size:15px;color:#f3f7ff;margin-top:5px}.wp11-risk-heading>span{font-size:10px;color:#859bb7}.wp11-risk-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.wp11-risk-card{display:flex;gap:10px;padding:12px;border-radius:13px;border:1px solid rgba(148,163,184,.15);background:rgba(15,27,46,.58);min-width:0}.wp11-risk-card .wp11-risk-icon{width:31px;height:31px;border-radius:10px;display:grid;place-items:center;flex:0 0 auto;background:rgba(251,191,36,.12);color:#fbbf24}.wp11-risk-card.high .wp11-risk-icon{background:rgba(251,113,133,.12);color:#fb7185}.wp11-risk-card.info .wp11-risk-icon{background:rgba(56,189,248,.12);color:#7dd3fc}.wp11-risk-card>div{min-width:0}.wp11-risk-card strong{display:block;font-size:11px;color:#eef4ff}.wp11-risk-card p{font-size:10px;line-height:1.45;color:#9aacc4;margin-top:3px}.wp11-risk-empty{grid-column:1/-1;display:flex;align-items:center;gap:10px;padding:13px;border:1px dashed rgba(148,163,184,.2);border-radius:13px;color:#859bb7;font-size:11px}.wp11-risk-empty i{color:#7dd3fc}.wp11-command-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:16px;padding-top:12px;border-top:1px solid var(--w11-line);font-size:9px;color:#7187a4}.wp11-command-foot button{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid rgba(148,163,184,.19);border-radius:9px;background:rgba(15,23,42,.55);color:#b9c9de;font-size:10px;cursor:pointer}
+@media(max-width:850px){.wp11-command-main{grid-template-columns:1fr}.wp11-metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.wp11-risk-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.wp11-command{padding:15px;border-radius:19px}.wp11-command-head{display:block}.wp11-command-status{margin-top:12px}.wp11-mission-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.wp11-mission{justify-content:center;padding:11px 7px}.wp11-score-panel,.wp11-best-panel{padding:14px}.wp11-score-line{gap:12px}.wp11-score-ring{width:92px;height:92px}.wp11-score-ring:before{inset:7px}.wp11-score-ring strong{font-size:27px}.wp11-score-copy>strong{font-size:13px}.wp11-score-copy p{font-size:11px}.wp11-metric{padding:10px;gap:8px}.wp11-metric-icon{width:30px;height:30px}.wp11-metric small{font-size:8px}.wp11-metric strong{font-size:16px}.wp11-risk-grid{grid-template-columns:1fr}.wp11-best-meta{display:grid}.wp11-actions .wp11-action{flex:1;justify-content:center}}
+@media(prefers-reduced-motion:no-preference){.wp11-command{animation:wp11Enter .55s ease both}@keyframes wp11Enter{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}}
+</style>
+
 </head>
 <body>
 
@@ -1967,7 +1982,7 @@ body.wp-performance-background-pause.wp-performance-hidden *::after{
   </div>
 
   <section class="wp10-hero" aria-label="Weather Pro 10 Ultimate">
-    <div><span class="wp10-kicker"><i class="fa-solid fa-sparkles"></i> WEATHER PRO 10.0 · ULTIMATE</span><h2>Погодная система нового уровня</h2><p>Единый центр прогноза, радаров, погодной аналитики и персональных инструментов. Все прежние разделы и синхронизация аккаунта сохранены.</p></div>
+    <div><span class="wp10-kicker"><i class="fa-solid fa-sparkles"></i> WEATHER PRO 10.0 · ULTIMATE</span><h2>Погодная система с интеллектуальным планированием</h2><p>Единый центр прогноза, радаров, погодной аналитики и персональных решений. Weather Pro анализирует доступный прогноз и помогает выбрать подходящее время для дел, прогулок и поездок.</p></div>
     <div class="wp10-hero-orb" aria-hidden="true"><i class="fa-solid fa-earth-europe"></i></div>
   </section>
   <section class="wp10-quick-grid" aria-label="Быстрый доступ Weather Pro 10">
@@ -1991,6 +2006,59 @@ body.wp-performance-background-pause.wp-performance-hidden *::after{
   </section>
 
 
+  <section class="wp11-command" id="wp11CommandCenter" aria-labelledby="wp11CommandTitle" aria-live="polite">
+    <div class="wp11-command-head">
+      <div class="wp11-command-copy">
+        <div class="wp11-kicker"><span class="wp11-live-dot"></span> WEATHER PRO 11.0 · HYPER INTELLIGENCE</div>
+        <h2 id="wp11CommandTitle">Центр погодных решений</h2>
+        <p>Выберите сценарий — система найдёт лучшее окно в доступном прогнозе и покажет ближайшие погодные риски.</p>
+      </div>
+      <div class="wp11-command-status" id="wp11Status"><span class="wp11-status-dot"></span> Ожидает прогноз</div>
+    </div>
+
+    <div class="wp11-mission-row" role="group" aria-label="Сценарий планирования">
+      <button class="wp11-mission active" type="button" data-mission="walk" aria-pressed="true" onclick="wp11SetMission('walk')"><i class="fa-solid fa-person-walking"></i><span>Прогулка</span></button>
+      <button class="wp11-mission" type="button" data-mission="sport" aria-pressed="false" onclick="wp11SetMission('sport')"><i class="fa-solid fa-person-running"></i><span>Спорт</span></button>
+      <button class="wp11-mission" type="button" data-mission="drive" aria-pressed="false" onclick="wp11SetMission('drive')"><i class="fa-solid fa-car-side"></i><span>Автомобиль</span></button>
+      <button class="wp11-mission" type="button" data-mission="cycle" aria-pressed="false" onclick="wp11SetMission('cycle')"><i class="fa-solid fa-bicycle"></i><span>Велосипед</span></button>
+    </div>
+
+    <div class="wp11-command-main">
+      <article class="wp11-score-panel">
+        <div class="wp11-panel-label">ИНДЕКС УСЛОВИЙ · 0–100</div>
+        <div class="wp11-score-line">
+          <div class="wp11-score-ring" id="wp11ScoreRing" style="--wp11-score:0deg"><div><strong id="wp11Score">—</strong><small>/ 100</small></div></div>
+          <div class="wp11-score-copy"><strong id="wp11ScoreLabel">Нет данных</strong><p id="wp11ScoreText">Загрузите прогноз для выбранного города.</p><span id="wp11ScoreWindow">Лучшее окно появится после загрузки.</span></div>
+        </div>
+        <div class="wp11-score-legend"><span><i class="good"></i> Хорошо</span><span><i class="medium"></i> С оговорками</span><span><i class="low"></i> Неблагоприятно</span></div>
+      </article>
+
+      <article class="wp11-best-panel">
+        <div class="wp11-panel-label">ЛУЧШЕЕ ОКНО В БЛИЖАЙШИЕ 24 ЧАСА</div>
+        <div class="wp11-best-time" id="wp11BestTime">—</div>
+        <p id="wp11BestDescription">Оценка появится после получения погодных данных.</p>
+        <div class="wp11-best-meta"><span><i class="fa-regular fa-clock"></i> Интервал прогноза около 3 часов</span><span id="wp11CityMeta">Город не выбран</span></div>
+        <div class="wp11-actions">
+          <button class="wp11-action primary" type="button" onclick="showPage('planner')"><i class="fa-solid fa-calendar-check"></i> Подробный план</button>
+          <button class="wp11-action" type="button" onclick="showPage('route')"><i class="fa-solid fa-route"></i> Погода в пути</button>
+        </div>
+      </article>
+    </div>
+
+    <div class="wp11-metric-grid">
+      <article class="wp11-metric"><span class="wp11-metric-icon rain"><i class="fa-solid fa-cloud-rain"></i></span><div><small>Вероятность осадков</small><strong id="wp11Rain">—</strong><em id="wp11RainMeta">Ближайшие 24 часа</em></div></article>
+      <article class="wp11-metric"><span class="wp11-metric-icon wind"><i class="fa-solid fa-wind"></i></span><div><small>Максимальный ветер</small><strong id="wp11Wind">—</strong><em id="wp11WindMeta">По прогнозу</em></div></article>
+      <article class="wp11-metric"><span class="wp11-metric-icon temp"><i class="fa-solid fa-temperature-half"></i></span><div><small>Диапазон температуры</small><strong id="wp11TempRange">—</strong><em>Ближайшие 24 часа</em></div></article>
+      <article class="wp11-metric"><span class="wp11-metric-icon drops"><i class="fa-solid fa-droplet"></i></span><div><small>Сумма осадков</small><strong id="wp11Precip">—</strong><em>Оценка по 3-часовым блокам</em></div></article>
+    </div>
+
+    <div class="wp11-risk-section">
+      <div class="wp11-risk-heading"><div><span class="wp11-panel-label">СИГНАЛЫ ПРОГНОЗА</span><h3>Что стоит учесть</h3></div><span id="wp11RiskCount">Ожидаем данные</span></div>
+      <div class="wp11-risk-grid" id="wp11RiskList"><div class="wp11-risk-empty"><i class="fa-solid fa-satellite-dish"></i><span>Погодные сигналы появятся после загрузки прогноза.</span></div></div>
+    </div>
+
+    <div class="wp11-command-foot"><span id="wp11DataMeta">Источник: прогноз OpenWeather, обновляется вместе с погодой выбранного города.</span><button type="button" onclick="wp11Recalculate()"><i class="fa-solid fa-rotate"></i> Пересчитать</button></div>
+  </section>
   <div class="multi-city-home" id="multiCityHome"></div>
 
   <section class="wp6-home-banner">
@@ -6166,6 +6234,7 @@ function renderActivityScores(){
 }
 function refreshSmartModules(current=lastWeatherData,forecast=lastForecastData){
   if(current&&forecast){renderSmartPlanner();renderActivityScores();}
+  if(typeof wp11RenderCommandCenter==='function') wp11RenderCommandCenter(current,forecast);
   if($('smart-alerts-page')?.classList.contains('active')&&current&&forecast)evaluateSmartWeatherAlerts(current,forecast);
   if(typeof wp6RefreshWeather==='function') wp6RefreshWeather(current,forecast);
 }
@@ -7578,6 +7647,170 @@ window.wp101RunSmartDiagnostics=wp101RunSmartDiagnostics;window.wp101RunSecurity
 window.wp104InitMax=wp104InitMax;window.wp104AnalyzeStorage=wp104AnalyzeStorage;window.wp104TestNetwork=wp104TestNetwork;window.wp104StartDisplayTest=wp104StartDisplayTest;window.wp104NextDisplayPattern=wp104NextDisplayPattern;window.wp104StopDisplayTest=wp104StopDisplayTest;window.wp104MeasureRefreshRate=wp104MeasureRefreshRate;window.wp104Vibrate=wp104Vibrate;window.wp104SpeakerTest=wp104SpeakerTest;window.wp104ToggleMic=wp104ToggleMic;window.wp104StopMic=wp104StopMic;window.wp104CheckPermissions=wp104CheckPermissions;window.wp104RunBenchmark=wp104RunBenchmark;window.wp104RunAllChecks=wp104RunAllChecks;window.wp104ToggleCamera=wp104ToggleCamera;window.wp104StopCamera=wp104StopCamera;window.wp104ExportReport=wp104ExportReport;
 document.addEventListener('visibilitychange',()=>{if(document.hidden){wp104StopCamera();wp104StopMic();if(wp104AudioContext){wp104AudioContext.close().catch(()=>{});wp104AudioContext=null;}wp104StopDisplayTest();}wp104Text('wp104PageState',document.hidden?'Скрыта':'Активна');});
 window.addEventListener('pagehide',()=>{wp104StopCamera();wp104StopMic();if(wp104AudioContext)wp104AudioContext.close().catch(()=>{});});
+
+
+/* ============================================================
+   WEATHER PRO 11.0 — HYPER INTELLIGENCE / DECISION ENGINE
+   Uses the existing OpenWeather 3-hour forecast. Scores are heuristic
+   planning indicators, not official weather warnings or safety guarantees.
+   ============================================================ */
+let wp11Mission = 'walk';
+try {
+  const savedMission = localStorage.getItem('wp11_mission');
+  if (['walk','sport','drive','cycle'].includes(savedMission)) wp11Mission = savedMission;
+} catch (_) {}
+
+const WP11_MISSIONS = {
+  walk:  {label:'Прогулка', targetTemp:19, windLimit:6, rainWeight:0.52, tempWeight:1.15, windWeight:3.0},
+  sport: {label:'Спорт', targetTemp:17, windLimit:5, rainWeight:0.58, tempWeight:1.35, windWeight:3.5},
+  drive: {label:'Автомобиль', targetTemp:16, windLimit:12, rainWeight:0.42, tempWeight:0.45, windWeight:1.25},
+  cycle: {label:'Велосипед', targetTemp:18, windLimit:5, rainWeight:0.62, tempWeight:1.25, windWeight:4.0}
+};
+
+function wp11Num(value, fallback=0){
+  const n=Number(value);
+  return Number.isFinite(n)?n:fallback;
+}
+function wp11TempC(value){
+  const n=wp11Num(value,NaN);
+  if(!Number.isFinite(n)) return null;
+  if(settings?.units==='imperial') return (n-32)*5/9;
+  if(settings?.units==='standard') return n-273.15;
+  return n;
+}
+function wp11WindMs(value){
+  const n=wp11Num(value,NaN);
+  if(!Number.isFinite(n)) return null;
+  return settings?.units==='imperial'?n/2.236936:n;
+}
+function wp11TempLabel(c){
+  if(!Number.isFinite(c)) return '—';
+  const v=settings?.units==='imperial'?(c*9/5+32):c;
+  return `${Math.round(v)}°${settings?.units==='imperial'?'F':'C'}`;
+}
+function wp11TimeParts(unixSeconds,offsetSeconds=0){
+  const date=new Date((wp11Num(unixSeconds)+wp11Num(offsetSeconds))*1000);
+  return {date,hour:String(date.getUTCHours()).padStart(2,'0'),minute:String(date.getUTCMinutes()).padStart(2,'0'),day:date.getUTCDate(),month:date.getUTCMonth(),year:date.getUTCFullYear()};
+}
+function wp11FormatWindow(dt,offset){
+  const a=wp11TimeParts(dt,offset),b=wp11TimeParts(dt+3*3600,offset),now=wp11TimeParts(Date.now()/1000,offset);
+  const same=a.day===now.day&&a.month===now.month&&a.year===now.year;
+  const next=new Date(Date.UTC(now.year,now.month,now.day+1));
+  const tomorrow=a.day===next.getUTCDate()&&a.month===next.getUTCMonth()&&a.year===next.getUTCFullYear();
+  const dayLabel=same?'Сегодня':tomorrow?'Завтра':a.date.toLocaleDateString('ru-RU',{timeZone:'UTC',day:'numeric',month:'short'});
+  return `${dayLabel}, ${a.hour}:${a.minute}–${b.hour}:${b.minute}`;
+}
+function wp11ScoreForecastItem(item,missionKey){
+  const profile=WP11_MISSIONS[missionKey]||WP11_MISSIONS.walk;
+  const temp=wp11TempC(item?.main?.temp);
+  const wind=wp11WindMs(item?.wind?.speed);
+  const pop=Math.max(0,Math.min(1,wp11Num(item?.pop,0)));
+  const rain=Math.max(0,wp11Num(item?.rain?.['3h'],0));
+  const snow=Math.max(0,wp11Num(item?.snow?.['3h'],0));
+  const group=String(item?.weather?.[0]?.main||'').toLowerCase();
+  let penalty=0;
+  if(temp!==null) penalty+=Math.min(32,Math.abs(temp-profile.targetTemp)*profile.tempWeight);
+  if(wind!==null) penalty+=Math.min(27,Math.max(0,wind-profile.windLimit)*profile.windWeight);
+  penalty+=Math.min(38,pop*38*profile.rainWeight+rain*(missionKey==='drive'?1.4:2.1));
+  if(snow>0.2) penalty+=Math.min(24,8+snow*3.2);
+  if(group.includes('thunder')) penalty+=missionKey==='drive'?30:38;
+  else if(group.includes('snow')) penalty+=missionKey==='cycle'?20:13;
+  else if(group.includes('rain')||group.includes('drizzle')) penalty+=6;
+  if(temp!==null&&temp<0) penalty+=missionKey==='drive'?9:7;
+  if(temp!==null&&temp>30) penalty+=12;
+  const score=Math.max(0,Math.min(100,Math.round(100-penalty)));
+  return {score,temp,wind,pop,rain,snow,group,item};
+}
+function wp11ScoreText(score,mission){
+  if(score>=82) return {label:'Отличные условия',text:`Подходящее окно для сценария «${mission}». Серьёзных ограничений по доступному прогнозу не видно.`};
+  if(score>=66) return {label:'В целом благоприятно',text:`Можно планировать «${mission.toLowerCase()}», но учитывайте отмеченные погодные факторы.`};
+  if(score>=45) return {label:'Есть ограничения',text:`Для сценария «${mission.toLowerCase()}» есть заметные погодные неудобства. Подберите время внимательнее.`};
+  return {label:'Неблагоприятные условия',text:`По текущей оценке лучше перенести «${mission.toLowerCase()}» на другое окно.`};
+}
+function wp11BuildRisks(items,offset){
+  const risks=[];
+  const add=(key,icon,title,body,level='warn')=>{
+    if(risks.some(r=>r.key===key)) return;
+    risks.push({key,icon,title,body,level});
+  };
+  for(const item of items){
+    const d=wp11TimeParts(item.dt,offset),time=`${d.hour}:${d.minute}`;
+    const temp=wp11TempC(item?.main?.temp),wind=wp11WindMs(item?.wind?.speed);
+    const pop=wp11Num(item?.pop,0),rain=wp11Num(item?.rain?.['3h'],0),snow=wp11Num(item?.snow?.['3h'],0);
+    const group=String(item?.weather?.[0]?.main||'').toLowerCase();
+    if(group.includes('thunder')) add('storm','fa-cloud-bolt','Гроза в прогнозе',`В одном из интервалов отмечена гроза · около ${time}.`,'high');
+    if((pop>=0.5||rain>=0.8)&&risks.length<4) add('rain','fa-cloud-rain','Вероятны осадки',`Вероятность до ${Math.round(pop*100)}%, ожидаемое количество до ${rain.toFixed(1)} мм за 3 часа · около ${time}.`,'warn');
+    if(wind!==null&&wind>=9) add('wind','fa-wind','Усиление ветра',`Порывы/скорость ветра по прогнозу: ${wind.toFixed(1)} м/с · около ${time}.`,'warn');
+    if(snow>=0.5) add('snow','fa-snowflake','Снег или мокрый снег',`Прогнозируется около ${snow.toFixed(1)} мм осадков в виде снега · около ${time}.`,'warn');
+    if(temp!==null&&temp<=-5) add('cold','fa-temperature-low','Сильное похолодание',`Температура может опуститься до ${wp11TempLabel(temp)} · около ${time}.`,'warn');
+    if(temp!==null&&temp>=30) add('heat','fa-temperature-high','Жаркая погода',`Температура может достигнуть ${wp11TempLabel(temp)} · около ${time}.`,'warn');
+    if(risks.length>=4) break;
+  }
+  return risks;
+}
+function wp11RenderCommandCenter(current=lastWeatherData,forecast=lastForecastData){
+  const root=$('wp11CommandCenter');
+  if(!root) return;
+  const mission=WP11_MISSIONS[wp11Mission]||WP11_MISSIONS.walk;
+  root.querySelectorAll('[data-mission]').forEach(button=>{
+    const active=button.dataset.mission===wp11Mission;
+    button.classList.toggle('active',active);
+    button.setAttribute('aria-pressed',active?'true':'false');
+  });
+  const status=$('wp11Status');
+  const items=Array.isArray(forecast?.list)?forecast.list.filter(x=>Number.isFinite(Number(x.dt))).slice(0,8):[];
+  if(!current||!items.length){
+    if(status){status.classList.remove('ready');status.innerHTML='<span class="wp11-status-dot"></span> Ожидает прогноз';}
+    $('wp11Score').textContent='—';$('wp11ScoreLabel').textContent='Нет данных';$('wp11ScoreText').textContent='Загрузите прогноз для выбранного города.';$('wp11ScoreWindow').textContent='Лучшее окно появится после загрузки.';
+    $('wp11ScoreRing').style.setProperty('--wp11-score','0deg');$('wp11BestTime').textContent='—';$('wp11BestDescription').textContent='Оценка появится после получения погодных данных.';$('wp11CityMeta').textContent=current?.name||'Город не выбран';
+    $('wp11Rain').textContent='—';$('wp11Wind').textContent='—';$('wp11TempRange').textContent='—';$('wp11Precip').textContent='—';
+    $('wp11RiskCount').textContent='Ожидаем данные';$('wp11RiskList').innerHTML='<div class="wp11-risk-empty"><i class="fa-solid fa-satellite-dish"></i><span>Погодные сигналы появятся после загрузки прогноза.</span></div>';
+    $('wp11DataMeta').textContent='Источник: прогноз OpenWeather. Данные пока не загружены.';
+    return;
+  }
+  const scores=items.map(item=>({...wp11ScoreForecastItem(item,wp11Mission),dt:item.dt}));
+  const best=scores.reduce((a,b)=>b.score>a.score?b:a,scores[0]);
+  const offset=wp11Num(current.timezone,0);
+  const description=wp11ScoreText(best.score,mission.label);
+  $('wp11Score').textContent=String(best.score);
+  $('wp11ScoreLabel').textContent=description.label;
+  $('wp11ScoreText').textContent=description.text;
+  $('wp11ScoreWindow').textContent=`Выбран сценарий: ${mission.label.toLowerCase()}`;
+  $('wp11ScoreRing').style.setProperty('--wp11-score',`${best.score*3.6}deg`);
+  $('wp11BestTime').textContent=wp11FormatWindow(best.dt,offset);
+  $('wp11BestDescription').textContent=`Индекс ${best.score}/100. Оценка учитывает температуру, вероятность и количество осадков, ветер и тип погодных условий.`;
+  $('wp11CityMeta').textContent=current.name?`${current.name}${current.sys?.country?', '+current.sys.country:''}`:'Выбранный город';
+  const maxPop=Math.max(...scores.map(x=>x.pop));
+  const maxWind=Math.max(...scores.map(x=>x.wind??0));
+  const temps=scores.map(x=>x.temp).filter(Number.isFinite);
+  const minTemp=temps.length?Math.min(...temps):null,maxTemp=temps.length?Math.max(...temps):null;
+  const totalRain=scores.reduce((sum,x)=>sum+x.rain+x.snow,0);
+  $('wp11Rain').textContent=`${Math.round(maxPop*100)}%`;
+  $('wp11RainMeta').textContent=maxPop>=.5?'Высокая вероятность в одном из интервалов':'Максимум по прогнозу';
+  $('wp11Wind').textContent=`${maxWind.toFixed(1)} м/с`;
+  $('wp11WindMeta').textContent=maxWind>=9?'Возможен сильный ветер':'Максимум по прогнозу';
+  $('wp11TempRange').textContent=temps.length?`${wp11TempLabel(minTemp)} – ${wp11TempLabel(maxTemp)}`:'—';
+  $('wp11Precip').textContent=`${totalRain.toFixed(1)} мм`;
+  const risks=wp11BuildRisks(items,offset);
+  $('wp11RiskCount').textContent=risks.length?`${risks.length} сигнал(а)`:'Нет выраженных сигналов';
+  $('wp11RiskList').innerHTML=risks.length?risks.map(r=>`<article class="wp11-risk-card ${r.level==='high'?'high':''}"><span class="wp11-risk-icon"><i class="fa-solid ${r.icon}"></i></span><div><strong>${esc(r.title)}</strong><p>${esc(r.body)}</p></div></article>`).join(''):'<div class="wp11-risk-empty"><i class="fa-solid fa-circle-check"></i><span>В ближайших 24 часах не обнаружено выраженных сигналов по заданным порогам. Это не заменяет официальные предупреждения.</span></div>';
+  if(status){status.classList.add('ready');status.innerHTML='<span class="wp11-status-dot"></span> Анализ готов';}
+  const start=wp11TimeParts(items[0].dt,offset),end=wp11TimeParts(items[items.length-1].dt,offset);
+  $('wp11DataMeta').textContent=`Данные OpenWeather · ${items.length} интервал(а) по 3 часа · период ${start.hour}:${start.minute}–${end.hour}:${end.minute}. Оценка — ориентир для планирования, не официальное предупреждение.`;
+}
+function wp11SetMission(mission){
+  if(!WP11_MISSIONS[mission]) return;
+  wp11Mission=mission;
+  try{localStorage.setItem('wp11_mission',mission);}catch(_){}
+  wp11RenderCommandCenter();
+}
+function wp11Recalculate(){
+  wp11RenderCommandCenter();
+  if(typeof showNotification==='function') showNotification('Оценка пересчитана по последнему загруженному прогнозу.');
+}
+window.wp11SetMission=wp11SetMission;
+window.wp11Recalculate=wp11Recalculate;
+
 </script>
 </body>
 </html>

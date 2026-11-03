@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Weather Pro 10.1.2 — Smart Device Ultimate",
-  "short_name": "Weather Pro",
-  "description": "Weather Pro MAX.0 Ultimate: прогноз, AI-аналитика, радар, уведомления, сравнение городов и PWA.",
+  "name": "Weather Pro 11.0 — Hyper Intelligence",
+  "short_name": "Weather Pro 11",
+  "description": "Weather Pro 11.0: интеллектуальный погодный центр, планирование активностей, погодные сигналы, AI, радар и PWA.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
