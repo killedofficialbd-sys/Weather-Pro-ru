@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Weather Pro 11.0 — Hyper Intelligence",
-  "short_name": "Weather Pro 11",
-  "description": "Weather Pro 11.0: интеллектуальный погодный центр, планирование активностей, погодные сигналы, AI, радар и PWA.",
+  "name": "Weather Pro 11.1 — Push Notifications",
+  "short_name": "Weather Pro 11.1",
+  "description": "Weather Pro 11.1: прогноз, погодные сигналы, личные чаты и push-уведомления.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

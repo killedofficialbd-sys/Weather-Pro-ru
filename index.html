@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Weather Pro 11.0 — Hyper Intelligence</title>
+<title>Weather Pro 11.2 — Browser Notifications</title>
 <meta name="theme-color" content="#0a1224">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<meta name="description" content="Weather Pro 11.0 — интеллектуальное планирование дня, погодные риски, радар, AI-аналитика и персональные рекомендации">
+<link rel="stylesheet" href="./push-notifications.css">
+<meta name="description" content="Weather Pro 11.2 — интеллектуальное планирование дня, погодные риски, радар, AI-аналитика и персональные рекомендации">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%231e40af'/%3E%3Cstop offset='1' stop-color='%2360a5fa'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='116' fill='%230a0e17'/%3E%3Crect x='26' y='26' width='460' height='460' rx='94' fill='url(%23g)'/%3E%3Cg fill='none' stroke='%23fff' stroke-width='17' stroke-linecap='round'%3E%3Ccircle cx='196' cy='186' r='52'/%3E%3Cpath d='M196 92v26M196 254v26M102 186h26M264 186h26'/%3E%3C/g%3E%3Cpath d='M356 396H236a58 58 0 0 1-9-115 78 78 0 0 1 150 17 52 52 0 0 1-21 98z' fill='%23fff'/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -1797,6 +1798,7 @@ body.wp-performance-background-pause.wp-performance-hidden *::after{
     </div>
   </div>
   <div class="nav-right">
+    <button class="wp-notification-nav" type="button" onclick="wpOpenNotificationCenter()" aria-label="Уведомления" title="Уведомления"><i class="fa-solid fa-bell" aria-hidden="true"></i><span id="wpNotificationBadge" class="wp-count-badge" hidden>0</span></button>
     <div class="offline-badge" id="netBadge" title="Состояние сети"><span class="online-dot" id="netDot"></span><span id="netText">online</span></div>
     <div class="lang-switcher" role="group" aria-label="Язык">
       <button class="lang-btn active" data-lang="ru" onclick="setLang('ru')">RU</button>
@@ -2648,7 +2650,7 @@ body.wp-performance-background-pause.wp-performance-hidden *::after{
       <button class="wp81-people-action" onclick="wp81ScrollTo('peopleSearchInput')"><i class="fa-solid fa-magnifying-glass"></i><span><b>Найти людей</b><small>По имени или email</small></span></button>
       <button class="wp81-people-action" onclick="wp81ScrollTo('friendRequests')"><i class="fa-solid fa-user-plus"></i><span><b>Заявки</b><small>Входящие запросы</small></span></button>
       <button class="wp81-people-action" onclick="wp81ScrollTo('friendsList')"><i class="fa-solid fa-users"></i><span><b>Друзья</b><small>Ваш круг общения</small></span></button>
-      <button class="wp81-people-action" onclick="wp81ScrollTo('chatList')"><i class="fa-solid fa-message"></i><span><b>Сообщения</b><small>Личные диалоги</small></span></button>
+      <button class="wp81-people-action" onclick="wp81ScrollTo('chatList')"><span class="wp-nav-icon-wrap"><i class="fa-solid fa-message"></i><b id="wpMessageActionBadge" class="wp-count-badge" hidden>0</b></span><span><b>Сообщения</b><small>Личные диалоги</small></span></button>
       <button class="wp81-people-action" onclick="showPage('community')"><i class="fa-solid fa-cloud-bolt"></i><span><b>Наблюдения</b><small>Погода глазами людей</small></span></button>
     </div>
   </section>
@@ -2669,6 +2671,13 @@ body.wp-performance-background-pause.wp-performance-hidden *::after{
       <div class="social-section"><h3>Мои диалоги</h3><div id="chatList" class="social-list"><div class="person-empty">Диалоги появятся после первого сообщения</div></div></div>
     </div>
   </div>
+</div>
+<div id="notifications-page" class="page">
+  <section class="people-card wp-notifications-shell">
+    <div class="wp-notifications-heading"><div><div class="wp81-eyebrow">WEATHER PRO · NOTIFICATIONS</div><h1 class="card-title">Уведомления</h1><p class="wp-notifications-subtitle">Новые сообщения и события, пока Weather Pro открыт или работает в фоне.</p></div><button class="wp-notif-secondary" type="button" onclick="wpMarkAllNotificationsRead()">Отметить всё прочитанным</button></div>
+    <div class="wp-push-control"><div><strong><i class="fa-solid fa-bell"></i> Уведомления браузера</strong><small id="wpPushStatus">Проверяем состояние уведомлений…</small></div><button id="wpPushToggle" class="wp-notif-primary" type="button" onclick="wpTogglePush()">Включить уведомления</button></div>
+    <div id="wpNotificationList" class="wp-notification-list"><div class="person-empty">Загрузка уведомлений…</div></div>
+  </section>
 </div>
 <div id="chat-page" class="page">
   <div class="people-card chat-shell">
@@ -2899,7 +2908,7 @@ body.wp-performance-background-pause.wp-performance-hidden *::after{
       <svg class="icon" aria-hidden="true"><use href="#i-brain"/></svg><span>AI</span>
     </button>
     <button class="bottom-nav-item" type="button" data-page="people" onclick="showPage('people')">
-      <svg class="icon" aria-hidden="true"><use href="#i-globe"/></svg><span>Люди</span>
+      <span class="wp-nav-icon-wrap"><svg class="icon" aria-hidden="true"><use href="#i-globe"/></svg><b id="wpMessageBadge" class="wp-count-badge" hidden>0</b></span><span>Люди</span>
     </button>
     <button class="bottom-nav-item" type="button" data-page="profile" onclick="showPage('profile')">
       <svg class="icon" aria-hidden="true"><use href="#i-user"/></svg><span>Профиль</span>
@@ -3667,7 +3676,8 @@ window.searchUsers = searchUsers;
    WEATHER PRO SOCIAL: FRIENDS + PRIVATE CHATS
    Canonical friendship/chat identity: sorted UID pair joined by "__".
    ============================================================ */
-let activeChatId = null, activeChatUnsubscribe = null, activeChatsUnsubscribe = null;
+let activeChatId = null, activeChatUnsubscribe = null, activeChatsUnsubscribe = null, activeChatReadUnsubscribe = null;
+let activeChatOtherReadAt = null;
 let activeRequestsUnsubscribes = [], activeFriendshipsUnsubscribe = null;
 let activeChatOtherUid = null, activeChatMessagesCache = [];
 let socialFriendIds = new Set(), socialRequestDocs = new Map();
@@ -3691,10 +3701,12 @@ function chatIdFor(a,b){ return [String(a),String(b)].sort().join('__'); }
 function requestIdFor(from,to){ return String(to)+'_'+String(from); }
 function stopSocialListeners(){
   if(activeChatUnsubscribe){activeChatUnsubscribe();activeChatUnsubscribe=null;}
+  if(activeChatReadUnsubscribe){activeChatReadUnsubscribe();activeChatReadUnsubscribe=null;}
   if(activeChatsUnsubscribe){activeChatsUnsubscribe();activeChatsUnsubscribe=null;}
   activeRequestsUnsubscribes.forEach(unsub=>{try{unsub();}catch(_){}});activeRequestsUnsubscribes=[];
   if(activeFriendshipsUnsubscribe){activeFriendshipsUnsubscribe();activeFriendshipsUnsubscribe=null;}
-  activeChatId=null;activeChatOtherUid=null;activeChatMessagesCache=[];
+  if(typeof wpPushSetChatPresence==='function' && activeChatId) wpPushSetChatPresence(activeChatId,false);
+  activeChatId=null;activeChatOtherUid=null;activeChatMessagesCache=[];activeChatOtherReadAt=null;
   socialFriendIds=new Set();socialRequestDocs=new Map();
   const msg=$('chatMessages');if(msg)msg.innerHTML='<div class="person-empty">Выберите друга, чтобы начать общение</div>';
   const list=$('chatList');if(list)list.innerHTML='<div class="person-empty">Диалоги появятся после первого сообщения</div>';
@@ -3767,7 +3779,7 @@ async function removeFriend(friendUid){
     if(!matches.length)throw new Error('Дружба уже отсутствует');
     await batch.commit();
     socialNotice('Пользователь удалён из друзей');
-    if(activeChatOtherUid===friendUid){if(activeChatUnsubscribe)activeChatUnsubscribe();activeChatUnsubscribe=null;activeChatId=null;activeChatOtherUid=null;activeChatMessagesCache=[];showPage('people');}
+    if(activeChatOtherUid===friendUid){if(typeof wpPushSetChatPresence==='function'&&activeChatId)wpPushSetChatPresence(activeChatId,false);if(activeChatUnsubscribe)activeChatUnsubscribe();if(activeChatReadUnsubscribe)activeChatReadUnsubscribe();activeChatUnsubscribe=null;activeChatReadUnsubscribe=null;activeChatId=null;activeChatOtherUid=null;activeChatMessagesCache=[];activeChatOtherReadAt=null;showPage('people');}
   }catch(e){socialNotice('Не удалось удалить из друзей: '+(e.code||e.message),true);}
 }
 function renderFriendRequests(uid){
@@ -3858,9 +3870,13 @@ function startChatListListener(uid){
       const data=doc.data(),other=(data.members||[]).find(x=>x!==uid);if(!other)continue;
       let profile={};try{const p=await fbDb.collection('publicProfiles').doc(other).get();profile=p.data()||{};}catch(_){}
       if(!fbUser||fbUser.uid!==uid)return;
-      const el=document.createElement('div');el.className='social-person';
+      let unread=0;try{if(typeof wpPushGetChatUnread==='function')unread=await wpPushGetChatUnread(doc.id,other);}catch(e){console.warn('[WeatherPro/Unread]',e);}
+      if(!fbUser||fbUser.uid!==uid)return;
+      const el=document.createElement('div');el.className='social-person'+(unread?' wp-chat-unread':'');el.dataset.chatId=doc.id;
       const last=String(data.lastMessage||'').slice(0,100);
-      el.innerHTML=`${socialAvatar({displayName:profile.displayName||'Друг',avatar:profile.avatar})}<div class="social-person-info"><strong>${socialEsc(profile.displayName||'Друг')}</strong><small class="chat-list-meta">${socialEsc(last||'Откройте диалог')}</small></div><div class="social-actions"><button type="button">Открыть</button></div>`;
+      const updated=data.updatedAt?.toDate?data.updatedAt.toDate():null;
+      const time=updated?updated.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}):'';
+      el.innerHTML=`${socialAvatar({displayName:profile.displayName||'Друг',avatar:profile.avatar})}<div class="social-person-info"><strong>${socialEsc(profile.displayName||'Друг')}</strong><small class="chat-list-meta">${socialEsc(last||'Откройте диалог')}${time?' · '+time:''}</small></div>${unread?`<span class="wp-chat-count">${unread>99?'99+':unread}</span>`:''}<div class="social-actions"><button type="button">Открыть</button></div>`;
       el.querySelector('button').addEventListener('click',()=>openChat(other,profile.displayName||'Друг'));
       box.appendChild(el);
     }
@@ -3880,15 +3896,22 @@ async function openChat(otherUid, otherName){
     // Security Rules separately authorize create vs update and require friendship.
     await ref.set({members:[uid,otherUid].sort()},{merge:true});
     if(activeChatUnsubscribe){activeChatUnsubscribe();activeChatUnsubscribe=null;}
-    activeChatId=id;activeChatOtherUid=otherUid;activeChatMessagesCache=[];
+    if(activeChatReadUnsubscribe){activeChatReadUnsubscribe();activeChatReadUnsubscribe=null;}
+    activeChatId=id;activeChatOtherUid=otherUid;activeChatMessagesCache=[];activeChatOtherReadAt=null;
     $('chatTitle').textContent=otherName||'Чат';$('chatSubtitle').textContent='Личная переписка';
     $('chatMessages').innerHTML='<div class="person-empty">Загружаем сообщения…</div>';
     if($('chatSearchInput'))$('chatSearchInput').value='';
     showPage('chat');
+    if(typeof wpPushSetChatPresence==='function')wpPushSetChatPresence(id,true);
+    // Browser-only mode does not publish another user's read cursor because the
+    // existing Firestore Rules keep private user documents owner-only.
+    activeChatReadUnsubscribe=null;
+    activeChatOtherReadAt=null;
     activeChatUnsubscribe=ref.collection('messages').orderBy('createdAt','asc').limitToLast(200).onSnapshot(snapshot=>{
       if(!fbUser||fbUser.uid!==uid||activeChatId!==id)return;
       activeChatMessagesCache=snapshot.docs.map(d=>({id:d.id,...d.data()}));
       renderChatMessages();
+      if(typeof wpPushMarkChatRead==='function' && !document.hidden && $('chat-page')?.classList.contains('active'))wpPushMarkChatRead(id);
     },e=>{console.error('[WeatherPro/Chat] listen',e);$('chatMessages').textContent='Нет доступа к переписке: '+(e.code||e.message);});
   }catch(e){
     console.error('[WeatherPro/Chat] open',e);
@@ -3905,7 +3928,8 @@ function renderChatMessages(){
     const mine=m.senderId===fbUser?.uid,el=document.createElement('div');el.className='chat-bubble'+(mine?' mine':'');
     const body=document.createElement('div');body.textContent=String(m.text||'');el.appendChild(body);
     const meta=document.createElement('small');const date=m.createdAt?.toDate?m.createdAt.toDate():null;
-    meta.textContent=(mine?'Вы':String(m.senderName||'Друг'))+' · '+(date?date.toLocaleString('ru-RU',{hour:'2-digit',minute:'2-digit'}):'');el.appendChild(meta);
+    const wasRead=mine&&activeChatOtherReadAt&&m.createdAt?.toMillis&&m.createdAt.toMillis()<=activeChatOtherReadAt.toMillis();
+    meta.textContent=(mine?'Вы':String(m.senderName||'Друг'))+' · '+(date?date.toLocaleString('ru-RU',{hour:'2-digit',minute:'2-digit'}):'')+(mine?(wasRead?' · Прочитано':' · Отправлено'):'');el.appendChild(meta);
     if(mine){const del=document.createElement('button');del.className='chat-delete';del.type='button';del.textContent='Удалить';del.addEventListener('click',()=>deleteChatMessage(m.id));el.appendChild(del);}
     box.appendChild(el);
   });
@@ -5650,7 +5674,7 @@ document.addEventListener('click',event=>{
 function showPage(id){
   const targetPage=document.getElementById(id+'-page');
   if(!targetPage){console.warn('[Weather Pro] Unknown page:',id);return false;}
-  if(id!=='chat' && activeChatUnsubscribe){activeChatUnsubscribe();activeChatUnsubscribe=null;activeChatId=null;activeChatOtherUid=null;}
+  if(id!=='chat' && activeChatId){if(typeof wpPushSetChatPresence==='function')wpPushSetChatPresence(activeChatId,false);if(activeChatUnsubscribe){activeChatUnsubscribe();activeChatUnsubscribe=null;}if(activeChatReadUnsubscribe){activeChatReadUnsubscribe();activeChatReadUnsubscribe=null;}activeChatId=null;activeChatOtherUid=null;activeChatMessagesCache=[];activeChatOtherReadAt=null;}
   if(id!=='engine'){if(typeof wp104StopCamera==='function'){wp104StopCamera();wp104StopMic();if(wp104AudioContext){wp104AudioContext.close().catch(()=>{});wp104AudioContext=null;}wp104StopDisplayTest();}if(typeof wp10StopSensors==='function'&&typeof wp10SensorsActive!=='undefined'&&wp10SensorsActive)wp10StopSensors();if(typeof wp10MonitorTimer!=='undefined'&&wp10MonitorTimer&&typeof wp10ToggleMonitor==='function')wp10ToggleMonitor();}
   if((id==='profile'||id==='settings') && (fbUser||fbAuth?.currentUser)){
     const restoredUser=fbUser||fbAuth.currentUser;
@@ -7812,5 +7836,6 @@ window.wp11SetMission=wp11SetMission;
 window.wp11Recalculate=wp11Recalculate;
 
 </script>
+<script src="./push-notifications.js"></script>
 </body>
 </html>

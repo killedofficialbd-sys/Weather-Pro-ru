@@ -1,0 +1,10 @@
+WEATHER PRO 11.2 — NO CLOUD FUNCTIONS
+
+- Removed Firebase Cloud Functions requirement and server deployment files.
+- Replaced Web Push subscription setup with browser Notification permission toggle.
+- Added Firestore live listeners for incoming direct messages and friend events.
+- Added local notification history and unread notification badge.
+- Message read cursor is stored in the existing owner-only users/{uid}.chatReads map.
+- No VAPID private key is present in browser files.
+- No npm install or Firebase Functions deployment is required.
+- System notifications work while the page/browser continues to run; closed-site delivery requires a separate push backend.
