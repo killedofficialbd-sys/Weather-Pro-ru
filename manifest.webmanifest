@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Weather Pro 11.1 — Push Notifications",
-  "short_name": "Weather Pro 11.1",
-  "description": "Weather Pro 11.1: прогноз, погодные сигналы, личные чаты и push-уведомления.",
+  "name": "Weather Pro 11.4 — Home Widget & Avatar Fix",
+  "short_name": "Weather Pro 11.4",
+  "description": "Weather Pro 11.4: прогноз погоды, общение, push-уведомления и поддержка Android-виджета.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

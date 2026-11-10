@@ -1643,6 +1643,51 @@ body.wp-performance-background-pause.wp-performance-hidden *::after{
 }
 </style>
 
+
+
+
+
+<style id="weather-pro-11-4-avatar-img-fix">
+/* Render uploaded photos as real image elements so every part remains visible. */
+.user-avatar,
+.avatar-preview,
+.person-avatar {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background-color: rgba(5, 12, 25, .92) !important;
+  background-image: none !important;
+  background-size: auto !important;
+  background-position: center !important;
+}
+.user-avatar .avatar-photo,
+.avatar-preview .avatar-photo,
+.person-avatar .avatar-photo {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover !important;
+  object-position: center center !important;
+  border-radius: inherit;
+  background: transparent;
+  z-index: 1;
+}
+.user-avatar > svg,
+.avatar-preview > svg,
+.person-avatar > svg {
+  position: relative;
+  z-index: 2;
+}
+.social-person .person-avatar {
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+}
+</style>
 </head>
 <body>
 
@@ -2643,9 +2688,9 @@ body.wp-performance-background-pause.wp-performance-hidden *::after{
     <div class="widget-code"><code id="widgetCode">&lt;!-- Weather Pro Widget --&gt;</code></div>
     <button class="btn mt-20" onclick="copyWidgetCode()" style="position:relative;z-index:1"><svg class="icon"><use href="#i-copy"/></svg><span data-i18n="widget_copy">Копировать код</span></button>
     <section class="wp10-panel" style="margin-top:20px" aria-labelledby="wp10AndroidWidgetTitle">
-      <div class="wp10-panel-head"><div><span class="wp10-kicker">ANDROID · PWA</span><h2 id="wp10AndroidWidgetTitle">Weather Pro на главном экране</h2><p>Установите приложение или добавьте ярлык на главный экран Android — прогноз будет открываться одним касанием.</p></div><i class="fa-brands fa-android" style="font-size:36px;color:#86efac"></i></div>
-      <div class="wp6-actions"><button class="wp6-action primary" onclick="wp10InstallAndroid()"><i class="fa-solid fa-download"></i> Установить Weather Pro</button><button class="wp6-action" onclick="wp10ToggleAndroidHelp()"><i class="fa-solid fa-circle-info"></i> Как добавить на экран</button></div>
-      <div class="wp10-android-help" id="wp10AndroidHelp"><strong>На Android в Chrome:</strong><ol><li>Откройте Weather Pro по HTTPS-адресу или с локального сервера.</li><li>Нажмите меню браузера ⋮.</li><li>Выберите «Установить приложение» или «Добавить на главный экран».</li><li>Подтвердите действие — появится значок Weather Pro.</li></ol><strong>Важно:</strong> веб-приложение может создать ярлык/PWA, но не настоящий системный виджет с отдельной плиткой на рабочем столе. Для такого виджета понадобится нативная Android-оболочка (APK) с Android App Widget.</div>
+      <div class="wp10-panel-head"><div><span class="wp10-kicker">ANDROID · HOME SCREEN WIDGET</span><h2 id="wp10AndroidWidgetTitle">Настоящий виджет Weather Pro</h2><p>В комплект проекта добавлен отдельный нативный Android-модуль: он создаёт погодную плитку на рабочем столе, загружает актуальную погоду и обновляет её автоматически.</p></div><i class="fa-brands fa-android" style="font-size:36px;color:#86efac"></i></div>
+      <div class="wp6-actions"><button class="wp6-action primary" onclick="wp10InstallAndroid()"><i class="fa-solid fa-download"></i> Установить PWA</button><button class="wp6-action" onclick="wp10ToggleAndroidHelp()"><i class="fa-solid fa-circle-info"></i> Как добавить виджет</button></div>
+      <div class="wp10-android-help" id="wp10AndroidHelp"><strong>Как добавить настоящий виджет Android:</strong><ol><li>Откройте папку <b>android-widget-app</b> из архива проекта в Android Studio.</li><li>Синхронизируйте Gradle и соберите APK: <b>Build → Build APK(s)</b>.</li><li>Установите APK на телефон.</li><li>Зажмите пустое место на рабочем столе → «Виджеты» → «Weather Pro».</li><li>Перетащите плитку на экран и укажите город. По нажатию на плитку можно изменить город, а кнопка обновления запрашивает погоду сразу.</li></ol><strong>Обновление:</strong> Android обновляет системный виджет примерно раз в 30 минут и может сдвигать обновление ради экономии батареи. Непрерывная анимация в системных виджетах ограничена Android; текущая погода и значок обновляются вместе с данными.</div>
     </section>
     <div class="wp92-export-section">
       <div class="wp92-export-heading"><div><span class="wp92-eyebrow">READY TO SHARE</span><h3>Экспорт погоды</h3><p>Сохраняйте готовые изображения с актуальными данными города.</p></div></div>
@@ -3256,6 +3301,21 @@ const esc = s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':
 const svg = (id,cls='')=>`<svg class="icon ${cls}" aria-hidden="true"><use href="#${id}"/></svg>`;
 const wp5FaIcon = (name, extra='')=>`<i class="fa-solid ${name} ${extra}" aria-hidden="true"></i>`;
 
+function avatarImageMarkup(value, alt='Аватар пользователя'){
+  const src=String(value??'').trim();
+  const safe=/^data:image\/(?:jpeg|jpg|png|webp|gif);base64,/i.test(src)||/^https:\/\//i.test(src);
+  return safe?`<img class="avatar-photo" src="${esc(src)}" alt="${esc(alt)}" draggable="false" loading="lazy">`:'';
+}
+function renderAvatarElement(node, photo, iconName='i-user', alt='Аватар пользователя'){
+  if(!node)return;
+  node.style.backgroundImage='none';
+  const markup=photo?avatarImageMarkup(photo,alt):'';
+  node.classList.toggle('has-avatar-photo',!!markup);
+  if(markup){node.innerHTML=markup;return;}
+  node.innerHTML=svg(iconName||'i-user');
+}
+
+
 /* ============================================================
    FIREBASE FUNCTIONS
    ============================================================ */
@@ -3732,8 +3792,9 @@ async function searchUsers(){
       const card = document.createElement('div');
       card.className = 'person-card';
       const initial = (p.displayName || '?').trim().charAt(0).toUpperCase();
-      const avatarHTML = p.avatar
-        ? `<div class="person-avatar" style="background-image:url('${esc(p.avatar)}')"></div>`
+      const photoMarkup=avatarImageMarkup(p.avatar,p.displayName || 'Аватар пользователя');
+      const avatarHTML = photoMarkup
+        ? `<div class="person-avatar">${photoMarkup}</div>`
         : p.avatarIcon
           ? `<div class="person-avatar">${svg(p.avatarIcon)}</div>`
           : `<div class="person-avatar">${esc(initial)}</div>`;
@@ -3779,8 +3840,10 @@ let activeChatOtherUid = null, activeChatMessagesCache = [];
 let socialFriendIds = new Set(), socialRequestDocs = new Map();
 const socialEsc = value => esc(String(value == null ? '' : value));
 function socialAvatar(person){
-  if(person && person.avatar) return `<div class="person-avatar" style="background-image:url('${socialEsc(person.avatar)}')"></div>`;
-  return `<div class="person-avatar">${socialEsc((person?.displayName || person?.name || '?').trim().charAt(0).toUpperCase())}</div>`;
+  const name=(person?.displayName || person?.name || '?').trim();
+  const photoMarkup=avatarImageMarkup(person?.avatar,name);
+  if(photoMarkup) return `<div class="person-avatar">${photoMarkup}</div>`;
+  return `<div class="person-avatar">${socialEsc(name.charAt(0).toUpperCase())}</div>`;
 }
 function socialNotice(message, error=false){ if(typeof showNotification==='function') showNotification(message,error); }
 function requireSocialAuth(){
@@ -4395,9 +4458,7 @@ function loadUser(){
 function saveUser(){ localStorage.setItem(KEYS.USER,JSON.stringify(currentUser)); }
 function updateUI(){
   const av=$('userAvatar');
-  if(currentUser.avatar){ av.innerHTML=''; av.style.backgroundImage=`url(${currentUser.avatar})`; }
-  else if(currentUser.avatarIcon){ av.innerHTML=svg(currentUser.avatarIcon); av.style.background='linear-gradient(135deg,#3b82f6,#1e40af)'; av.style.backgroundImage='none'; }
-  else { av.innerHTML=svg('i-user'); av.style.background='linear-gradient(135deg,#3b82f6,#1e40af)'; av.style.backgroundImage='none'; }
+  renderAvatarElement(av,currentUser.avatar,currentUser.avatarIcon||'i-user',currentUser.name||'Аватар пользователя');
   $('userName').textContent=currentUser.name;
   $('profileName').value=currentUser.name||'';
   const profileEmail=$('profileEmail'); if(profileEmail){ profileEmail.value=(fbUser && fbUser.email) ? fbUser.email : (currentUser.email||''); profileEmail.readOnly=true; profileEmail.setAttribute('aria-readonly','true'); }
@@ -4405,9 +4466,7 @@ function updateUI(){
   $('profileDate').value=currentUser.registrationDate?new Date(currentUser.registrationDate).toLocaleDateString('ru-RU'):'';
   $('profileBio').value=currentUser.bio||'';
   const pv=$('avatarPreview');
-  if(currentUser.avatar){ pv.innerHTML=''; pv.style.backgroundImage=`url(${currentUser.avatar})`; }
-  else if(currentUser.avatarIcon){ pv.innerHTML=svg(currentUser.avatarIcon); pv.style.backgroundImage='none'; pv.style.background='linear-gradient(135deg,#3b82f6,#1e40af)'; }
-  else { pv.innerHTML=svg('i-user'); pv.style.backgroundImage='none'; pv.style.background='linear-gradient(135deg,#3b82f6,#1e40af)'; }
+  renderAvatarElement(pv,currentUser.avatar,currentUser.avatarIcon||'i-user',currentUser.name||'Аватар пользователя');
 }
 function switchAuthForm(f){
   const l=$('loginForm'), r=$('registerForm'), b=document.querySelectorAll('#authSwitcher .page-switch');
@@ -4460,37 +4519,30 @@ function compressImage(file){
       reject(new Error('Выберите файл изображения'));
       return;
     }
-
     const image=new Image();
     const objectUrl=URL.createObjectURL(file);
-
     image.onload=()=>{
       try{
-        const size=200;
+        const sourceWidth=image.naturalWidth||image.width;
+        const sourceHeight=image.naturalHeight||image.height;
+        if(!sourceWidth||!sourceHeight)throw new Error('Изображение имеет некорректные размеры');
+        const maxSide=640;
+        const scale=Math.min(1,maxSide/Math.max(sourceWidth,sourceHeight));
+        const width=Math.max(1,Math.round(sourceWidth*scale));
+        const height=Math.max(1,Math.round(sourceHeight*scale));
         const canvas=document.createElement('canvas');
+        canvas.width=width;
+        canvas.height=height;
         const context=canvas.getContext('2d');
-
-        if(!context){
-          URL.revokeObjectURL(objectUrl);
-          reject(new Error('Не удалось обработать изображение'));
-          return;
-        }
-
-        canvas.width=size;
-        canvas.height=size;
-
-        // Обрезаем по центру, сохраняя пропорции изображения.
-        const scale=Math.max(size/image.width,size/image.height);
-        const width=image.width*scale;
-        const height=image.height*scale;
-        const x=(size-width)/2;
-        const y=(size-height)/2;
-
-        context.fillStyle='#fff';
-        context.fillRect(0,0,size,size);
-        context.drawImage(image,x,y,width,height);
-
-        const compressed=canvas.toDataURL('image/jpeg',0.7);
+        if(!context)throw new Error('Не удалось обработать изображение');
+        context.imageSmoothingEnabled=true;
+        context.imageSmoothingQuality='high';
+        context.fillStyle='#081225';
+        context.fillRect(0,0,width,height);
+        // Вся исходная фотография помещается в canvas с исходным соотношением сторон.
+        // Никакой центральной обрезки, квадратной подложки или размытого дубля.
+        context.drawImage(image,0,0,width,height);
+        const compressed=canvas.toDataURL('image/jpeg',0.84);
         URL.revokeObjectURL(objectUrl);
         resolve(compressed);
       }catch(error){
@@ -4498,12 +4550,10 @@ function compressImage(file){
         reject(error);
       }
     };
-
     image.onerror=()=>{
       URL.revokeObjectURL(objectUrl);
       reject(new Error('Не удалось загрузить изображение'));
     };
-
     image.src=objectUrl;
   });
 }

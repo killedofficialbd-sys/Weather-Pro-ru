@@ -1,4 +1,4 @@
-const VERSION = 'weather-pro-v11.2.5-male-tts';
+const VERSION = 'weather-pro-v11.4.1-avatar-style-v5';
 const SHELL_CACHE = `${VERSION}-shell`;
 const DATA_CACHE = `${VERSION}-weather`;
 const SHELL = ['./', './index.html', './manifest.webmanifest', './weather-icon.svg', './weather-icon-192.png', './weather-icon-512.png', './rules.txt', './push-notifications.js', './push-notifications.css'];
