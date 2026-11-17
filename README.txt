@@ -109,3 +109,7 @@ Email в основном профиле остаётся только для ч
 - Обновлён Service Worker cache key.
 
 Проверки: Node.js syntax check всех inline JS, повторяющиеся HTML ID, обязательные модули и email/password флоу, ZIP integrity. Реальный OAuth вход в Firebase-проекте не может быть завершён из среды сборки.
+
+
+WEATHER PRO V15 — MAP & AUTOMATION ENGINE
+See CHANGELOG_V15_MAP_AUTOMATION_3D_EARTH_RU.txt for map layers, automation, failover and realistic WebGL Earth details.

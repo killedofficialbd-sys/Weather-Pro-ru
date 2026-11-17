@@ -1,0 +1,44 @@
+WEATHER PRO V15 — MAP & AUTOMATION ENGINE
+
+1) WEATHER MAP ENGINE
+- Added atmospheric pressure overlay to the existing OpenWeather map layers.
+- Added base-map switch between OpenStreetMap streets and CARTO dark tiles.
+- Added live overlay opacity control.
+- Added map source/status display and tile-error handling.
+- When OpenWeather precipitation tiles repeatedly fail and RainViewer radar frames are available, the map switches to the historical radar layer. It is explicitly labelled as historical data, not a forecast.
+- Existing RainViewer timeline/playback is preserved.
+
+2) WEATHER AUTOMATION ENGINE
+- Added opt-in foreground scheduler for current weather/forecast and RainViewer metadata refresh.
+- Added 15/30/60-minute user interval settings, enabled modules, manual run, and reset.
+- Automation pauses while offline or while the page is hidden.
+- Adaptive interval slows requests on Save-Data / 2G / battery-saver contexts.
+- Added capped exponential retry backoff.
+- Added Open-Meteo as a real backup provider when OpenWeather current/forecast requests fail.
+- Fallback weather is converted into the existing Weather Pro current/forecast data shape before rendering and caching.
+- No background worker sends data or runs a persistent remote task.
+
+3) REALISTIC 3D EARTH
+- Replaced the main globe experience with a Three.js WebGL planet scene.
+- Uses independent surface, city-light, cloud-shell, and atmospheric-rim textures/materials.
+- Added tilted 23.44-degree axial orientation, axis markers, equator ring, optional graticule, star field, sun-direction lighting, and globe rotation.
+- Earth surface and cloud shell rotate at independent speeds.
+- Added active-city and favourite-city markers, pointer drag, wheel zoom, and visibility-aware rendering.
+- If WebGL, CDN, or Earth textures fail, the original D3 globe remains as a fallback.
+- Textures are loaded from the Three.js examples texture set via jsDelivr; first online load is required, and browser/PWA caching may retain them.
+
+4) APP COMPATIBILITY
+- Preserved existing Firebase integration, Firestore rules files, weather modules, user features, and Storage-free architecture.
+- Updated Service Worker cache version and manifest branding to V15.
+- No storage.rules added. No Firestore rules changed.
+
+VERIFICATION
+- Static HTML/JavaScript checks, duplicate-ID checks, service-worker version checks, and ZIP integrity checks are performed on this package.
+- Live provider API responses and actual mobile WebGL rendering must still be tested in the target browser/device. The Three.js/texture CDN requires internet access on first use.
+
+DATA AND ATTRIBUTION
+- © OpenStreetMap contributors; dark basemap © CARTO.
+- Radar tiles and metadata: RainViewer (historical frames). See https://www.rainviewer.com/.
+- Weather overlays and current/forecast data: OpenWeatherMap.
+- Forecast fallback: Open-Meteo.
+- Planet textures: Three.js examples texture assets (served from jsDelivr).

@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Weather Pro 11.4 — Home Widget & Avatar Fix",
-  "short_name": "Weather Pro 11.4",
-  "description": "Weather Pro 11.4: прогноз погоды, общение, push-уведомления и поддержка Android-виджета.",
+  "name": "Weather Pro V15 — Map & Automation Engine",
+  "short_name": "Weather Pro V15",
+  "description": "Weather Pro V15: погодные карты, автоматизация обновлений и реалистичный 3D-глобус.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
