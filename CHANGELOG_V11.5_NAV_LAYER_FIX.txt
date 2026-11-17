@@ -1,0 +1,18 @@
+Weather Pro — Navigation and small UI fixes
+
+1. Desktop navigation dropdown overlay
+   - Fixed the stacking order when the header wraps onto multiple rows.
+   - While a navigation group is open, the complete navigation-links layer is raised above the language/profile row.
+   - The layer state is removed on outside click, Escape, page navigation, and catalog close.
+   - The fix is desktop-only and does not alter the mobile full-screen section catalog.
+
+2. Missing weather-summary icon
+   - Added the missing i-sparkles SVG symbol used by the weather brief and recommendation UI.
+
+Validation performed
+   - JavaScript syntax checked for index.html, push-notifications.js, and sw.js.
+   - JSON checked for manifest.webmanifest, firebase.json, and firestore.indexes.json.
+   - Confirmed no duplicate HTML IDs, missing local asset paths, or unresolved SVG symbols.
+
+Note
+   - Live Firebase authentication, Firestore permissions, external weather APIs, and push delivery still need to be tested in the deployed environment with the project's real settings.
