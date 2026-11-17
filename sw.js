@@ -1,4 +1,4 @@
-const VERSION = 'weather-pro-v11.6-real-cloud-atmosphere-v1';
+const VERSION = 'weather-pro-v12-realistic-atmosphere-v1';
 const SHELL_CACHE = `${VERSION}-shell`;
 const DATA_CACHE = `${VERSION}-weather`;
 const SHELL = ['./', './index.html', './manifest.webmanifest', './weather-icon.svg', './weather-icon-192.png', './weather-icon-512.png', './rules.txt', './push-notifications.js', './push-notifications.css'];
