@@ -1,7 +1,7 @@
-const VERSION = 'weather-pro-v15-map-automation-v1';
+const VERSION = 'weather-pro-v15-map-automation-v4-ai-chat-workspace';
 const SHELL_CACHE = `${VERSION}-shell`;
 const DATA_CACHE = `${VERSION}-weather`;
-const SHELL = ['./', './index.html', './manifest.webmanifest', './weather-icon.svg', './weather-icon-192.png', './weather-icon-512.png', './rules.txt', './push-notifications.js', './push-notifications.css'];
+const SHELL = ['./', './index.html', './3d-satellite-hybrid-map.html', './manifest.webmanifest', './weather-icon.svg', './weather-icon-192.png', './weather-icon-512.png', './rules.txt', './push-notifications.js', './push-notifications.css'];
 const WEATHER_HOSTS = new Set(['api.openweathermap.org','api.open-meteo.com','air-quality-api.open-meteo.com','archive-api.open-meteo.com','geocoding-api.open-meteo.com','api.rainviewer.com','tilecache.rainviewer.com','tile.openweathermap.org']);
 self.addEventListener('install', event => event.waitUntil((async()=>{const cache=await caches.open(SHELL_CACHE);await Promise.all(SHELL.map(async path=>{try{await cache.add(path);}catch(_){}}));await self.skipWaiting();})()));
 self.addEventListener('activate', event => event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k.startsWith('weather-pro-')&&![SHELL_CACHE,DATA_CACHE].includes(k)).map(k=>caches.delete(k)));await self.clients.claim();})()));

@@ -1819,6 +1819,245 @@ body.wp-thunder .search-card,body.wp-thunder .forecast-card,body.wp-thunder .cha
 @media(prefers-reduced-motion:reduce){.wp15-toggle-track,.wp15-toggle-track:after{transition:none}}
 </style>
 
+
+<style id="wp13-map-ai-upgrade-style">
+/* 3D satellite workspace */
+.wp13-3d-map-panel{margin:18px 0 22px;padding:18px;border:1px solid rgba(96,165,250,.2);border-radius:22px;background:linear-gradient(145deg,rgba(15,29,51,.96),rgba(7,14,26,.98));box-shadow:0 18px 45px rgba(0,0,0,.2);scroll-margin-top:16px}
+.wp13-3d-map-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.wp13-3d-map-head h2{margin:5px 0 6px;font-size:clamp(19px,3vw,25px)}
+.wp13-3d-map-head p{max-width:720px;color:var(--text-secondary);font-size:12px;line-height:1.55}
+.wp13-3d-map-actions{display:flex;gap:8px;flex-wrap:wrap}
+.wp13-3d-frame-wrap{width:100%;height:min(76vh,760px);min-height:520px;overflow:hidden;border:1px solid rgba(125,177,245,.2);border-radius:17px;background:#0b1320}
+#wp13SatelliteFrame{display:block;width:100%;height:100%;border:0;background:#0b1320}
+.wp13-3d-map-note{display:flex;align-items:flex-start;gap:8px;margin-top:10px;color:var(--text-secondary);font-size:10px;line-height:1.55}
+.wp13-3d-map-note i{color:#8dbbff;margin-top:2px;flex:0 0 auto}
+#wp13-3d-map-panel:fullscreen{padding:12px;background:#050b16;overflow:auto}
+#wp13-3d-map-panel:fullscreen .wp13-3d-frame-wrap{height:calc(100vh - 135px);max-height:none}
+@media(max-width:768px){.wp13-3d-map-panel{padding:14px 12px;border-radius:18px}.wp13-3d-map-head{display:block}.wp13-3d-map-actions{margin-top:11px}.wp13-3d-frame-wrap{height:calc(100dvh - 245px);min-height:420px;max-height:720px}.wp13-3d-map-note{font-size:9px}}
+
+/* Weather AI desktop workspace */
+#ai-page.wp81-ai-assistant.active{display:flex;flex-direction:column;gap:12px;min-height:min(78vh,850px)}
+#ai-page.wp81-ai-assistant .wp80-shell{display:none!important}
+#ai-page.wp81-ai-assistant .wp81-ai-hub{flex:0 0 auto;margin:0}
+#ai-page.wp81-ai-assistant .ai-card{display:flex;flex:1 1 auto;flex-direction:column;min-height:560px;margin:0;overflow:hidden}
+#ai-page.wp81-ai-assistant .ai-card>.card-title{flex:0 0 auto}
+#ai-page.wp81-ai-assistant .ai-model-selector{flex:0 0 auto}
+#ai-page.wp81-ai-assistant .ai-messages{flex:1 1 360px;height:auto;min-height:260px;max-height:none;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scroll-behavior:smooth}
+#ai-page.wp81-ai-assistant .ai-prompts-rail{display:flex;flex:0 0 auto;gap:8px;overflow-x:auto;overflow-y:hidden;white-space:nowrap;margin:0 0 10px;padding:2px 2px 6px;scrollbar-width:thin;overscroll-behavior-x:contain}
+#ai-page.wp81-ai-assistant .ai-prompts-rail>*{flex:0 0 auto;white-space:nowrap}
+#ai-page.wp81-ai-assistant .ai-input-row{flex:0 0 auto;align-items:flex-end}
+#ai-page.wp81-ai-assistant .ai-input-row .ai-input{flex:1 1 auto;min-width:0;min-height:50px;max-height:120px;resize:none;overflow-y:auto;line-height:1.4;padding:14px 16px;font-size:16px}
+#ai-page.wp81-ai-assistant .ai-input-row .btn{width:auto;min-width:132px;min-height:50px;padding:12px 17px;white-space:nowrap}
+#ai-page.wp81-ai-assistant .ai-input-row .btn:disabled{opacity:.55;cursor:wait}
+
+/* Phone layout: fixed workspace sits exactly between the top app bar and bottom navigation. */
+@media(max-width:768px){
+  #ai-page.wp81-ai-assistant.active{
+    position:fixed;z-index:80;top:var(--wp13-ai-top,120px);left:12px;right:12px;
+    width:auto;height:var(--wp13-ai-height,calc(100dvh - 220px));min-height:0;max-height:none;
+    margin:0;padding:0;gap:8px;overflow:hidden;display:flex!important;flex-direction:column;
+    animation:none!important;transform:none!important;overscroll-behavior:contain;
+  }
+  #ai-page.wp81-ai-assistant .wp81-ai-hub{flex:0 0 auto;padding:0;margin:0;border:0;border-radius:0;background:transparent;box-shadow:none;backdrop-filter:none}
+  #ai-page.wp81-ai-assistant .wp81-ai-hub .wp81-hub-copy{display:none!important}
+  #ai-page.wp81-ai-assistant .wp81-workspace-tabs{display:flex;flex-wrap:nowrap;gap:7px;margin:0;padding:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;overscroll-behavior-x:contain}
+  #ai-page.wp81-ai-assistant .wp81-workspace-tabs::-webkit-scrollbar{display:none}
+  #ai-page.wp81-ai-assistant .wp81-workspace-tab{flex:0 0 auto;min-height:36px;padding:8px 12px;font-size:11px;white-space:nowrap}
+  #ai-page.wp81-ai-assistant .ai-card{flex:1 1 auto;min-height:0;width:100%;margin:0;padding:12px;border-radius:18px;display:flex;flex-direction:column;overflow:hidden}
+  #ai-page.wp81-ai-assistant .ai-card>.card-title{flex:0 0 auto;margin:0 0 8px;padding-bottom:8px;font-size:17px;line-height:1.2}
+  #ai-page.wp81-ai-assistant .ai-card>.card-title svg{width:34px;height:34px;padding:8px}
+  #ai-page.wp81-ai-assistant .ai-card>p{display:none!important}
+  #ai-page.wp81-ai-assistant .ai-model-selector{flex:0 0 auto;display:flex;flex-wrap:nowrap;gap:7px;margin:0 0 8px;padding:1px 1px 5px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;overscroll-behavior-x:contain}
+  #ai-page.wp81-ai-assistant .ai-model-selector::-webkit-scrollbar{display:none}
+  #ai-page.wp81-ai-assistant .ai-model-btn{flex:0 0 auto;min-height:35px;padding:7px 11px;font-size:11px;white-space:nowrap}
+  #ai-page.wp81-ai-assistant .ai-messages{flex:1 1 auto;min-height:0;height:auto;max-height:none;margin:0 0 8px;padding:11px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scroll-behavior:smooth}
+  #ai-page.wp81-ai-assistant .ai-message{max-width:92%;padding:11px 13px;font-size:14px;line-height:1.5;overflow-wrap:anywhere}
+  #ai-page.wp81-ai-assistant .ai-prompts-rail{flex:0 0 auto;gap:6px;margin:0 0 8px;padding:1px 1px 5px;overflow-x:auto;scrollbar-width:none}
+  #ai-page.wp81-ai-assistant .ai-prompts-rail::-webkit-scrollbar{display:none}
+  #ai-page.wp81-ai-assistant .ai-prompts-rail .quick-btn{min-height:34px;padding:7px 11px;font-size:11px}
+  #ai-page.wp81-ai-assistant .ai-input-row{flex:0 0 auto;display:flex;flex-direction:row;gap:7px;margin:0;align-items:flex-end}
+  #ai-page.wp81-ai-assistant .ai-input-row .ai-input{flex:1 1 auto;width:0;min-width:0;min-height:48px;max-height:112px;height:48px;padding:12px 13px;border-radius:14px;font-size:16px;line-height:1.35;resize:none;overflow-y:auto}
+  #ai-page.wp81-ai-assistant .ai-input-row .btn{flex:0 0 auto;width:auto;min-width:98px;min-height:48px;padding:10px 12px;border-radius:14px;font-size:12px}
+  #ai-page.wp81-ai-assistant .ai-input-row .btn .icon{width:16px;height:16px}
+  #ai-page.wp81-ai-assistant .ai-hint{display:none!important}
+}
+@media(max-width:380px){
+  #ai-page.wp81-ai-assistant.active{left:8px;right:8px}
+  #ai-page.wp81-ai-assistant .ai-card{padding:10px}
+  #ai-page.wp81-ai-assistant .ai-input-row .btn{min-width:88px;padding:9px 8px}
+  #ai-page.wp81-ai-assistant .ai-message{font-size:13px}
+}
+</style>
+
+<style id="wp13-ai-chat-layout-refinement">
+/* Weather Pro V13 — dedicated AI workspace: page stays still, conversation scrolls. */
+#ai-page.wp81-ai-assistant.active{
+  display:flex!important;flex-direction:column;gap:12px;
+  min-height:min(80vh,900px);box-sizing:border-box;
+}
+#ai-page.wp81-ai-assistant .wp80-shell{display:none!important}
+#ai-page.wp81-ai-assistant .wp81-ai-hub{flex:0 0 auto;margin:0;min-width:0}
+#ai-page.wp81-ai-assistant .ai-card{
+  position:relative;display:flex;flex:1 1 auto;flex-direction:column;
+  min-height:620px;margin:0;overflow:visible!important;box-sizing:border-box;
+}
+#ai-page.wp81-ai-assistant .ai-card>p{display:none!important}
+#ai-page.wp81-ai-assistant .wp13-ai-card-head{
+  position:relative;z-index:20;display:flex;flex:0 0 auto;align-items:center;
+  justify-content:space-between;gap:12px;min-width:0;margin-bottom:8px;
+}
+#ai-page.wp81-ai-assistant .wp13-ai-card-head>.card-title{
+  flex:1 1 auto;min-width:0;margin:0;padding:0 0 10px;font-size:clamp(17px,2.2vw,22px);
+}
+#ai-page.wp81-ai-assistant .wp13-ai-tools{position:relative;z-index:30;flex:0 0 auto;margin:0 0 8px;}
+#ai-page.wp81-ai-assistant .wp13-ai-tools>summary{
+  list-style:none;display:flex;align-items:center;gap:8px;min-height:42px;
+  padding:8px 12px;border:1px solid rgba(105,151,220,.24);border-radius:12px;
+  background:rgba(30,52,86,.74);color:#dce8ff;font-size:13px;font-weight:650;
+  white-space:nowrap;cursor:pointer;user-select:none;
+}
+#ai-page.wp81-ai-assistant .wp13-ai-tools>summary::-webkit-details-marker{display:none}
+#ai-page.wp81-ai-assistant .wp13-ai-tools>summary>i:first-child{color:#a78bfa;font-size:15px}
+#ai-page.wp81-ai-assistant .wp13-ai-tools>summary small{
+  max-width:70px;overflow:hidden;text-overflow:ellipsis;padding:3px 7px;
+  border-radius:7px;background:rgba(139,92,246,.16);color:#c4b5fd;font-size:10px;
+}
+#ai-page.wp81-ai-assistant .wp13-ai-tools-chevron{font-size:10px;opacity:.7;transition:transform .18s ease}
+#ai-page.wp81-ai-assistant .wp13-ai-tools[open] .wp13-ai-tools-chevron{transform:rotate(180deg)}
+#ai-page.wp81-ai-assistant .wp13-ai-tools-panel{
+  position:absolute;top:calc(100% + 8px);right:0;z-index:40;
+  width:min(390px,calc(100vw - 54px));max-height:min(52dvh,390px);overflow:auto;
+  padding:14px;border:1px solid rgba(123,162,220,.26);border-radius:16px;
+  background:rgba(7,15,30,.985);box-shadow:0 20px 55px rgba(0,0,0,.55);
+  backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  overscroll-behavior:contain;
+}
+#ai-page.wp81-ai-assistant .wp13-ai-tool-group+.wp13-ai-tool-group{margin-top:14px;padding-top:13px;border-top:1px solid rgba(148,163,184,.13)}
+#ai-page.wp81-ai-assistant .wp13-ai-tool-title{margin-bottom:9px;color:#9aaac2;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+#ai-page.wp81-ai-assistant .ai-model-selector{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:7px;margin:0;padding:0;}
+#ai-page.wp81-ai-assistant .ai-model-btn{justify-content:center;min-width:0;min-height:40px;padding:8px 10px;font-size:12px;white-space:normal;}
+#ai-page.wp81-ai-assistant .ai-prompts-rail{display:flex;flex-wrap:wrap;gap:7px;margin:0;padding:0;overflow:visible;white-space:normal;}
+#ai-page.wp81-ai-assistant .ai-prompts-rail .quick-btn{min-height:36px;padding:8px 11px;font-size:12px;white-space:normal;}
+#ai-page.wp81-ai-assistant .ai-messages{
+  position:relative;z-index:1;display:flex;flex:1 1 0%;flex-direction:column;
+  min-height:180px;height:auto;max-height:none;margin:0 0 10px;padding:14px;
+  overflow-x:hidden;overflow-y:auto;overscroll-behavior-y:contain;
+  -webkit-overflow-scrolling:touch;scroll-behavior:smooth;touch-action:pan-y;
+  scrollbar-gutter:stable;overflow-wrap:anywhere;
+}
+#ai-page.wp81-ai-assistant .ai-message{max-width:min(88%,680px);overflow-wrap:anywhere;word-break:normal;}
+#ai-page.wp81-ai-assistant .ai-input-row{
+  position:relative;z-index:2;display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(112px,auto);gap:9px;
+  align-items:stretch;flex:0 0 auto;width:100%;margin:0;
+}
+#ai-page.wp81-ai-assistant .ai-input-row .ai-input{
+  display:block;box-sizing:border-box;width:100%;min-width:0;height:56px;min-height:56px;max-height:116px;
+  margin:0;padding:15px 16px;border-radius:15px;line-height:1.35;font-size:16px;
+  resize:none;overflow-x:hidden;overflow-y:auto;align-self:stretch;
+  scrollbar-width:none;overscroll-behavior:contain;
+}
+#ai-page.wp81-ai-assistant .ai-input-row .ai-input::-webkit-scrollbar{display:none}
+#ai-page.wp81-ai-assistant .ai-input-row .btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  box-sizing:border-box;width:auto;min-width:112px;height:auto;min-height:56px;
+  margin:0;padding:12px 15px;border-radius:15px;white-space:nowrap;
+  align-self:stretch;font-size:13px;line-height:1.2;
+}
+#ai-page.wp81-ai-assistant .ai-input-row .btn .icon{width:18px;height:18px;flex:0 0 auto}
+#ai-page.wp81-ai-assistant .ai-input-row .btn:disabled{opacity:.58;cursor:wait}
+#ai-page.wp81-ai-assistant .ai-hint{display:none!important}
+
+/* Lock the document only while the mobile assistant is active. */
+html.wp13-ai-lock,body.wp13-ai-lock{
+  width:100%!important;height:100%!important;min-height:100%!important;max-height:100%!important;
+  overflow:hidden!important;overscroll-behavior:none!important;
+}
+body.wp13-ai-lock{padding-bottom:0!important}
+@media(max-width:768px){
+  #ai-page.wp81-ai-assistant.active{
+    position:fixed!important;z-index:80;top:var(--wp13-ai-top,120px);left:10px;right:10px;
+    width:auto;height:var(--wp13-ai-height,calc(100dvh - 220px));min-height:0;max-height:none;
+    margin:0;padding:9px;gap:8px;overflow:hidden!important;box-sizing:border-box;
+    display:flex!important;flex-direction:column;animation:none!important;transform:none!important;
+    overscroll-behavior:none;background:linear-gradient(180deg,rgba(6,13,26,.985),rgba(8,17,33,.985));
+    border:1px solid rgba(125,164,220,.2);border-radius:20px;box-shadow:0 18px 48px rgba(0,0,0,.34);
+  }
+  #ai-page.wp81-ai-assistant .wp81-ai-hub{
+    flex:0 0 auto;padding:0;margin:0;border:0;border-radius:0;background:transparent;
+    box-shadow:none;backdrop-filter:none;min-height:0;
+  }
+  #ai-page.wp81-ai-assistant .wp81-ai-hub .wp81-hub-copy{display:none!important}
+  #ai-page.wp81-ai-assistant .wp81-workspace-tabs{
+    display:flex;flex-wrap:nowrap;gap:7px;margin:0;padding:0 0 1px;overflow-x:auto;overflow-y:hidden;
+    scrollbar-width:none;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
+  }
+  #ai-page.wp81-ai-assistant .wp81-workspace-tabs::-webkit-scrollbar{display:none}
+  #ai-page.wp81-ai-assistant .wp81-workspace-tab{flex:0 0 auto;min-height:36px;padding:8px 12px;font-size:11px;white-space:nowrap}
+  #ai-page.wp81-ai-assistant .ai-card{
+    flex:1 1 0%;min-height:0;width:100%;margin:0;padding:12px;border-radius:17px;
+    display:flex;flex-direction:column;overflow:visible!important;
+    background:rgba(8,16,31,.985)!important;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    box-shadow:none;
+  }
+  #ai-page.wp81-ai-assistant .wp13-ai-card-head{gap:7px;margin-bottom:5px}
+  #ai-page.wp81-ai-assistant .wp13-ai-card-head>.card-title{
+    gap:9px;margin:0;padding:0 0 8px;font-size:17px;line-height:1.15;
+  }
+  #ai-page.wp81-ai-assistant .wp13-ai-card-head>.card-title svg{width:34px;height:34px;padding:8px;border-radius:11px}
+  #ai-page.wp81-ai-assistant .wp13-ai-tools{margin:0 0 7px}
+  #ai-page.wp81-ai-assistant .wp13-ai-tools>summary{min-height:38px;gap:6px;padding:7px 9px;font-size:11px;border-radius:11px}
+  #ai-page.wp81-ai-assistant .wp13-ai-tools>summary small{max-width:53px;font-size:9px}
+  #ai-page.wp81-ai-assistant .wp13-ai-tools-panel{
+    width:min(350px,calc(100vw - 54px));max-height:min(48dvh,360px);padding:12px;
+  }
+  #ai-page.wp81-ai-assistant .ai-messages{
+    flex:1 1 0%;min-height:0;height:auto;max-height:none;margin:0 0 9px;padding:11px;
+    overflow-x:hidden;overflow-y:auto;overscroll-behavior-y:contain;
+    -webkit-overflow-scrolling:touch;touch-action:pan-y;scrollbar-width:thin;
+  }
+  #ai-page.wp81-ai-assistant .ai-message{max-width:94%;padding:11px 13px;font-size:14px;line-height:1.48}
+  #ai-page.wp81-ai-assistant .ai-input-row{
+    flex:0 0 auto;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(100px,auto);
+    gap:7px;align-items:stretch;margin:0;width:100%;
+  }
+  #ai-page.wp81-ai-assistant .ai-input-row .ai-input{
+    width:100%;min-width:0;height:56px;min-height:56px;max-height:108px;
+    padding:15px 13px;border-radius:13px;font-size:16px;line-height:1.32;
+    resize:none;overflow-x:hidden;overflow-y:auto;align-self:stretch;
+  }
+  #ai-page.wp81-ai-assistant .ai-input-row .btn{
+    width:auto;min-width:100px;min-height:56px;height:auto;padding:10px 11px;
+    border-radius:13px;font-size:12px;gap:6px;align-self:stretch;white-space:nowrap;
+  }
+  #ai-page.wp81-ai-assistant .ai-input-row .btn .icon{width:17px;height:17px}
+}
+@media(max-width:380px){
+  #ai-page.wp81-ai-assistant.active{left:7px;right:7px;padding:7px}
+  #ai-page.wp81-ai-assistant .ai-card{padding:10px}
+  #ai-page.wp81-ai-assistant .ai-input-row{grid-template-columns:minmax(0,1fr) 96px;gap:6px}
+  #ai-page.wp81-ai-assistant .ai-input-row .btn{min-width:96px;padding:9px 8px;font-size:11px}
+  #ai-page.wp81-ai-assistant .wp13-ai-tools>summary{gap:5px;padding:7px 8px}
+}
+@media(max-height:640px) and (max-width:768px){
+  #ai-page.wp81-ai-assistant .wp81-workspace-tab{min-height:31px;padding:6px 9px}
+  #ai-page.wp81-ai-assistant .wp13-ai-card-head>.card-title{font-size:15px}
+  #ai-page.wp81-ai-assistant .ai-input-row .ai-input{height:50px;min-height:50px}
+  #ai-page.wp81-ai-assistant .ai-input-row .btn{min-height:50px}
+}
+</style>
+
+
+<style id="wp13-v2-input-map-fixes">
+/* Stable mobile composer: placeholder is fully visible before typing. */
+#ai-page.wp81-ai-assistant .ai-input-row{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(108px,auto)!important;align-items:stretch!important;gap:8px!important;width:100%;}
+#ai-page.wp81-ai-assistant .ai-input-row .ai-input{box-sizing:border-box!important;display:block!important;width:100%!important;min-width:0!important;height:76px!important;min-height:76px!important;max-height:132px!important;margin:0!important;padding:13px 14px!important;line-height:1.35!important;font-size:16px!important;white-space:pre-wrap!important;overflow-wrap:anywhere!important;resize:none!important;overflow-x:hidden!important;overflow-y:auto!important;align-self:stretch!important;text-align:left!important;}
+#ai-page.wp81-ai-assistant .ai-input-row .btn{box-sizing:border-box!important;width:auto!important;min-width:108px!important;height:76px!important;min-height:76px!important;max-height:132px!important;align-self:stretch!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:10px 12px!important;white-space:normal!important;}
+#ai-page.wp81-ai-assistant .ai-input-row .btn span{line-height:1.15;text-align:center}
+@media(max-width:390px){#ai-page.wp81-ai-assistant .ai-input-row{grid-template-columns:minmax(0,1fr) 104px!important;gap:7px!important}#ai-page.wp81-ai-assistant .ai-input-row .ai-input{padding:12px!important;font-size:15px!important}#ai-page.wp81-ai-assistant .ai-input-row .btn{min-width:104px!important;padding:8px!important;font-size:12px!important}}
+@media(min-width:769px){#ai-page.wp81-ai-assistant .ai-input-row .ai-input{height:64px!important;min-height:64px!important}#ai-page.wp81-ai-assistant .ai-input-row .btn{height:64px!important;min-height:64px!important}}
+</style>
+
 </head>
 <body>
 <canvas id="wpWeatherCanvas" class="wp-weather-canvas" aria-hidden="true"></canvas>
@@ -2842,6 +3081,7 @@ body.wp-thunder .search-card,body.wp-thunder .forecast-card,body.wp-thunder .cha
     <div class="wp81-hub-actions">
       <button class="wp81-hub-action" onclick="wp81MapLayer('radar')"><i class="fa-solid fa-satellite-dish"></i><span><b>Радар</b><small>Последние радарные кадры</small></span></button>
       <button class="wp81-hub-action" onclick="showPage('globe')"><i class="fa-solid fa-earth-europe"></i><span><b>3D-глобус</b><small>Земля и сохранённые города</small></span></button>
+      <button class="wp81-hub-action" type="button" onclick="wp13Open3DMap()"><i class="fa-solid fa-satellite"></i><span><b>3D Спутник</b><small>Здания, спутник и гибрид</small></span></button>
       <button class="wp81-hub-action" onclick="showPage('route')"><i class="fa-solid fa-route"></i><span><b>Маршрут</b><small>Погода по пути</small></span></button>
       <button class="wp81-hub-action" onclick="showPage('emergency')"><i class="fa-solid fa-triangle-exclamation"></i><span><b>Предупреждения</b><small>Официальные погодные риски</small></span></button>
       <button class="wp81-hub-action" onclick="showPage('planet')"><i class="fa-solid fa-globe"></i><span><b>Глобальная система</b><small>Обзор Weather Pro</small></span></button>
@@ -2884,6 +3124,18 @@ body.wp-thunder .search-card,body.wp-thunder .forecast-card,body.wp-thunder .cha
       <div class="radar-legend"><span>До 2 часов назад</span><span class="radar-legend-now">Фактический радар</span><span>Без nowcast</span></div>
     </div>
   </div>
+
+  <section class="wp13-3d-map-panel" id="wp13-3d-map-panel" aria-labelledby="wp13-3d-map-title">
+    <div class="wp13-3d-map-head">
+      <div><span class="wp81-eyebrow">INTERACTIVE 3D MAP</span><h2 id="wp13-3d-map-title">3D Спутниковая карта</h2><p>Переключайте обычную карту, спутник и гибрид, наклоняйте сцену, следите за своим местоположением и исследуйте объёмные здания.</p></div>
+      <div class="wp13-3d-map-actions">
+        <button type="button" class="wp6-action" onclick="wp13Refresh3DMap()"><i class="fa-solid fa-rotate"></i> Перезагрузить</button>
+        <button type="button" class="wp6-action primary" onclick="wp13Fullscreen3DMap()"><i class="fa-solid fa-expand"></i> На весь экран</button>
+      </div>
+    </div>
+    <div class="wp13-3d-frame-wrap"><iframe id="wp13SatelliteFrame" title="Интерактивная 3D карта Weather Pro" src="about:blank" loading="lazy" allow="geolocation" referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+    <p class="wp13-3d-map-note"><i class="fa-solid fa-circle-info"></i> Спутниковые снимки: Esri World Imagery. Векторная карта и геометрия зданий: OpenFreeMap / OpenStreetMap. Доступность и детализация 3D-зданий зависят от покрытия выбранного района. Кнопка «Эффект дождя» включает визуальную анимацию, а не фактический радар осадков.</p>
+  </section>
 
   <section class="wp15-automation-card" aria-label="Weather automation engine">
     <div class="wp15-automation-head"><div><div class="wp6-kicker">WEATHER AUTOMATION ENGINE · V15</div><h2>Автоматизация погоды</h2><p>Автообновление прогноза и радара, восстановление после потери сети, адаптивная частота запросов и резервный источник Open-Meteo при сбое OpenWeather.</p></div><span class="wp15-auto-badge" id="wp15AutoBadge">ВЫКЛЮЧЕНО</span></div>
@@ -2975,8 +3227,8 @@ body.wp-thunder .search-card,body.wp-thunder .forecast-card,body.wp-thunder .cha
   <section class="wp81-hub-head wp81-ai-hub" aria-labelledby="wp81AiTitle">
     <div class="wp81-hub-copy"><span class="wp81-eyebrow">WEATHER INTELLIGENCE</span><h1 id="wp81AiTitle">Центр AI</h1><p>Отдельные погодные инструменты, разговорный помощник и оперативная сводка по активному городу.</p></div>
     <div class="wp81-workspace-tabs" role="group" aria-label="Разделы AI">
-      <button type="button" class="wp81-workspace-tab active" data-ai-workspace="climate" onclick="setAIWorkspace('climate')"><i class="fa-solid fa-earth-europe"></i> Climate Twin</button>
-      <button type="button" class="wp81-workspace-tab" data-ai-workspace="assistant" onclick="setAIWorkspace('assistant')"><i class="fa-solid fa-comments"></i> Weather AI</button>
+      <button type="button" class="wp81-workspace-tab" data-ai-workspace="climate" onclick="setAIWorkspace('climate')"><i class="fa-solid fa-earth-europe"></i> Climate Twin</button>
+      <button type="button" class="wp81-workspace-tab active" data-ai-workspace="assistant" onclick="setAIWorkspace('assistant')"><i class="fa-solid fa-comments"></i> Weather AI</button>
       <button type="button" class="wp81-workspace-tab" onclick="showPage('intelligence')"><i class="fa-solid fa-bolt"></i> Сводка</button>
     </div>
   </section>
@@ -2997,24 +3249,44 @@ body.wp-thunder .search-card,body.wp-thunder .forecast-card,body.wp-thunder .cha
     <div class="wp80-panel" id="wp80ModulePanel" aria-live="polite"><div class="wp80-empty"><i class="fa-solid fa-sparkles"></i><br>Выберите один из шести инструментов выше. Для анализа сначала загрузите город на главной странице.</div></div>
   </section>
   <div class="ai-card">
-    <h2 class="card-title"><svg class="icon"><use href="#i-brain"/></svg> <span data-i18n="nav_ai">Weather AI</span></h2>
-    <p style="color:var(--text-secondary);margin-bottom:16px;position:relative;z-index:1">Нейросеть с реальными данными о погоде. Спросите о прогнозе, что надеть, брать ли зонт.</p>
-    <div class="ai-model-selector" id="aiModelSelector"></div>
-    <div class="ai-messages" id="aiMessages">
+    <div class="wp13-ai-card-head">
+      <h2 class="card-title"><svg class="icon"><use href="#i-brain"/></svg> <span data-i18n="nav_ai">Weather AI</span></h2>
+      <details class="wp13-ai-tools" id="wp13AiTools">
+        <summary aria-label="Открыть настройки модели и быстрые вопросы">
+          <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+          <span>Инструменты</span>
+          <small id="wp13AiModelLabel">OpenAI</small>
+          <i class="fa-solid fa-chevron-down wp13-ai-tools-chevron" aria-hidden="true"></i>
+        </summary>
+        <div class="wp13-ai-tools-panel" id="wp13AiToolsPanel">
+          <section class="wp13-ai-tool-group" aria-label="Выбор нейросети">
+            <div class="wp13-ai-tool-title">Модель ответа</div>
+            <div class="ai-model-selector" id="aiModelSelector"></div>
+          </section>
+          <section class="wp13-ai-tool-group" aria-label="Быстрые вопросы">
+            <div class="wp13-ai-tool-title">Быстрые вопросы</div>
+            <div class="ai-prompts-rail">
+              <button class="quick-btn" type="button" onclick="quickAsk('Что надеть сегодня?')">Что надеть?</button>
+              <button class="quick-btn" type="button" onclick="quickAsk('Брать ли зонт?')">Брать ли зонт?</button>
+              <button class="quick-btn" type="button" onclick="quickAsk('Можно ли гулять с собакой?')">Гулять с собакой?</button>
+              <button class="quick-btn" type="button" onclick="quickAsk('Какая погода будет завтра?')">Завтра?</button>
+              <button class="quick-btn" type="button" onclick="askAIQuick('Составь план дня по погоде на ближайшие 24 часа с лучшими временными окнами.')">План дня</button>
+              <button class="quick-btn" type="button" onclick="askAIQuick('Что надеть сегодня и что взять с собой? Объясни по текущей погоде.')">Что взять?</button>
+              <button class="quick-btn" type="button" onclick="askAIQuick('Сравни ближайшие часы и предупреди о погодных рисках.')">Риски</button>
+              <button class="quick-btn" type="button" onclick="askAIQuick('Какие активности лучше выбрать сегодня и в какое время?')">Чем заняться?</button>
+            </div>
+          </section>
+        </div>
+      </details>
+    </div>
+    <div class="ai-messages" id="aiMessages" role="log" aria-live="polite" aria-relevant="additions text" aria-label="Переписка с Weather AI">
       <div class="ai-message assistant">Привет! Я Weather AI. Загрузите город на главной — и я буду отвечать на основе реальных данных о погоде.<div class="msg-time">только что</div></div>
     </div>
-    <div class="ai-quick-prompts">
-      <button class="quick-btn" onclick="quickAsk('Что надеть сегодня?')">Что надеть?</button>
-      <button class="quick-btn" onclick="quickAsk('Брать ли зонт?')">Брать ли зонт?</button>
-      <button class="quick-btn" onclick="quickAsk('Можно ли гулять с собакой?')">Гулять с собакой?</button>
-      <button class="quick-btn" onclick="quickAsk('Какая погода будет завтра?')">Завтра?</button>
+    <div class="ai-input-row" role="group" aria-label="Написать Weather AI">
+      <textarea class="ai-input" id="aiInput" rows="1" maxlength="4000" placeholder="Например: Нужен ли зонт завтра?" data-i18n-placeholder="ai_placeholder" autocomplete="off" enterkeyhint="send" aria-label="Сообщение Weather AI"></textarea>
+      <button class="btn" id="aiSendBtn" type="button" onclick="sendAIMessage()"><svg class="icon"><use href="#i-send"/></svg><span data-i18n="ai_send">Отправить</span></button>
     </div>
-    <div class="wp5-ai-prompts"><button onclick="askAIQuick('Составь план дня по погоде на ближайшие 24 часа с лучшими временными окнами.')">План дня</button><button onclick="askAIQuick('Что надеть сегодня и что взять с собой? Объясни по текущей погоде.')">Что надеть?</button><button onclick="askAIQuick('Сравни ближайшие часы и предупреди о погодных рисках.')">Риски</button><button onclick="askAIQuick('Какие активности лучше выбрать сегодня и в какое время?')">Чем заняться?</button></div>
-    <div class="ai-input-row">
-      <input type="text" class="ai-input" id="aiInput" placeholder="Например: Нужен ли зонт завтра?" data-i18n-placeholder="ai_placeholder">
-      <button class="btn" id="aiSendBtn" onclick="sendAIMessage()"><svg class="icon"><use href="#i-send"/></svg><span data-i18n="ai_send">Отправить</span></button>
-    </div>
-    <div class="ai-hint"><svg class="icon"><use href="#i-info"/></svg> Модели: OpenAI, Mistral, LLaMA, DeepSeek, Gemini. Контекст погоды передаётся автоматически.</div>
+    <div class="ai-hint"><svg class="icon"><use href="#i-info"/></svg> Контекст погоды выбранного города учитывается автоматически.</div>
   </div>
 </div>
 
@@ -4476,7 +4748,8 @@ function init(){
     if(!handled){ getWeather(c); addToSearch(c); }
   });
   $('cityInput').addEventListener('keypress',e=>{if(e.key==='Enter'){hideAC();$('searchBtn').click();}});
-  $('aiInput').addEventListener('keypress',e=>{if(e.key==='Enter')sendAIMessage();});
+  $('aiInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();sendAIMessage();}});
+  $('aiInput').addEventListener('input',e=>wp13AutoSizeAIInput(e.currentTarget));
   document.addEventListener('keydown',e=>{
     if(e.key==='Escape'){closeQRModal();closeAvatarModal();hideAC();closeDayDetail();}
   });
@@ -5767,15 +6040,28 @@ function checkWeatherChange(t,desc){
    ============================================================ */
 
 function initAI(){
-  const c=$('aiModelSelector'); c.innerHTML='';
+  const c=$('aiModelSelector');
+  if(!c)return;
+  c.innerHTML='';
   ALLOWED_MODELS.forEach(m=>{
     const b=document.createElement('button');
+    b.type='button';
     b.className='ai-model-btn'+(m.id==='openai'?' active':'');
     b.innerHTML=`${svg(m.icon)} ${m.name}`;
-    b.onclick=()=>{document.querySelectorAll('.ai-model-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');window._aiModel=m.id;};
+    b.setAttribute('aria-pressed',m.id==='openai'?'true':'false');
+    b.onclick=()=>{
+      document.querySelectorAll('.ai-model-btn').forEach(x=>{x.classList.remove('active');x.setAttribute('aria-pressed','false');});
+      b.classList.add('active');b.setAttribute('aria-pressed','true');
+      window._aiModel=m.id;
+      const label=$('wp13AiModelLabel');if(label)label.textContent=m.name;
+      $('wp13AiTools')?.removeAttribute('open');
+    };
     c.appendChild(b);
   });
   window._aiModel='openai';
+  const label=$('wp13AiModelLabel');
+  const selected=ALLOWED_MODELS.find(m=>m.id==='openai');
+  if(label)label.textContent=selected?.name||'OpenAI';
 }
 function buildWeatherContext(){
   if(!lastWeatherData) return 'Данных о погоде нет — пользователь ещё не загружал город.';
@@ -5804,54 +6090,101 @@ function buildWeatherContext(){
   L.push(`Пользовательские пороги уведомлений: дождь ${prefs.rain?'вкл':'выкл'} от ${prefs.rainThreshold}%, ветер ${prefs.wind?'вкл':'выкл'} от ${prefs.windThreshold} м/с, холод ${prefs.cold?'вкл':'выкл'} ниже ${prefs.coldThreshold}°C, жара ${prefs.heat?'вкл':'выкл'} выше ${prefs.heatThreshold}°C, гроза ${prefs.storm?'вкл':'выкл'}, снег ${prefs.snow?'вкл':'выкл'}.`);
   return L.join('\n');
 }
+function wp13AutoSizeAIInput(input){
+  if(!input)return;
+  input.style.height='auto';
+  const minHeight=56;
+  const maxHeight=window.matchMedia&&window.matchMedia('(max-width:768px)').matches?108:116;
+  const next=Math.max(minHeight,Math.min(maxHeight,input.scrollHeight||minHeight));
+  input.style.height=next+'px';
+}
 async function sendAIMessage() {
-  const msg = $('aiInput').value.trim();
-  if (!msg) return;
+  const input = $('aiInput');
+  const sendButton = $('aiSendBtn');
+  if (!input) return;
+  const msg = String(input.value || '').trim();
+  if (!msg || window.__wp13AiBusy) return;
+
+  window.__wp13AiBusy = true;
+  if (sendButton) {
+    sendButton.disabled = true;
+    sendButton.setAttribute('aria-busy', 'true');
+  }
+
   addMsg('user', msg);
-  $('aiInput').value = '';
-  const thinkingId = 'thinking_' + Date.now();
+  input.value = '';
+  input.style.height = '56px';
+  wp13AutoSizeAIInput(input);
+
+  const thinkingId = 'thinking_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
   const thinkingEl = document.createElement('div');
   thinkingEl.className = 'ai-message assistant';
   thinkingEl.id = thinkingId;
-  thinkingEl.style.maxWidth = '85%'; thinkingEl.style.padding = '0';
-  thinkingEl.style.background = 'transparent'; thinkingEl.style.border = 'none';
-  thinkingEl.innerHTML = `<div class="ai-thinking"><div class="ai-thinking-dot"></div><div class="ai-thinking-dot"></div><div class="ai-thinking-dot"></div></div><div class="ai-progress"><div class="ai-progress-bar" id="prog_${thinkingId}"></div></div>`;
-  $('aiMessages').appendChild(thinkingEl);
-  $('aiMessages').scrollTop = $('aiMessages').scrollHeight;
+  thinkingEl.style.maxWidth = '85%';
+  thinkingEl.style.padding = '0';
+  thinkingEl.style.background = 'transparent';
+  thinkingEl.style.border = 'none';
+  thinkingEl.innerHTML = '<div class="ai-thinking"><div class="ai-thinking-dot"></div><div class="ai-thinking-dot"></div><div class="ai-thinking-dot"></div></div><div class="ai-progress"><div class="ai-progress-bar" id="prog_' + thinkingId + '"></div></div>';
+  $('aiMessages')?.appendChild(thinkingEl);
+  scrollAIToLatest('auto');
+
   let progress = 0;
   const progBar = $('prog_' + thinkingId);
-  const progInterval = setInterval(() => {
-    progress += Math.random() * 12 + 3; if (progress > 90) progress = 90;
+  const progInterval = window.setInterval(() => {
+    progress = Math.min(90, progress + Math.random() * 12 + 3);
     if (progBar) progBar.style.width = progress + '%';
   }, 400);
-  const system = `Ты — Weather AI 2.0, практичный погодный помощник в приложении Weather Pro. Отвечай на русском, структурируй ответ короткими блоками. Используй фактические данные ниже; не выдумывай прогнозы, предупреждения, время дождя или температуру. Если данных недостаточно — прямо скажи об этом. Для рекомендаций объясняй, какие параметры повлияли на вывод, отделяй факт прогноза от совета. Учитывай комфорт, осадки, ветер и ощущаемую температуру. Не выдавай оценку активности за гарантию безопасности.\n\nДанные о погоде:\n${buildWeatherContext()}`;
+
   try {
-    const url = `${CHAT_API}${encodeURIComponent(msg)}?model=${window._aiModel}&system=${encodeURIComponent(system)}`;
-    const r = await fetch(url);
-    if (!r.ok) throw 0;
-    const text = (await r.text()).trim();
-    clearInterval(progInterval);
+    const selectedModel = String(window._aiModel || 'openai');
+    const system = `Ты — Weather AI 2.0, практичный погодный помощник в приложении Weather Pro. Отвечай на русском, структурируй ответ короткими блоками. Используй фактические данные ниже; не выдумывай прогнозы, предупреждения, время дождя или температуру. Если данных недостаточно — прямо скажи об этом. Для рекомендаций объясняй, какие параметры повлияли на вывод, отделяй факт прогноза от совета. Учитывай комфорт, осадки, ветер и ощущаемую температуру. Не выдавай оценку активности за гарантию безопасности.\n\nДанные о погоде:\n${buildWeatherContext()}`;
+    const url = `${CHAT_API}${encodeURIComponent(msg)}?model=${encodeURIComponent(selectedModel)}&system=${encodeURIComponent(system)}`;
+    const response = await fetch(url, { method: 'GET', cache: 'no-store' });
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    const answer = (await response.text()).trim();
     if (progBar) progBar.style.width = '100%';
-    setTimeout(() => {
-      document.getElementById(thinkingId)?.remove();
-      addMsg('assistant', text || 'Пустой ответ');
-    }, 350);
-  } catch (e) {
-    clearInterval(progInterval);
-    document.getElementById(thinkingId)?.remove();
-    addMsg('assistant', 'Ошибка связи с нейросетью. Попробуйте позже.');
+    thinkingEl.remove();
+    addMsg('assistant', answer || 'Нейросеть вернула пустой ответ. Попробуйте задать вопрос иначе.');
+  } catch (error) {
+    console.warn('[Weather Pro/AI] Request failed:', error);
+    thinkingEl.remove();
+    addMsg('assistant', 'Не удалось получить ответ от нейросети. Проверьте подключение и попробуйте ещё раз.');
+  } finally {
+    window.clearInterval(progInterval);
+    thinkingEl.remove();
+    window.__wp13AiBusy = false;
+    if (sendButton) {
+      sendButton.disabled = false;
+      sendButton.removeAttribute('aria-busy');
+    }
+    scrollAIToLatest('auto');
+    wp13UpdateAIViewport();
   }
 }
 window.sendAIMessage=sendAIMessage;
-function quickAsk(text) { $('aiInput').value = text; sendAIMessage(); }
+function quickAsk(text) { const input=$('aiInput'); if(!input)return; input.value=String(text||''); wp13AutoSizeAIInput(input); $('wp13AiTools')?.removeAttribute('open'); sendAIMessage(); }
 window.quickAsk=quickAsk;
+function scrollAIToLatest(behavior='smooth'){
+  const box=$('aiMessages');
+  if(!box)return;
+  requestAnimationFrame(()=>{
+    box.scrollTo({top:box.scrollHeight,behavior:behavior==='auto'?'auto':'smooth'});
+  });
+}
 function addMsg(role,content,tmp=false){
-  const w=document.createElement('div'); w.className='ai-message '+role;
-  const t=document.createElement('div'); t.textContent=content; w.appendChild(t);
-  const tm=document.createElement('div'); tm.className='msg-time';
+  const box=$('aiMessages');
+  if(!box)return null;
+  const w=document.createElement('div');
+  w.className='ai-message '+(role==='user'?'user':'assistant');
+  const t=document.createElement('div');
+  t.textContent=String(content??'');
+  w.appendChild(t);
+  const tm=document.createElement('div');
+  tm.className='msg-time';
   tm.textContent=formatTime(new Date());
-  w.appendChild(tm); $('aiMessages').appendChild(w);
-  $('aiMessages').scrollTop=$('aiMessages').scrollHeight;
+  w.appendChild(tm);
+  box.appendChild(w);
+  scrollAIToLatest('smooth');
   return tmp?w:null;
 }
 
@@ -6119,7 +6452,7 @@ function showPage(id){
   if(id==='history'){ loadHistoryData(); loadHistory(); }
   if(id==='people' && $('peopleResults').innerHTML==='') $('peopleResults').innerHTML='<div class="person-empty">Введите имя или email</div>';
   if(id==='people') wp6WaitForAuth().then(user=>{if(user){fbUser=user;wp6AdoptFirebaseIdentity(user);loadSocialHub();}});
-  if(id==='map') setTimeout(()=>{ mapInst && mapInst.invalidateSize(); if(currentRadarMode) updateRadarFrame(radarCurrentIdx); },200);
+  if(id==='map') setTimeout(()=>{ mapInst && mapInst.invalidateSize(); if(currentRadarMode) updateRadarFrame(radarCurrentIdx); if(typeof wp13Resize3DMap==='function')wp13Resize3DMap(); },200);
   if(id==='intelligence'){wp6RenderIntelligence();if(wp10Prefs.autoBrief!==false)wp10RefreshAIForecast(false);}
   if(id==='stats')wp10RefreshStats(false);
   if(id==='globe') wp6StartGlobe(); else wp6StopGlobe();
@@ -7250,7 +7583,7 @@ function evaluateSmartWeatherAlerts(current,forecast){
 }
 function runSmartAlertsNow(){if(!lastWeatherData||!lastForecastData){showNotification('Сначала загрузите прогноз города',true);return;}evaluateSmartWeatherAlerts(lastWeatherData,lastForecastData);showNotification('Проверка погодных событий завершена');}
 window.runSmartAlertsNow=runSmartAlertsNow;
-function askAIQuick(prompt){if(!$('aiInput'))return; $('aiInput').value=prompt;showPage('ai');sendAIMessage();}
+function askAIQuick(prompt){const input=$('aiInput');if(!input)return;showPage('ai');setAIWorkspace('assistant');input.value=String(prompt||'');wp13AutoSizeAIInput(input);$('wp13AiTools')?.removeAttribute('open');sendAIMessage();}
 window.askAIQuick=askAIQuick;
 
 
@@ -8286,7 +8619,7 @@ window.addEventListener('offline',()=>{wp6RunDiagnostics?.();});
 console.log('%cWeather Pro v9.0 — INTERFACE ARCHITECTURE','color:#3b82f6;font-weight:800;font-size:14px');
 
 /* WEATHER PRO 9.0 — interface architecture + connected workspaces */
-let wp81AIWorkspace='climate';
+let wp81AIWorkspace='assistant';
 function wp81ScrollTo(id){
   const el=document.getElementById(id);if(!el)return;
   const target=el.closest('.social-section')||el.closest('.search-box')||el;
@@ -8298,17 +8631,80 @@ function wp81MapLayer(layer){
   const btn=document.querySelector(`#map-page .layer-btn[data-layer="${layer}"]`);
   if(btn){setMapLayer(btn);const map=document.getElementById('weatherMap');map?.scrollIntoView({behavior:'smooth',block:'center'});}
 }
+let wp13AiViewportRaf=0;
+function wp13SetAIScrollLock(locked){
+  const enabled=!!locked;
+  document.documentElement.classList.toggle('wp13-ai-lock',enabled);
+  document.body.classList.toggle('wp13-ai-lock',enabled);
+  if(enabled){
+    /* The AI workspace is fixed below the sticky app header. Start from scrollY=0. */
+    window.scrollTo({top:0,left:0,behavior:'auto'});
+  }
+}
+function wp13UpdateAIViewport(){
+  if(wp13AiViewportRaf)cancelAnimationFrame(wp13AiViewportRaf);
+  wp13AiViewportRaf=requestAnimationFrame(()=>{
+    const page=document.getElementById('ai-page');
+    const isMobile=window.matchMedia&&window.matchMedia('(max-width:768px)').matches;
+    if(!page||!page.classList.contains('active')||!page.classList.contains('wp81-ai-assistant')){
+      page?.style.removeProperty('--wp13-ai-top');
+      page?.style.removeProperty('--wp13-ai-height');
+      return;
+    }
+    if(!isMobile){
+      wp13SetAIScrollLock(false);
+      page.style.removeProperty('--wp13-ai-top');
+      page.style.removeProperty('--wp13-ai-height');
+      return;
+    }
+    if(!document.documentElement.classList.contains('wp13-ai-lock'))wp13SetAIScrollLock(true);
+    const viewport=window.visualViewport;
+    const viewportTop=Math.max(0,Math.round(Number(viewport?.offsetTop)||0));
+    const viewportHeight=Math.max(180,Math.round(Number(viewport?.height)||window.innerHeight));
+    const visibleBottom=viewportTop+viewportHeight;
+    const nav=document.querySelector('.navbar');
+    const navRect=nav?.getBoundingClientRect();
+    const top=Math.max(viewportTop+6,Math.round(navRect?.bottom||viewportTop)+8);
+    const bottomNav=document.getElementById('bottomNav');
+    const bottomRect=bottomNav?.getBoundingClientRect();
+    let bottom=visibleBottom-8;
+    if(bottomNav&&bottomRect&&getComputedStyle(bottomNav).display!=='none'&&bottomRect.top>viewportTop&&bottomRect.top<visibleBottom){
+      bottom=Math.min(bottom,Math.round(bottomRect.top)-8);
+    }
+    const available=Math.max(150,Math.round(bottom-top));
+    page.style.setProperty('--wp13-ai-top',top+'px');
+    page.style.setProperty('--wp13-ai-height',available+'px');
+  });
+}
 function setAIWorkspace(name){
   if(!['climate','assistant'].includes(name))return;
   wp81AIWorkspace=name;
+  const page=document.getElementById('ai-page');
   const climate=document.querySelector('#ai-page .wp80-shell');
   const assistant=document.querySelector('#ai-page .ai-card');
   if(climate)climate.style.display=name==='climate'?'':'none';
   if(assistant)assistant.style.display=name==='assistant'?'':'none';
-  document.querySelectorAll('[data-ai-workspace]').forEach(b=>b.classList.toggle('active',b.dataset.aiWorkspace===name));
+  if(page)page.classList.toggle('wp81-ai-assistant',name==='assistant');
+  document.querySelectorAll('[data-ai-workspace]').forEach(button=>button.classList.toggle('active',button.dataset.aiWorkspace===name));
+  const lockAssistant=name==='assistant'&&!!page?.classList.contains('active')&&!!(window.matchMedia&&window.matchMedia('(max-width:768px)').matches);
+  if(lockAssistant)window.scrollTo({top:0,left:0,behavior:'auto'});
+  wp13SetAIScrollLock(lockAssistant);
   if(name==='climate')wp80Init();
-  if(name==='assistant')setTimeout(()=>document.getElementById('aiInput')?.focus({preventScroll:true}),100);
-  const page=document.getElementById('ai-page');page?.scrollIntoView({behavior:'smooth',block:'start'});
+  if(name==='assistant'){
+    requestAnimationFrame(()=>{
+      wp13UpdateAIViewport();
+      requestAnimationFrame(()=>{wp13UpdateAIViewport();scrollAIToLatest('auto');});
+    });
+  }else{
+    page?.style.removeProperty('--wp13-ai-top');
+    page?.style.removeProperty('--wp13-ai-height');
+  }
+}
+window.addEventListener('resize',wp13UpdateAIViewport,{passive:true});
+window.addEventListener('orientationchange',()=>setTimeout(wp13UpdateAIViewport,160),{passive:true});
+if(window.visualViewport){
+  window.visualViewport.addEventListener('resize',wp13UpdateAIViewport,{passive:true});
+  window.visualViewport.addEventListener('scroll',wp13UpdateAIViewport,{passive:true});
 }
 window.setAIWorkspace=setAIWorkspace;
 function wp81UpdateHubSummaries(){
@@ -8348,6 +8744,7 @@ if(typeof wp81OriginalShowPage==='function'&&!window.wp81ShowPageWrapped){
     document.querySelectorAll('.nav-link').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
     if(typeof syncNavGroupState==='function')syncNavGroupState(id);
     if(root==='ai'&&id==='ai')setAIWorkspace(wp81AIWorkspace||'climate');
+    else if(typeof wp13SetAIScrollLock==='function')wp13SetAIScrollLock(false);
     if(root==='profile')requestAnimationFrame(wp81UpdateProfileAfterPaint);
     if(root==='people')requestAnimationFrame(wp81UpdateHubSummaries);
     if(root==='map')requestAnimationFrame(wp81UpdateHubSummaries);
@@ -8887,5 +9284,67 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 </script>
 
 <script src="./push-notifications.js?v=11.2.2"></script>
+
+<script id="wp13-map-ai-upgrade-script">
+(function(){
+  const MAP_URL='./3d-satellite-hybrid-map.html?embed=1';
+  function mapFrame(){return document.getElementById('wp13SatelliteFrame');}
+  function sendMapCity(){
+    const frame=mapFrame();if(!frame?.contentWindow)return;
+    try{
+      const weather=(typeof lastWeatherData!=='undefined'&&lastWeatherData)?lastWeatherData:null;
+      const coord=weather?.coord||{};
+      const lat=Number(coord.lat),lon=Number(coord.lon);
+      if(Number.isFinite(lat)&&lat>=-90&&lat<=90&&Number.isFinite(lon)&&lon>=-180&&lon<=180){
+        frame.contentWindow.postMessage({type:'weatherpro:set-city',lat,lon,name:String(weather?.name||currentCity||'Активный город')},'*');
+      }
+      frame.contentWindow.postMessage({type:'weatherpro:resize-map'},'*');
+    }catch(e){console.warn('[Weather Pro/3D map] Не удалось передать координаты города',e);}
+  }
+  window.wp13Open3DMap=function(){
+    const panel=document.getElementById('wp13-3d-map-panel'),frame=mapFrame();
+    if(!panel||!frame)return;
+    if(!frame.dataset.loaded){frame.src=MAP_URL;frame.dataset.loaded='1';}
+    panel.scrollIntoView({behavior:'smooth',block:'start'});
+    setTimeout(sendMapCity,350);setTimeout(sendMapCity,1100);
+  };
+  window.wp13Refresh3DMap=function(){
+    const frame=mapFrame();if(!frame)return;
+    frame.dataset.loaded='1';frame.src=MAP_URL+'&refresh='+Date.now();
+  };
+  window.wp13Fullscreen3DMap=function(){
+    const panel=document.getElementById('wp13-3d-map-panel');
+    if(!panel)return;
+    if(panel.requestFullscreen){panel.requestFullscreen().then(()=>setTimeout(sendMapCity,250)).catch(()=>showNotification('Полноэкранный режим недоступен в этом браузере',true));}
+    else showNotification('Полноэкранный режим не поддерживается этим браузером',true);
+  };
+  window.wp13Resize3DMap=function(){
+    const frame=mapFrame();if(!frame?.dataset.loaded)return;
+    setTimeout(sendMapCity,180);
+  };
+  window.addEventListener('message',function(event){
+    if(event.source!==mapFrame()?.contentWindow)return;
+    if(event.data?.type==='weatherpro:map-ready')sendMapCity();
+  });
+  const frame=mapFrame();if(frame)frame.addEventListener('load',()=>{setTimeout(sendMapCity,100);setTimeout(sendMapCity,700);});
+})();
+</script>
+
+<script id="wp13-v2-input-autosize">
+(()=>{
+ const init=()=>{
+  const input=document.getElementById('aiInput');
+  if(!input||input.dataset.wp13Autosize==='1')return;
+  input.dataset.wp13Autosize='1';
+  const fit=()=>{input.style.height='76px';const max=132;const wanted=Math.min(max,Math.max(76,input.scrollHeight));input.style.height=wanted+'px';input.style.overflowY=input.scrollHeight>max?'auto':'hidden';};
+  input.addEventListener('input',fit,{passive:true});
+  input.addEventListener('change',fit,{passive:true});
+  window.addEventListener('resize',fit,{passive:true});
+  fit();
+ };
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
+</script>
+
 </body>
 </html>
