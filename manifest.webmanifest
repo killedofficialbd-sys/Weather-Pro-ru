@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Weather Pro V15 — Map & Automation Engine",
-  "short_name": "Weather Pro V15",
-  "description": "Weather Pro V15: погодные карты, автоматизация обновлений и реалистичный 3D-глобус.",
+  "name": "Weather Pro V16.2.2 — Ultimate",
+  "short_name": "Weather Pro V16.2.2",
+  "description": "Weather Pro V16.2.2: интеллектуальная погода, карты, 3D Земля, AI, социальная система и диагностика.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

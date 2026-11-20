@@ -1,0 +1,82 @@
+WEATHER PRO V16.2 — ULTIMATE REBUILD
+===================================
+
+ОСНОВА И СОХРАНЕНИЕ
+-------------------
+- Сборка начата заново с оригинального V14.zip.
+- Сохранены старые страницы, карта, глобус, погодные сценарии, AI, Firebase Auth/Firestore, друзья, чаты, Data Engine, Device Engine и PWA.
+- Логика и правила коллекции `publicProfiles` не перерабатывались.
+- Не вносились посторонние изменения в старые погодные расчёты и резервные сценарии.
+
+ИНТЕРФЕЙС И ДОСТУПНОСТЬ
+----------------------
+- Добавлен адаптивный центр состояния на главной странице: погода, свежесть, сеть, устройство и PWA.
+- Обновлены визуальные поверхности, карточки, панели, поля и мобильная адаптация через `v16/v16-ui.css`.
+- Удалён лишний закрывающий `</style>` рядом с блоком стилей.
+- Полям управления без программной подписи добавлены `aria-label`, а для пользовательского файла аватара — связанная подпись.
+
+ПРОФИЛЬ И BASE64
+----------------
+- Добавлен локальный профильный кэш по Firebase UID.
+- Имя, город, описание, выбранная иконка и фотография восстанавливаются до чтения Firestore.
+- При загрузке аккаунта пустые/устаревшие поля Firestore не должны затирать локальную Base64-фотографию и имя.
+- Фото сжимаются до JPEG Base64 data URI; стараемся удержать результат примерно в пределах 120 000 символов, верхняя граница — 150 000.
+- Base64 хранится в локальном профиле и в существующих полях `avatar` коллекций `users` и `publicProfiles`. Firebase Storage не используется.
+
+WEATHER AI
+----------
+- Добавлено сохранение истории по UID в localStorage и в приватную Firestore-подколлекцию `users/{uid}/aiHistory/main`.
+- Контекст последних сообщений передаётся в запрос модели.
+- Добавлены голосовой ввод и озвучивание последнего ответа, если браузер поддерживает Web Speech API.
+- Добавлена callable Cloud Function `weatherAI` с авторизацией и квотой 15 запросов в минуту на UID; при неразвёрнутой функции используется существующий резервный API.
+
+SOCIAL И PUSH
+-------------
+- Добавлена пагинация старых сообщений по 100 элементов, отдельно от живого списка последних 200 сообщений.
+- Подсчёт непрочитанных сообщений переведён на запрос после сохранённого курсора чтения с ограничением 500 документов за запрос.
+- Добавлена регистрация FCM-токена браузера в закрытом `users/{uid}/devices`.
+- Добавлена Cloud Function `notifyChatRecipient` для отправки Push при новом сообщении.
+- В Service Worker добавлен обработчик фоновых Firebase Messaging уведомлений.
+- Для активации нужны опубликованные правила, развёртывание Functions, VAPID public key и HTTPS.
+
+DEVICE / ANDROID / PWA
+---------------------
+- Добавлена диагностика доступных браузеру характеристик: потоки CPU, оценка памяти (если раскрывается), сеть, WebGL, батарея, хранилище и PWA.
+- Добавлен экспорт JSON-отчёта по доступным характеристикам без токенов и личных данных.
+- Добавлен отдельный Android Studio-проект `android-widget/`: выбор города/координат, температура, ощущаемая температура, ветер, дневной диапазон, ручное и периодическое обновление через WorkManager.
+- Обновлены manifest и shell-cache version Service Worker.
+
+ЧТО ТРЕБУЕТ НАСТРОЙКИ
+---------------------
+- `firebase deploy --only functions` для серверного AI и фоновых чат-Push.
+- VAPID public key в `v16/v16-config.js` и разрешённый HTTPS-домен для Web Push.
+- Сверка и публикация `rules.txt` для приватных подколлекций V16.
+- Сборка Android APK отдельно в Android Studio; готовый APK в ZIP не включён.
+
+ЧТО НЕ МОЖЕТ БЫТЬ ПОДТВЕРЖДЕНО СТАТИЧЕСКИ
+-----------------------------------------
+Реальный вход Google, чтение/запись Firestore в действующем Firebase-проекте, доставка FCM, ответы внешних погодных/AI API и установка Android-виджета требуют тестирования в окружении владельца проекта.
+
+
+WEATHER PRO V16.2 — COMPLETE ULTIMATE FOLLOW-UP
+
+- Main application JavaScript split into ordered local modules under src/legacy-modules/.
+- Unified Map Engine workspace added for existing weather layers, RainViewer radar, 3D globe and 3D satellite map.
+- Weather UV gauge now uses the actual Open-Meteo current uv_index field; when it is unavailable the UI shows no data instead of an estimate.
+- Removed hard-coded sample forecast temperatures. Offline cache remains preferred; without real or cached data the forecast panel clearly reports unavailability.
+- Social chat adds per-member Firestore state for delivered/read receipts and short-lived typing status.
+- PWA updates no longer auto-activate on installation; the user receives an explicit update prompt.
+- Refreshed shared design system for older and newer pages, forms, navigation, cards and mobile layouts.
+- The publicProfiles rules block and its existing visibility/search behavior are intentionally preserved.
+- Profile avatars remain Base64 (compressed) in Firestore/local per-UID cache; Firebase Storage is not used.
+
+SETUP NOTE: Deploy the revised Firestore rules before testing chat receipts/typing. Cloud Functions, Push/VAPID and the separate Android widget still require Firebase / Android Studio setup described in their folders.
+
+
+WEATHER PRO V16.2 — STABILITY FOLLOW-UP
+
+- Finalized the 13-file classic-script split while preserving the original execution order.
+- Map workspace status now separates active layer from provider/status text and reads the real legacy map state.
+- Leaving a chat expires the typing lease and clears both delivery/read cursor display state.
+- Accuracy Lab now correctly records actual temperatures of exactly 0°C and identifies the active weather source generically.
+- Updated asset and Service Worker cache versions to force clients to fetch the V16.2 build.

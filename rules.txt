@@ -2,8 +2,19 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // Owner identity comes from the signed Firebase Authentication token.
+    // A value stored in a profile document or localStorage cannot grant admin access.
+    function isFounder() {
+      return request.auth != null
+        && request.auth.token.email is string
+        && request.auth.token.email == 'killedofficialbd@gmail.com';
+    }
+
+    // Suspended users can still authenticate, but Firestore denies their app operations.
+    // The founder account is never blocked by this flag.
     function signedIn() {
-      return request.auth != null;
+      return request.auth != null
+        && (isFounder() || !exists(/databases/$(database)/documents/wpAdminSuspensions/$(request.auth.uid)));
     }
 
     function isSelf(uid) {
@@ -61,6 +72,34 @@ service cloud.firestore {
       allow create, update: if isSelf(userId)
         && request.resource.data.profile is map
         && authEmailMatches(request.resource.data.profile.email);
+    }
+
+    // Device-specific FCM tokens are private and writable only by their owner.
+    match /users/{userId}/devices/{deviceId} {
+      allow read: if isSelf(userId);
+      allow create, update: if isSelf(userId)
+        && request.resource.data.keys().hasOnly(['token', 'platform', 'userAgent', 'updatedAt'])
+        && request.resource.data.keys().hasAll(['token', 'platform', 'userAgent', 'updatedAt'])
+        && request.resource.data.token is string
+        && request.resource.data.token.size() > 20
+        && request.resource.data.token.size() <= 4096
+        && request.resource.data.platform == 'web'
+        && request.resource.data.userAgent is string
+        && request.resource.data.userAgent.size() <= 240
+        && request.resource.data.updatedAt is timestamp;
+      allow delete: if isSelf(userId);
+    }
+
+    // AI conversation backup is private to the account and kept in one bounded document.
+    match /users/{userId}/aiHistory/{historyId} {
+      allow read, delete: if isSelf(userId) && historyId == 'main';
+      allow create, update: if isSelf(userId)
+        && historyId == 'main'
+        && request.resource.data.keys().hasOnly(['messages', 'updatedAt'])
+        && request.resource.data.keys().hasAll(['messages', 'updatedAt'])
+        && request.resource.data.messages is list
+        && request.resource.data.messages.size() <= 80
+        && request.resource.data.updatedAt is timestamp;
     }
 
     // Searchable public card. Email must always match Firebase Authentication.
@@ -197,6 +236,20 @@ service cloud.firestore {
           && resource.data.senderId == request.auth.uid;
         allow update: if false;
       }
+
+      // Per-member chat state: delivery/read receipts and short typing lease.
+      // State is writable only by its owner and visible only to the two chat members.
+      match /state/{userId} {
+        allow read: if chatMember(chatId);
+        allow create, update: if chatMember(chatId)
+          && isSelf(userId)
+          && request.resource.data.keys().hasOnly(['lastReadAt', 'lastDeliveredAt', 'lastActiveAt', 'typingUntil'])
+          && (!('lastReadAt' in request.resource.data) || request.resource.data.lastReadAt is timestamp)
+          && (!('lastDeliveredAt' in request.resource.data) || request.resource.data.lastDeliveredAt is timestamp)
+          && (!('lastActiveAt' in request.resource.data) || request.resource.data.lastActiveAt is timestamp)
+          && (!('typingUntil' in request.resource.data) || request.resource.data.typingUntil is timestamp);
+        allow delete: if chatMember(chatId) && isSelf(userId);
+      }
     }
 
     // Weather Pro 6.0 community observations: authenticated, short-lived, text-only reports.
@@ -235,6 +288,44 @@ service cloud.firestore {
         && request.resource.data.expiresAt <= request.time + duration.value(6, 'h');
       allow delete: if signedIn() && resource.data.uid == request.auth.uid;
       allow update: if false;
+    }
+
+
+    // Owner-only administrative suspension records. These documents contain
+    // moderation metadata only; private chats, passwords and AI histories stay private.
+    match /wpAdminSuspensions/{userId} {
+      allow read: if isFounder();
+      allow create, update: if isFounder()
+        && userId != request.auth.uid
+        && request.resource.data.keys().hasOnly(['uid', 'reason', 'status', 'createdBy', 'createdAt', 'updatedAt'])
+        && request.resource.data.keys().hasAll(['uid', 'reason', 'status', 'createdBy', 'createdAt', 'updatedAt'])
+        && request.resource.data.uid == userId
+        && request.resource.data.reason is string
+        && request.resource.data.reason.size() > 0
+        && request.resource.data.reason.size() <= 300
+        && request.resource.data.status == 'suspended'
+        && request.resource.data.createdBy == request.auth.uid
+        && request.resource.data.createdAt is timestamp
+        && request.resource.data.updatedAt is timestamp;
+      allow delete: if isFounder() && userId != request.auth.uid;
+    }
+
+    // Append-only owner audit trail for moderation actions.
+    match /wpAdminAudit/{eventId} {
+      allow read: if isFounder();
+      allow create: if isFounder()
+        && request.resource.data.keys().hasOnly(['actorUid', 'actorEmail', 'action', 'targetUid', 'targetEmail', 'reason', 'createdAt'])
+        && request.resource.data.keys().hasAll(['actorUid', 'actorEmail', 'action', 'targetUid', 'targetEmail', 'reason', 'createdAt'])
+        && request.resource.data.actorUid == request.auth.uid
+        && request.resource.data.actorEmail == request.auth.token.email
+        && request.resource.data.action in ['suspend', 'restore']
+        && request.resource.data.targetUid is string
+        && request.resource.data.targetUid != request.auth.uid
+        && request.resource.data.targetEmail is string
+        && request.resource.data.reason is string
+        && request.resource.data.reason.size() <= 300
+        && request.resource.data.createdAt is timestamp;
+      allow update, delete: if false;
     }
 
     // Deny every collection not explicitly granted above.

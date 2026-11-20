@@ -1,0 +1,11 @@
+WEATHER PRO V16.2.2 — STATIC WEB / NO NODE.JS
+==============================================
+
+- Удалены package.json, функции Firebase на Node.js и инструкция их развёртывания.
+- Из firebase.json удалена секция Cloud Functions; конфигурация Firestore сохранена.
+- Удалён Firebase Functions browser SDK и вызов callable weatherAI.
+- Weather AI переключён на существующий прямой браузерный API Pollinations.
+- Сохранены Firebase Auth, Firestore, интерфейс, модули сайта и PWA.
+- Сохранены клиентские уведомления и отслеживание непрочитанных сообщений.
+- Автоматическая серверная отправка FCM при новом сообщении больше не входит в сборку.
+- Проект предназначен для статического HTTPS-хостинга; Node.js/npm не требуются.

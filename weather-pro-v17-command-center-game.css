@@ -1,0 +1,51 @@
+/* Weather Pro V17.0 — Command Center + Storm Runner */
+.wp17-page{display:grid;gap:18px}
+.wp17-hero{position:relative;overflow:hidden;padding:clamp(20px,3vw,30px);border:1px solid rgba(96,165,250,.22);border-radius:23px;background:radial-gradient(ellipse at 88% 8%,rgba(59,130,246,.24),transparent 35%),linear-gradient(140deg,#10213a 0%,#0b1527 58%,#111b31 100%);box-shadow:0 18px 48px rgba(0,0,0,.19)}
+.wp17-hero:after{content:"";position:absolute;right:-50px;bottom:-130px;width:320px;height:320px;border:1px solid rgba(96,165,250,.12);border-radius:50%;box-shadow:0 0 0 30px rgba(96,165,250,.025),0 0 0 65px rgba(96,165,250,.02);pointer-events:none}
+.wp17-eyebrow{display:inline-flex;align-items:center;gap:8px;color:#8fc5ff;font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+.wp17-hero h1{margin:10px 0 8px;color:#f8fbff;font-size:clamp(25px,4vw,36px);line-height:1.1}
+.wp17-hero p{max-width:720px;margin:0;color:#a9bad1;font-size:13px;line-height:1.65}
+.wp17-hero-row{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:18px}
+.wp17-live{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid rgba(52,211,153,.24);border-radius:999px;background:rgba(16,185,129,.08);color:#a7f3d0;font-size:10px;font-weight:800;white-space:nowrap}
+.wp17-live i{color:#34d399;font-size:8px;animation:wp17Pulse 1.8s ease-in-out infinite}
+@keyframes wp17Pulse{50%{opacity:.35;transform:scale(.8)}}
+.wp17-kpi-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.wp17-kpi{min-width:0;padding:15px;border:1px solid var(--glass-border,rgba(255,255,255,.08));border-radius:16px;background:var(--card-bg,rgba(30,41,59,.55));box-shadow:0 9px 26px rgba(0,0,0,.09)}
+.wp17-kpi-top{display:flex;justify-content:space-between;align-items:center;gap:8px;color:var(--text-secondary,#94a3b8);font-size:10px}
+.wp17-kpi-icon{display:grid;place-items:center;width:32px;height:32px;flex:0 0 auto;border-radius:10px;background:rgba(59,130,246,.12);color:#80b9ff;font-size:13px}
+.wp17-kpi strong{display:block;margin-top:12px;color:var(--text,#f8fafc);font-size:17px;line-height:1.25;overflow-wrap:anywhere}
+.wp17-kpi small{display:block;margin-top:5px;color:var(--text-secondary,#94a3b8);font-size:10px;line-height:1.5}
+.wp17-section{padding:18px;border:1px solid var(--glass-border,rgba(255,255,255,.08));border-radius:18px;background:var(--card-bg,rgba(30,41,59,.42))}
+.wp17-section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.wp17-section-head h2{margin:0;color:var(--text,#f8fafc);font-size:17px}
+.wp17-section-head p{margin:5px 0 0;color:var(--text-secondary,#94a3b8);font-size:11px;line-height:1.5}
+.wp17-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:38px;padding:9px 13px;border:1px solid rgba(96,165,250,.25);border-radius:10px;background:rgba(59,130,246,.13);color:#bfdbfe;font-size:11px;font-weight:750;cursor:pointer;transition:background .18s,border-color .18s,transform .18s}
+.wp17-btn:hover{background:rgba(59,130,246,.22);border-color:rgba(96,165,250,.45)}
+.wp17-btn:active{transform:translateY(1px)}
+.wp17-btn.secondary{background:rgba(148,163,184,.07);border-color:var(--glass-border,rgba(255,255,255,.1));color:var(--text,#e2e8f0)}
+.wp17-btn:disabled{opacity:.45;cursor:not-allowed}
+.wp17-module-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.wp17-module{display:flex;align-items:flex-start;gap:11px;min-width:0;padding:13px;border:1px solid var(--glass-border,rgba(255,255,255,.08));border-radius:13px;background:rgba(15,23,42,.2);color:inherit;text-align:left;cursor:pointer}
+.wp17-module:hover{border-color:rgba(96,165,250,.35);background:rgba(59,130,246,.07)}
+.wp17-module>i{display:grid;place-items:center;width:34px;height:34px;flex:0 0 auto;border-radius:10px;background:rgba(59,130,246,.12);color:#82baff}
+.wp17-module span{min-width:0}.wp17-module b{display:block;color:var(--text,#f8fafc);font-size:11px}.wp17-module small{display:block;margin-top:4px;color:var(--text-secondary,#94a3b8);font-size:10px;line-height:1.45}
+.wp17-scan-list{display:grid;gap:7px}.wp17-scan-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--glass-border,rgba(255,255,255,.07));border-radius:10px;background:rgba(15,23,42,.2);font-size:11px}.wp17-scan-row span{color:var(--text-secondary,#94a3b8)}.wp17-scan-row strong{color:var(--text,#e2e8f0);font-size:10px;text-align:right}
+.wp17-founder-badge{display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:5px 9px;border:1px solid rgba(59,130,246,.28);border-radius:999px;background:rgba(37,99,235,.13);color:#93c5fd;font-size:10px;font-weight:800;letter-spacing:.02em;vertical-align:middle}
+.wp17-founder-badge i{color:#60a5fa;font-size:11px}
+.wp17-founder-badge[hidden]{display:none!important}
+.wp17-founder-inline-badge{display:inline-flex;align-items:center;gap:4px;vertical-align:middle;margin-inline-start:6px;padding:2px 6px;border:1px solid rgba(59,130,246,.34);border-radius:999px;background:rgba(37,99,235,.14);color:#93c5fd;font-size:9px;font-weight:850;line-height:1.45;white-space:nowrap}
+.wp17-founder-inline-badge i{font-size:10px;color:#60a5fa}
+.wp17-game-shell{overflow:hidden;border:1px solid rgba(96,165,250,.2);border-radius:20px;background:radial-gradient(ellipse at 50% 0%,rgba(30,64,175,.19),transparent 55%),linear-gradient(145deg,#081426,#0d1c32 65%,#0a1425);box-shadow:0 18px 45px rgba(0,0,0,.2)}
+.wp17-game-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 16px;border-bottom:1px solid rgba(148,163,184,.12)}
+.wp17-game-stats{display:flex;gap:8px;flex-wrap:wrap}.wp17-game-stat{min-width:84px;padding:7px 10px;border:1px solid rgba(148,163,184,.13);border-radius:10px;background:rgba(15,23,42,.45)}.wp17-game-stat small{display:block;color:#8fa7c6;font-size:9px}.wp17-game-stat strong{display:block;margin-top:3px;color:#f8fbff;font-size:16px;font-variant-numeric:tabular-nums}
+.wp17-game-canvas-wrap{position:relative;padding:12px;background:linear-gradient(180deg,rgba(4,12,24,.1),rgba(4,12,24,.34))}
+#wp17StormCanvas{display:block;width:100%;height:auto;aspect-ratio:960/430;border:1px solid rgba(96,165,250,.12);border-radius:13px;background:#081426;touch-action:pan-y}
+.wp17-game-overlay{position:absolute;inset:12px;display:grid;place-items:center;border-radius:13px;background:rgba(3,10,22,.55);backdrop-filter:blur(4px);text-align:center}
+.wp17-game-overlay[hidden]{display:none}
+.wp17-game-overlay-card{max-width:360px;padding:20px;color:#f8fbff}.wp17-game-overlay-card i{color:#7dd3fc;font-size:30px}.wp17-game-overlay-card h3{margin:10px 0 6px;font-size:23px}.wp17-game-overlay-card p{margin:0 0 14px;color:#b1c2d8;font-size:11px;line-height:1.6}
+.wp17-game-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:0 16px 15px}.wp17-game-actions{display:flex;gap:8px;flex-wrap:wrap}.wp17-game-pad{display:flex;gap:8px}.wp17-game-pad button{display:grid;place-items:center;width:46px;height:42px;border:1px solid rgba(96,165,250,.3);border-radius:11px;background:rgba(59,130,246,.12);color:#bfdbfe;font-size:15px;touch-action:none;user-select:none;-webkit-user-select:none}
+.wp17-game-help{padding:0 16px 15px;color:#8fa7c6;font-size:10px;line-height:1.6}
+.wp17-game-help strong{color:#b9d7ff}
+@media(max-width:820px){.wp17-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.wp17-module-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.wp17-hero-row{display:block}.wp17-live{margin-top:14px}.wp17-kpi{padding:12px}.wp17-kpi strong{font-size:15px}.wp17-section{padding:14px}.wp17-section-head{align-items:flex-start;flex-wrap:wrap}.wp17-module-grid{grid-template-columns:1fr}.wp17-game-toolbar{align-items:flex-start}.wp17-game-stats{width:100%}.wp17-game-stat{flex:1;min-width:0}.wp17-game-controls{align-items:stretch}.wp17-game-actions{flex:1}.wp17-game-actions .wp17-btn{flex:1}.wp17-game-pad{width:100%}.wp17-game-pad button{flex:1;height:48px}.wp17-game-overlay-card{padding:14px}.wp17-game-overlay-card h3{font-size:19px}}
+@media(prefers-reduced-motion:reduce){.wp17-live i{animation:none}.wp17-btn{transition:none}}

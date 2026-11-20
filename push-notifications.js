@@ -103,16 +103,17 @@
     const user = authUser();
     if (!db() || !user || !chatId || !otherUid) return 0;
     const chatRef = db().collection('chats').doc(chatId);
-    const [userSnap, messagesSnap] = await Promise.all([
-      db().collection('users').doc(user.uid).get(),
-      // Single-field query avoids any composite-index deployment. Filter the cursor locally.
-      chatRef.collection('messages').where('senderId', '==', otherUid).get()
-    ]);
+    const userSnap = await db().collection('users').doc(user.uid).get();
     const readMap = userSnap.exists ? (userSnap.data().chatReads || {}) : {};
     const localReadMap = readLocalChatReads(user.uid);
     const lastRead = Math.max(timestampMillis(readMap[chatId]), Number(localReadMap[chatId]) || 0);
+    // Query only the tail after the read cursor instead of downloading the entire conversation.
+    // The query uses the single createdAt field and does not require a composite index.
+    const cursor = firebase.firestore.Timestamp.fromMillis(Math.max(0, lastRead));
+    const messagesSnap = await chatRef.collection('messages')
+      .orderBy('createdAt', 'asc').startAfter(cursor).limit(500).get();
     return messagesSnap.docs.reduce((total, doc) => {
-      return timestampMillis(doc.data().createdAt) > lastRead ? total + 1 : total;
+      return doc.data().senderId === otherUid ? total + 1 : total;
     }, 0);
   }
   window.wpPushGetChatUnread = getChatUnread;
